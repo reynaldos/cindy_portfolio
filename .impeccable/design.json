@@ -1,0 +1,594 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-06T15:08:15.673862+00:00",
+  "title": "Design System: Cuts By Cindy",
+  "extensions": {
+    "colorMeta": {
+      "page": {
+        "role": "neutral",
+        "displayName": "Outer Black",
+        "canonical": "#060607",
+        "tonalRamp": [
+          "#0B0B0C",
+          "#252526",
+          "#424243",
+          "#616163",
+          "#828284",
+          "#A5A5A6",
+          "#C9C9CA",
+          "#EEEEEF"
+        ]
+      },
+      "bay": {
+        "role": "neutral",
+        "displayName": "Bay Black",
+        "canonical": "#0E0E10",
+        "tonalRamp": [
+          "#0B0B0C",
+          "#252526",
+          "#424244",
+          "#616163",
+          "#828284",
+          "#A5A5A7",
+          "#C9C9CB",
+          "#EEEEF0"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Panel Graphite",
+        "canonical": "#1A1A1E",
+        "tonalRamp": [
+          "#0B0B0D",
+          "#252527",
+          "#414245",
+          "#616165",
+          "#828287",
+          "#A4A4A9",
+          "#C9C9CC",
+          "#EEEEF1"
+        ]
+      },
+      "track": {
+        "role": "neutral",
+        "displayName": "Track Graphite",
+        "canonical": "#2A2A30",
+        "tonalRamp": [
+          "#0B0B0D",
+          "#252528",
+          "#414146",
+          "#606067",
+          "#818288",
+          "#A4A4AA",
+          "#C8C8CD",
+          "#EEEEF2"
+        ]
+      },
+      "track-hi": {
+        "role": "neutral",
+        "displayName": "Track Lift",
+        "canonical": "#34343B",
+        "tonalRamp": [
+          "#0B0B0E",
+          "#252529",
+          "#414147",
+          "#606068",
+          "#818189",
+          "#A4A4AB",
+          "#C8C8CE",
+          "#EEEEF2"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Divider",
+        "canonical": "#3A3A42",
+        "tonalRamp": [
+          "#0B0B0E",
+          "#242429",
+          "#414148",
+          "#606068",
+          "#81818A",
+          "#A4A4AC",
+          "#C8C8CF",
+          "#EEEEF3"
+        ]
+      },
+      "monitor-fill": {
+        "role": "neutral",
+        "displayName": "Monitor Fill",
+        "canonical": "#232328",
+        "tonalRamp": [
+          "#0B0B0D",
+          "#252528",
+          "#414146",
+          "#616166",
+          "#828287",
+          "#A4A4A9",
+          "#C8C9CD",
+          "#EEEEF1"
+        ]
+      },
+      "slate": {
+        "role": "neutral",
+        "displayName": "Slate Paper",
+        "canonical": "#F3EBDD",
+        "tonalRamp": [
+          "#0D0B07",
+          "#28251E",
+          "#464139",
+          "#676055",
+          "#888176",
+          "#AAA49A",
+          "#CDC8C0",
+          "#F2EEE7"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper White",
+        "canonical": "#F4F1EA",
+        "tonalRamp": [
+          "#0C0B09",
+          "#262522",
+          "#44423D",
+          "#63615B",
+          "#85827C",
+          "#A7A5A0",
+          "#CBC9C5",
+          "#F0EEEB"
+        ]
+      },
+      "dim": {
+        "role": "neutral",
+        "displayName": "Label Gray",
+        "canonical": "#A9A59C",
+        "tonalRamp": [
+          "#0C0B08",
+          "#272520",
+          "#44423C",
+          "#646159",
+          "#86827A",
+          "#A8A59E",
+          "#CBC9C3",
+          "#F0EEE9"
+        ]
+      },
+      "faint": {
+        "role": "neutral",
+        "displayName": "Tick Gray",
+        "canonical": "#77746D",
+        "tonalRamp": [
+          "#0C0B09",
+          "#262521",
+          "#44423D",
+          "#64615B",
+          "#85827B",
+          "#A7A59F",
+          "#CBC9C4",
+          "#F0EEEA"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#0E0E10",
+        "tonalRamp": [
+          "#0B0B0C",
+          "#252526",
+          "#424244",
+          "#616163",
+          "#828284",
+          "#A5A5A7",
+          "#C9C9CB",
+          "#EEEEF0"
+        ]
+      },
+      "cut": {
+        "role": "primary",
+        "displayName": "Razor Red",
+        "canonical": "#FF3B2F",
+        "tonalRamp": [
+          "#2C0000",
+          "#590000",
+          "#8A0000",
+          "#BD0000",
+          "#E7352A",
+          "#FF705F",
+          "#FFA291",
+          "#FFD1C3"
+        ]
+      },
+      "cut-text": {
+        "role": "primary",
+        "displayName": "Razor Red, Text",
+        "canonical": "#FF5A4F",
+        "tonalRamp": [
+          "#280000",
+          "#530000",
+          "#820004",
+          "#B4181A",
+          "#DC463E",
+          "#F8796C",
+          "#FFA89B",
+          "#FFD5CA"
+        ]
+      },
+      "marker": {
+        "role": "secondary",
+        "displayName": "Marker Yellow",
+        "canonical": "#F5D90A",
+        "tonalRamp": [
+          "#150900",
+          "#332300",
+          "#554000",
+          "#795F00",
+          "#9B8200",
+          "#BBA61F",
+          "#DBCB6E",
+          "#FCF1AA"
+        ]
+      },
+      "audio": {
+        "role": "secondary",
+        "displayName": "Meter Teal",
+        "canonical": "#2EC4B6",
+        "tonalRamp": [
+          "#00120F",
+          "#00302A",
+          "#005149",
+          "#00756A",
+          "#00988C",
+          "#55B8AD",
+          "#8DDAD0",
+          "#C2FCF4"
+        ]
+      },
+      "audio-bg": {
+        "role": "secondary",
+        "displayName": "Teal Well",
+        "canonical": "#17403D",
+        "tonalRamp": [
+          "#010E0D",
+          "#132A28",
+          "#2B4846",
+          "#446966",
+          "#658B87",
+          "#8CADA9",
+          "#B5D0CD",
+          "#DEF4F1"
+        ]
+      },
+      "clip-short": {
+        "role": "tertiary",
+        "displayName": "Short Films Green",
+        "canonical": "#7BC67E",
+        "tonalRamp": [
+          "#001100",
+          "#022E08",
+          "#174F1D",
+          "#2E7234",
+          "#519555",
+          "#7DB67F",
+          "#A9D8A9",
+          "#D6FAD6"
+        ]
+      },
+      "clip-com": {
+        "role": "tertiary",
+        "displayName": "Commercials Orange",
+        "canonical": "#F28C38",
+        "tonalRamp": [
+          "#200000",
+          "#461100",
+          "#702A00",
+          "#9C4400",
+          "#C2670F",
+          "#DF9055",
+          "#FBB98A",
+          "#FFE2BE"
+        ]
+      },
+      "clip-mv": {
+        "role": "tertiary",
+        "displayName": "Music Videos Violet",
+        "canonical": "#B48CF2",
+        "tonalRamp": [
+          "#110124",
+          "#2E154B",
+          "#4D2F75",
+          "#6F4AA2",
+          "#916CC7",
+          "#B193E3",
+          "#D3BBFE",
+          "#F6E4FF"
+        ]
+      },
+      "clip-trl": {
+        "role": "tertiary",
+        "displayName": "Trailers Blue",
+        "canonical": "#5AA9F2",
+        "tonalRamp": [
+          "#000A25",
+          "#00264B",
+          "#004476",
+          "#1764A3",
+          "#3F87C8",
+          "#6FAAE3",
+          "#9ECEFE",
+          "#CDF3FF"
+        ]
+      },
+      "appbar": {
+        "role": "neutral",
+        "displayName": "App Bar",
+        "canonical": "#1C1C1F",
+        "tonalRamp": [
+          "#0B0B0C",
+          "#252527",
+          "#424244",
+          "#616164",
+          "#828285",
+          "#A5A5A8",
+          "#C9C9CB",
+          "#EEEEF0"
+        ]
+      },
+      "appbar-ink": {
+        "role": "neutral",
+        "displayName": "App Bar Ink",
+        "canonical": "#F2F2F2",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#A5A5A5",
+          "#C9C9C9",
+          "#EEEEEE"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Lander hero, THAT'S A WRAP., Media Offline."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page titles (H1)."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Section titles (H2)."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Bio, descriptions, long copy."
+      },
+      "ui": {
+        "displayName": "UI",
+        "purpose": "Buttons, inspector values, menus."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Kickers, field names, panel tabs, track heads."
+      },
+      "timecode": {
+        "displayName": "Timecode",
+        "purpose": "Master timecode, runtimes."
+      }
+    },
+    "shadows": [
+      {
+        "name": "dropdown",
+        "value": "0 10px 30px rgba(0,0,0,.55)",
+        "purpose": "App bar menus only."
+      },
+      {
+        "name": "hero-text",
+        "value": "0 2px 12px rgba(0,0,0,.6)",
+        "purpose": "Display text over a video frame (text-shadow)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "d-4f",
+        "value": "167ms",
+        "purpose": "Playhead glide, target brackets."
+      },
+      {
+        "name": "d-6f",
+        "value": "250ms",
+        "purpose": "A1 sweep, title shuffle."
+      },
+      {
+        "name": "d-12f",
+        "value": "500ms",
+        "purpose": "Credit lines rise."
+      },
+      {
+        "name": "razor",
+        "value": "708ms",
+        "purpose": "17-frame page cut."
+      },
+      {
+        "name": "crossfade",
+        "value": "200ms linear",
+        "purpose": "Reduced-motion page change."
+      },
+      {
+        "name": "drawer",
+        "value": "333ms",
+        "purpose": "Phone timeline drawer."
+      },
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(.2,.8,.2,1)",
+        "purpose": "Arrivals."
+      },
+      {
+        "name": "ease-in",
+        "value": "cubic-bezier(.6,0,.9,.4)",
+        "purpose": "Blade."
+      },
+      {
+        "name": "ease-cut",
+        "value": "cubic-bezier(.7,0,.2,1)",
+        "purpose": "Razor halves, drawer."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "767px (container)"
+      },
+      {
+        "name": "tablet",
+        "value": "1023px (container)"
+      },
+      {
+        "name": "desktop-no-bin",
+        "value": "1279px (container)"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one action on a screen: Start a project, Play reel, Export (send).",
+      "html": "<button class=\"ds-btn-primary\">Start a project</button>",
+      "css": ":host{--bay:#0E0E10;--panel:#1A1A1E;--track:#2A2A30;--track-hi:#34343B;--line:#3A3A42;--paper:#F4F1EA;--dim:#A9A59C;--ink:#0E0E10;--cut:#FF3B2F;--cut-text:#FF5A4F;--marker:#F5D90A;--clip-com:#F28C38;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--display:'Clash Display','Arial Narrow',sans-serif;--body:'General Sans',-apple-system,Arial,sans-serif}.ds-btn-primary{background:var(--cut);color:var(--ink);font:700 13px var(--mono);height:48px;padding:0 16px;border:0;border-radius:3px;cursor:pointer}.ds-btn-primary:hover{background:var(--cut-text)}.ds-btn-primary:active{transform:translateY(1px)}.ds-btn-primary:focus-visible{outline:2px solid var(--paper);outline-offset:2px}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Second choice next to a primary: Details, See the work.",
+      "html": "<button class=\"ds-btn-sec\">Details</button>",
+      "css": ":host{--bay:#0E0E10;--panel:#1A1A1E;--track:#2A2A30;--track-hi:#34343B;--line:#3A3A42;--paper:#F4F1EA;--dim:#A9A59C;--ink:#0E0E10;--cut:#FF3B2F;--cut-text:#FF5A4F;--marker:#F5D90A;--clip-com:#F28C38;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--display:'Clash Display','Arial Narrow',sans-serif;--body:'General Sans',-apple-system,Arial,sans-serif}.ds-btn-sec{background:transparent;color:var(--paper);font:500 13px var(--mono);height:48px;padding:0 16px;border:1px solid var(--line);border-radius:3px;cursor:pointer}.ds-btn-sec:hover{border-color:var(--paper)}.ds-btn-sec:focus-visible{outline:2px solid var(--cut);outline-offset:2px}"
+    },
+    {
+      "name": "Workspace Tabs",
+      "kind": "nav",
+      "refersTo": "workspace-tab",
+      "description": "Main navigation, Premiere workspace style, with the red CONTACT tab.",
+      "html": "<nav class=\"ds-ws\"><button>Home</button><button aria-current=\"page\">Projects</button><button>Recent Work</button><button>About</button><button class=\"ds-contact\">Contact</button></nav>",
+      "css": ":host{--bay:#0E0E10;--panel:#1A1A1E;--track:#2A2A30;--track-hi:#34343B;--line:#3A3A42;--paper:#F4F1EA;--dim:#A9A59C;--ink:#0E0E10;--cut:#FF3B2F;--cut-text:#FF5A4F;--marker:#F5D90A;--clip-com:#F28C38;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--display:'Clash Display','Arial Narrow',sans-serif;--body:'General Sans',-apple-system,Arial,sans-serif}.ds-ws{display:flex;gap:2px;background:var(--bay);padding:0 8px;height:36px}.ds-ws button{background:var(--panel);color:var(--dim);border:0;padding:0 16px;font:500 12px var(--mono);letter-spacing:.04em;text-transform:uppercase;cursor:pointer}.ds-ws button:hover{color:var(--paper)}.ds-ws button[aria-current=page]{background:var(--track);color:var(--paper);box-shadow:inset 0 2px 0 var(--cut)}.ds-ws .ds-contact{margin-left:auto;background:var(--cut);color:var(--ink);font-weight:700}.ds-ws .ds-contact:hover{background:var(--cut-text)}.ds-ws button:focus-visible{outline:2px solid var(--cut);outline-offset:-2px}"
+    },
+    {
+      "name": "Category Chip",
+      "kind": "chip",
+      "refersTo": "chip-category",
+      "description": "Switch category in place; pressed fills with the category color.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip\" aria-pressed=\"true\" style=\"--c:#F28C38\"><i></i>Commercials (05)</button><button class=\"ds-chip\" aria-pressed=\"false\" style=\"--c:#7BC67E\"><i></i>Short Films (03)</button></div>",
+      "css": ":host{--bay:#0E0E10;--panel:#1A1A1E;--track:#2A2A30;--track-hi:#34343B;--line:#3A3A42;--paper:#F4F1EA;--dim:#A9A59C;--ink:#0E0E10;--cut:#FF3B2F;--cut-text:#FF5A4F;--marker:#F5D90A;--clip-com:#F28C38;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--display:'Clash Display','Arial Narrow',sans-serif;--body:'General Sans',-apple-system,Arial,sans-serif}.ds-chips{display:flex;gap:4px}.ds-chip{height:44px;padding:0 12px;display:inline-flex;align-items:center;gap:8px;background:var(--track);color:var(--paper);border:0;border-radius:2px;font:500 13px var(--mono);cursor:pointer}.ds-chip i{width:8px;height:8px;border-radius:50%;background:var(--c)}.ds-chip[aria-pressed=true]{background:var(--c);color:var(--ink)}.ds-chip[aria-pressed=true] i{background:var(--ink)}.ds-chip:focus-visible{outline:2px solid var(--cut);outline-offset:2px}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Contact dialog and admin forms.",
+      "html": "<label class=\"ds-field\"><span>Email</span><input placeholder=\"you@studio.com\"></label>",
+      "css": ":host{--bay:#0E0E10;--panel:#1A1A1E;--track:#2A2A30;--track-hi:#34343B;--line:#3A3A42;--paper:#F4F1EA;--dim:#A9A59C;--ink:#0E0E10;--cut:#FF3B2F;--cut-text:#FF5A4F;--marker:#F5D90A;--clip-com:#F28C38;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--display:'Clash Display','Arial Narrow',sans-serif;--body:'General Sans',-apple-system,Arial,sans-serif}.ds-field{display:flex;flex-direction:column;gap:4px;width:280px}.ds-field span{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}.ds-field input{height:48px;background:var(--track);color:var(--paper);border:1px solid var(--line);border-radius:2px;padding:10px 12px;font:14px var(--mono)}.ds-field input:focus{outline:none;border:2px solid var(--cut);padding:9px 11px}"
+    },
+    {
+      "name": "Clip Row",
+      "kind": "card",
+      "refersTo": "clip-row",
+      "description": "Category page list item: thumbnail, title, meta, two-line description, runtime.",
+      "html": "<button class=\"ds-row\" style=\"--c:#F28C38\"><span class=\"ds-th\"><b>01</b></span><span class=\"ds-tx\"><span class=\"ds-t\">Wave Wellness \u2014 Morning Light</span><span class=\"ds-s\">Wave Wellness \u00b7 Mainstay Films \u00b7 2026</span><span class=\"ds-d\">A ten-second open on first light, one of five spots cut from rough to final in ten days.</span></span><span class=\"ds-rt\">0:10</span></button>",
+      "css": ":host{--bay:#0E0E10;--panel:#1A1A1E;--track:#2A2A30;--track-hi:#34343B;--line:#3A3A42;--paper:#F4F1EA;--dim:#A9A59C;--ink:#0E0E10;--cut:#FF3B2F;--cut-text:#FF5A4F;--marker:#F5D90A;--clip-com:#F28C38;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--display:'Clash Display','Arial Narrow',sans-serif;--body:'General Sans',-apple-system,Arial,sans-serif}.ds-row{display:grid;grid-template-columns:160px minmax(0,1fr) auto;gap:16px;align-items:center;width:640px;padding:8px;background:var(--panel);color:var(--paper);border:0;border-top:4px solid var(--c);border-radius:3px;text-align:left;cursor:pointer}.ds-row:hover{box-shadow:inset 0 0 0 1px var(--marker)}.ds-row:focus-visible{outline:2px solid var(--paper);outline-offset:-2px}.ds-th{aspect-ratio:16/9;background:#000;position:relative}.ds-th b{position:absolute;left:4px;top:4px;background:var(--bay);color:var(--paper);font:500 11px var(--mono);padding:1px 5px}.ds-tx{display:flex;flex-direction:column;gap:2px;min-width:0}.ds-t{font:500 13px var(--mono)}.ds-s{font:12px var(--mono);color:var(--dim)}.ds-d{font:14px/1.5 var(--body);color:var(--dim);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.ds-rt{font:12px var(--mono);color:var(--dim);font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Label Chip",
+      "kind": "custom",
+      "refersTo": "label-chip",
+      "description": "Any label that sits on a poster or film strip.",
+      "html": "<span class=\"ds-pic\"><span class=\"ds-lab\">Spot 2/5 \u00b7 Breathe</span></span>",
+      "css": ":host{--bay:#0E0E10;--panel:#1A1A1E;--track:#2A2A30;--track-hi:#34343B;--line:#3A3A42;--paper:#F4F1EA;--dim:#A9A59C;--ink:#0E0E10;--cut:#FF3B2F;--cut-text:#FF5A4F;--marker:#F5D90A;--clip-com:#F28C38;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--display:'Clash Display','Arial Narrow',sans-serif;--body:'General Sans',-apple-system,Arial,sans-serif}.ds-pic{display:block;width:240px;height:64px;background:#ddd;position:relative;border-top:4px solid var(--clip-com);border-radius:3px}.ds-lab{position:absolute;left:6px;bottom:6px;background:var(--bay);color:var(--paper);font:500 11px var(--mono);padding:2px 6px;border-radius:2px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Edit Bay",
+    "overview": "The site is Cindy's edit bay: a full-screen editing app with an app bar, workspace tabs, a project bin, a program monitor, an inspector, a timeline with audio meters, and a status strip. Every editor detail is real. The bay is for the work, not about the interface: the program monitor is the largest object on every screen, and each editor word has a plain word with it. The surface is dark, flat, and dense, like a real NLE at night.",
+    "keyCharacteristics": [
+      "Dark-only, flat panels with 2px bay seams between them.",
+      "The program monitor leads; panels are slim at rest.",
+      "Editor language with a plain partner on every label.",
+      "Category color is the wayfinding system, used the same way everywhere.",
+      "Motion is counted in frames at 24 fps."
+    ],
+    "rules": [
+      {
+        "name": "The One Red Rule",
+        "body": "Razor Red means the cut or the primary action. It never decorates.",
+        "section": "colors"
+      },
+      {
+        "name": "The Color Is a Category Rule",
+        "body": "The four clip colors mark categories and nothing else. A category keeps its color on every page.",
+        "section": "colors"
+      },
+      {
+        "name": "The Banned Pairs Rule",
+        "body": "Never paper on cut (3.15:1). Never cut as small text on track (4.02:1); use cut-text on panel. Never faint as text.",
+        "section": "colors"
+      },
+      {
+        "name": "The Text Floor Rule",
+        "body": "No functional text under 11px on desktop or 12px on phone. That includes ruler labels, track ids, pin labels, and canvas text.",
+        "section": "typography"
+      },
+      {
+        "name": "The Mono Is Interface Rule",
+        "body": "Mono sets interface, not prose. Any paragraph longer than two lines uses Body.",
+        "section": "typography"
+      },
+      {
+        "name": "The Monitor Leads Rule",
+        "body": "On every screen, the program monitor or the page's main picture is the largest object. If a panel competes with it, the panel collapses.",
+        "section": "layout"
+      },
+      {
+        "name": "The Plain Partner Rule",
+        "body": "Every editor label has a plain label next to it or under it: \"Export (send)\" with \"Send message\", \"V1 Pages\" with \"Pages\", \"Yellow pins = feedback rounds\".",
+        "section": "layout"
+      },
+      {
+        "name": "The Thumb Wins Rule",
+        "body": "On phone, every tap target is at least 44 \u00d7 44px. When a desktop height is smaller (the 26px app bar, the 30px ruler, 44px tracks), the phone version grows to fit the target.",
+        "section": "layout"
+      },
+      {
+        "name": "The Seam Not Shadow Rule",
+        "body": "Panels separate with 2px bay seams. Never add a shadow to a panel or a card.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep the program monitor the largest object on every screen (min(100%, calc(64vh * 16 / 9)) on desktop).",
+      "Do put a plain label with every editor word (\"Export (send)\" + \"Send message\").",
+      "Do put every label that sits on an image on a solid bay label chip.",
+      "Do load video only on click, and show a poster before that.",
+      "Do keep J/K/L as in Premiere (back, pause, play) and use arrows for clips.",
+      "Do keep touch targets at 44px on phone and at least 24px on desktop.",
+      "Do use the CBC mark in the app bar.",
+      "Do write \"Adobe Media Encoder\" in the tools list."
+    ],
+    "donts": [
+      "Don't show an Apple logo or any OS logo.",
+      "Don't put instruction text (\"Press L for sound\u2026\") in the hero or on phone.",
+      "Don't set functional text under 11px (12px on phone), or use Tick Gray as text.",
+      "Don't set paragraphs in mono.",
+      "Don't add shadows to panels, rows, or cards.",
+      "Don't let Space or Enter do anything but press the focused control.",
+      "Don't let a note or tooltip run past the app frame.",
+      "Don't start video or a download on hover.",
+      "Don't use pills, gradients on surfaces, or color that does not carry a meaning."
+    ]
+  }
+}
