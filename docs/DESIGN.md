@@ -230,7 +230,7 @@ The frame is a full-viewport app on a CSS grid with 2px seams. The breakpoints a
 - **Category head:** the breadcrumb, then the title (clamp(28px, 3.2cqw, 44px)) and the category chips in one wrapping row.
 - **Inspector:** 360px, 440px on detail pages.
 - **Timeline band:** at most 160px at rest (ruler, V1 Pages, one context track, A1). It opens to full height on hover, on focus, or from the Window menu.
-- **Audio meters:** 96px, at the right of the timeline.
+- **Audio meters:** 112px, at the right of the timeline.
 
 **Breakpoints:**
 
@@ -247,7 +247,7 @@ The frame is a full-viewport app on a CSS grid with 2px seams. The breakpoints a
 ### Named Rules
 **The Monitor Leads Rule.** On every screen, the program monitor or the page's main picture is the largest object. If a panel competes with it, the panel collapses.
 
-**The Plain Partner Rule.** Every editor label has a plain label next to it or under it: "Export (send)" with "Send message", "V1 Pages" with "Pages", "Yellow pins = feedback rounds".
+**The Plain Partner Rule.** Every editor label has a plain label next to it or under it: "Export (send message)", "V1 Pages" with "Pages", "Yellow pins = feedback rounds".
 
 **The Thumb Wins Rule.** On phone, every tap target is at least 44 × 44px. When a desktop height is smaller (the 26px app bar, the 30px ruler, 44px tracks), the phone version grows to fit the target.
 
@@ -325,7 +325,7 @@ There are no pills and no circles, except the record dot and the category dots. 
 ### Contact Dialog ("Export Settings")
 - The slate title strip reads "Export Settings — Send Cindy a message".
 - **Fields:** Name, Email, Project type (Short Film / Commercial / Music Video / Trailer / Other), and Message.
-- The button reads "Export (send)", with "Send message" under it.
+- The button reads "Export (send message)".
 - Cindy's email and a Copy button are always visible in the dialog.
 - **States:**
   - Idle.
@@ -359,7 +359,7 @@ There are no pills and no circles, except the record dot and the category dots. 
 
 ### Do:
 - **Do** keep the program monitor the largest object on every screen (`min(100%, calc(64vh * 16 / 9))` on desktop).
-- **Do** put a plain label with every editor word ("Export (send)" + "Send message").
+- **Do** put a plain label with every editor word ("Export (send message)").
 - **Do** put every label that sits on an image on a solid bay label chip.
 - **Do** load video only on click, and show a poster before that.
 - **Do** keep J/K/L as in Premiere (back, pause, play) and use arrows for clips.

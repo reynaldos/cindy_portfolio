@@ -54,26 +54,29 @@ Update the boxes after each task. Each task names the user story it serves, so c
 - Placeholder pages exist for every tab so navigation works; Phase 4 replaces them.
 
 ## Phase 3 — Video
-- [ ] 3.1 Cloudflare: Stream on, R2 bucket on a custom domain, webhook URL
-- [ ] 3.2 `lib/stream.ts`: direct upload URL, delete, poster and film-strip thumbnail URLs (US-14)
-- [ ] 3.3 Stream webhook with signature check and `revalidateTag` (US-14)
-- [ ] 3.4 Program monitor: poster, burn-in, title-safe corners, Media Offline card (US-02, US-04)
-- [ ] 3.5 Player island: hls.js on Play, transport, scrub, timecode (US-02, US-04)
-- [ ] 3.6 Audio meters and A1 waveform from stored peaks; MUTED fallback (US-04)
+- [x] 3.1 Cloudflare: Stream on, R2 bucket (r2.dev URL for now), API token; the webhook is registered after the Vercel deploy (7.5)
+- [x] 3.2 `lib/stream.ts` (server: tus upload URL, get, delete, webhook signature) and `lib/media.ts` (URL helpers, `clipFromProject`) (US-14)
+- [x] 3.3 Stream webhook with signature check and `revalidateTag` (US-14)
+- [x] 3.4 Program monitor: poster, burn-in, title-safe corners, Media Offline card (US-02, US-04)
+- [x] 3.5 Player island: hls.js on Play, transport, scrub, timecode; state goes to the frame as one `baystate` event (US-02, US-04)
+- [x] 3.6 Audio meters and A1 waveform from stored peaks; dashed "no audio preview" fallback (US-04)
+- A `streamUid` that is a full URL plays as-is, so any HLS link can stand in. The seed uses a public test stream for the reel.
 
 ## Phase 4 — Public pages
-- [ ] 4.1 Home: hero, "Play reel", inspector (US-01, US-02)
-- [ ] 4.2 Projects: four tracks; hover changes poster and inspector only (US-03)
-- [ ] 4.3 Category pages: compact head, sticky monitor, clip rows with descriptions, scroll-select (US-03, US-04)
-- [ ] 4.4 Project detail: stills, full credits, next clip (US-05)
-- [ ] 4.5 Recent Work: copy, feedback pins with edge-safe notes, five spots, stamp (US-06)
-- [ ] 4.6 About: portrait, bio, quote, tools (US-07)
-- [ ] 4.7 End credits on every page: credit lines, marquee (hover, click, and focus pause), "Start a project" (US-08)
-- [ ] 4.8 Media Offline 404 (US-03)
+- [x] 4.1 Home: hero, "Play reel", NOW CUTTING board, inspector (US-01, US-02)
+- [x] 4.2 Projects: four tracks; hover changes poster and inspector only (US-03)
+- [x] 4.3 Category pages: compact head, sticky monitor, clip rows with descriptions, scroll-select (US-03, US-04)
+- [x] 4.4 Project detail: stills, full credits, next clip (US-05)
+- [x] 4.5 Recent Work: copy, feedback pins with edge-safe notes, five spots, stamp (US-06)
+- [x] 4.6 About: portrait, bio, quote, tools (US-07)
+- [x] 4.7 End credits on every page: credit lines, marquee (hover, click, and focus pause), "Start a project" (US-08)
+- [x] 4.8 Media Offline 404 (US-03)
+- The seed has no published projects, so the category, Recent Work, and Projects pages show their empty states until the admin (Phase 6) publishes work.
 
 ## Phase 5 — Contact
-- [ ] 5.1 Contact dialog: native `<dialog>`, five states, kept draft, email + Copy (US-08, US-10)
-- [ ] 5.2 Server action: zod, honeypot, Turnstile, rate limit, save, EmailJS (US-08, US-16)
+- [x] 5.1 Contact dialog: native `<dialog>`, five states, kept draft, email + copy icon, opens from CONTACT, File menu, and "Start a project" (US-08, US-10)
+- [x] 5.2 Server action: zod, honeypot, three-second time trap, rate limit, save, EmailJS; Turnstile is optional (works only when both keys are set) (US-08, US-16)
+- EmailJS and Turnstile keys still to add to `.env` (see `.env.example`); until then a real send saves the row and shows the failure state with the email.
 
 ## Phase 6 — Admin
 - [ ] 6.1 Password login: `/admin/login` with Turnstile and rate limit, signed session cookie, `proxy.ts` check, `requireAdmin()`, logout, hash script (US-12)

@@ -155,7 +155,9 @@
 .tlp .hdl[aria-expanded="true"] { background: var(--color-cut); color: var(--color-ink); }
 
 /* shortcuts sheet */
-.sheet { background: var(--color-panel); color: var(--color-paper); border: 1px solid var(--color-line); padding: 0; width: min(560px, calc(100% - 32px)); font-family: var(--font-mono); }
+/* margin auto centers the dialog; the global reset would pin it to the corner */
+.sheet { background: var(--color-panel); color: var(--color-paper); border: 1px solid var(--color-line); padding: 0; margin: auto; width: min(560px, calc(100% - 32px)); font-family: var(--font-mono); }
+.cf-turnstile { margin-bottom: 12px; }
 .sheet::backdrop { background: rgba(14, 14, 16, 0.86); }
 .sheet-t { background: var(--color-slate); color: var(--color-ink); display: flex; justify-content: space-between; align-items: center; padding: 0 0 0 16px; font-size: 13px; font-weight: 700; }
 .sheet-t button { background: none; border: 0; color: var(--color-ink); min-height: 44px; min-width: 44px; cursor: pointer; font: inherit; }
@@ -163,6 +165,22 @@
 .keys { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; font-size: 13px; margin: 0; }
 .keys dt { font-variant-numeric: tabular-nums; color: var(--color-paper); }
 .keys dd { margin: 0; color: var(--color-dim); }
+.sheet-b .h3 { font: 600 20px/1.2 var(--font-display); margin: 0 0 8px; }
+.sheet-b p { font-family: var(--font-sans); font-size: 15px; line-height: 1.5; margin: 0 0 12px; }
+.sheet-b .err { color: var(--color-cut-text); font-size: 12px; font-family: var(--font-mono); }
+.field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+.field label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-dim); }
+.field input, .field select, .field textarea { min-height: 48px; background: var(--color-track); border: 1px solid var(--color-line); border-radius: 2px; padding: 10px 12px; font: 14px var(--font-mono); color: var(--color-paper); width: 100%; }
+.field textarea { min-height: 96px; resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border: 2px solid var(--color-cut); padding: 9px 11px; }
+.field [aria-invalid="true"] { border-color: var(--color-cut); }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.fmt { font-size: 12px; color: var(--color-dim); border: 1px solid var(--color-line); padding: 8px 12px; margin-bottom: 16px; }
+.prog { height: 8px; background: var(--color-track); margin: 12px 0; overflow: hidden; }
+.prog i { display: block; height: 100%; width: 40%; background: var(--color-paper); animation: prog 1.2s ease-in-out infinite; }
+@keyframes prog { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+.alt { border-top: 1px solid var(--color-line); margin-top: 16px; padding-top: 12px; font-size: 13px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+.alt a { color: var(--color-paper); }
 
 /* breakpoints */
 @container app (max-width: 1279px) {

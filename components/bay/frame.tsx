@@ -7,6 +7,7 @@ import { Pause, Play, SkipBack, SkipForward, Volume2 } from "lucide-react";
 import { bay } from "@/components/bay/bus";
 import { CATEGORY_COLOR, PAGES, SEQ, pageOf, tc } from "@/components/bay/const";
 import { Timeline, type Marker, type Track } from "@/components/bay/timeline";
+import { ContactDialog } from "@/components/contact/contact-dialog";
 import { useClock } from "@/components/bay/clock";
 import { useMonitor } from "@/components/monitor/state";
 import type { getCategories, getProfile, getRecentWork } from "@/lib/data";
@@ -74,7 +75,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const ae = document.activeElement as HTMLElement | null;
-      if (sheet.current?.open) return;
+      if (document.querySelector("dialog[open]")) return;
       if (e.key === "Escape") { setMenu(null); return; }
       const onCtrl = ae && ae !== document.body && ae.matches("button, a, input, select, textarea, summary, [role=button], [role=slider]");
       const inField = ae?.matches("input, select, textarea, [contenteditable]");
@@ -254,6 +255,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
           <p className="text-dim text-xs mt-4 font-sans">When a button or link has focus, Space or Enter presses it. Keys do nothing while you type in a field.</p>
         </div>
       </dialog>
+      <ContactDialog email={email} replyTime={profile?.replyTime ?? null} links={[["Instagram", profile?.instagramUrl], ["Vimeo", profile?.vimeoUrl], ["LinkedIn", profile?.linkedinUrl]].flatMap(([name, url]) => (url ? [{ name: name!, url }] : []))} />
       <div className="sr" aria-live="polite">{note || `Now showing: ${projName}`}</div>
     </div>
   );
