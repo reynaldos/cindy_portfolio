@@ -45,12 +45,13 @@ Update the boxes after each task. Each task names the user story it serves, so c
 - [x] 1.5 `lib/db.ts` and `lib/data.ts` with cached reads and tags (US-03, US-04)
 
 ## Phase 2 — The bay frame
-- [ ] 2.1 `(site)/layout.tsx`: app bar with CBC mark and menus, workspace tabs as links, status strip (US-01, US-10)
-- [ ] 2.2 Bin rail: 48px, opens to 240px, remembers the choice (US-03)
-- [ ] 2.3 Timeline band: ruler, context track, V1 Pages, A1; compact at rest, expands on hover/focus (US-03, US-06)
-- [ ] 2.4 Phone: bottom bar, timeline drawer, 44px targets (US-11)
-- [ ] 2.5 Razor cut with `<ViewTransition>`, crossfade under reduced motion, second click finishes the cut (US-09)
-- [ ] 2.6 Keyboard handler: J/K/L, arrows, M, ?, Home, End; Space and Enter stay with focus (US-10)
+- [x] 2.1 `(site)/layout.tsx`: app bar with CBC mark and menus, workspace tabs as links, status strip (US-01, US-10)
+- [x] 2.2 Bin rail: 48px, opens to 240px, remembers the choice (US-03)
+- [x] 2.3 Timeline band: ruler, context track, V1 Pages, A1; compact at rest, expands on hover/focus (US-03, US-06)
+- [x] 2.4 Phone: bottom bar, timeline drawer, 44px targets (US-11)
+- [x] 2.5 Razor cut with `<ViewTransition>`, crossfade under reduced motion, second click finishes the cut (US-09). The old page is cropped away from the blade, not slid.
+- [x] 2.6 Keyboard handler: J/K/L, arrows, M, ?, Home, End; Space and Enter stay with focus (US-10). Transport keys and menus send one `bay` window event; the player (3.5) listens.
+- Placeholder pages exist for every tab so navigation works; Phase 4 replaces them.
 
 ## Phase 3 — Video
 - [ ] 3.1 Cloudflare: Stream on, R2 bucket on a custom domain, webhook URL

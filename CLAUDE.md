@@ -12,8 +12,7 @@ NEVER COMMIT, PUSH OR PUBLISH ANY CODE YOURSELF
 
 always make tsx test scripts to test changes after every phase or fix, never stage the test scripts. once moving onto the new issue, delete old test script unless explicitly told not to.
 
-never stage seed scripts, ref docs, or SQL scripts unless added manually or told to.
-
+never stage seed scripts
 dont ever write to the db explicitely told to do so dont every uddate the schema or run anymigrations. 
 
 if we're ever working of a refrence doc, be sure to update the progress everytime we complete a task.
@@ -33,3 +32,7 @@ SQL in `prisma/*/migrations/planned/` follows one format, matching the existing 
 - Indexes after the table: `idx_<abbr>_<what>` / `uq_<abbr>_<what>`, `ON table (cols)` aligned when several; partial `WHERE` at the end.
 - ALTER TABLE ADD COLUMN one per line with table names padded so columns line up; a short `--` line above a statement explains why, never what.
 - Two blank lines between unrelated groups.
+
+
+
+- always git ignore claude me and agents md

@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "../components/bay/bay.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -139,4 +140,48 @@
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-cut;
   }
+}
+
+/* The razor cut: a page change splits the old stage at --cut-x and parts it over the new page.
+   The halves are cropped away, not slid; swap for a snapshot canvas if the slide is wanted. */
+@property --cut-d {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+::view-transition-image-pair(stage) {
+  isolation: auto;
+}
+::view-transition-old(stage) {
+  z-index: 1;
+  mix-blend-mode: normal;
+  clip-path: polygon(
+    calc(0% - var(--cut-d)) 0%, calc(var(--cut-x, 50%) - var(--cut-d)) 0%,
+    calc(var(--cut-x, 50%) - var(--cut-d)) 100%, calc(0% - var(--cut-d)) 100%, calc(0% - var(--cut-d)) 0%,
+    calc(var(--cut-x, 50%) + var(--cut-d)) 0%, calc(100% + var(--cut-d)) 0%,
+    calc(100% + var(--cut-d)) 100%, calc(var(--cut-x, 50%) + var(--cut-d)) 100%, calc(var(--cut-x, 50%) + var(--cut-d)) 0%
+  );
+  animation: razor-old var(--d-razor) var(--ease-cut) both;
+}
+::view-transition-new(stage) {
+  mix-blend-mode: normal;
+  animation: razor-new var(--d-razor) var(--ease-arrive) both;
+}
+@keyframes razor-old {
+  0%, 47% { --cut-d: 0%; }
+  100% { --cut-d: 105%; }
+}
+@keyframes razor-new {
+  0%, 41% { opacity: 0.6; transform: scale(1.02); }
+  70%, 100% { opacity: 1; transform: none; }
+}
+/* reduced motion: a 200ms crossfade instead */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(stage) { clip-path: none; animation: fade-out 200ms linear both; }
+  ::view-transition-new(stage) { animation: none; }
+}
+html.rm::view-transition-old(stage) { clip-path: none; animation: fade-out 200ms linear both; }
+html.rm::view-transition-new(stage) { animation: none; }
+@keyframes fade-out {
+  to { opacity: 0; }
 }
