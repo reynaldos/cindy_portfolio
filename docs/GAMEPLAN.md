@@ -38,11 +38,11 @@ Update the boxes after each task. Each task names the user story it serves, so c
 - [x] 0.4 ARCHITECTURE.md and this gameplan
 
 ## Phase 1 — Foundations
-- [ ] 1.1 Design tokens from DESIGN.md into `app/globals.css` (`@theme`), dark only (all)
-- [ ] 1.2 Fonts: Clash Display and General Sans via `next/font/local`, JetBrains Mono via `next/font/google` (all)
-- [ ] 1.3 Prisma schema from ARCHITECTURE.md §3; you run the migration on Neon (US-12–16)
-- [ ] 1.4 Seed script: Profile, RecentWork, four categories, Wave Wellness rows (not staged)
-- [ ] 1.5 `lib/db.ts` and `lib/data.ts` with cached reads and tags (US-03, US-04)
+- [x] 1.1 Design tokens from DESIGN.md into `app/globals.css` (`@theme`), dark only (all)
+- [x] 1.2 Fonts: Clash Display and General Sans via `next/font/local`, JetBrains Mono via `next/font/google` (all)
+- [x] 1.3 Prisma schema from ARCHITECTURE.md §3; migration on Neon still to run (US-12–16)
+- [x] 1.4 Seed script `prisma/seed.ts`: Profile, RecentWork, four categories, Wave Wellness drafts (not staged; run with `pnpm exec prisma db seed`)
+- [x] 1.5 `lib/db.ts` and `lib/data.ts` with cached reads and tags (US-03, US-04)
 
 ## Phase 2 — The bay frame
 - [ ] 2.1 `(site)/layout.tsx`: app bar with CBC mark and menus, workspace tabs as links, status strip (US-01, US-10)
@@ -75,7 +75,7 @@ Update the boxes after each task. Each task names the user story it serves, so c
 - [ ] 5.2 Server action: zod, honeypot, Turnstile, rate limit, save, EmailJS (US-08, US-16)
 
 ## Phase 6 — Admin
-- [ ] 6.1 Auth0 in `proxy.ts`, `requireAdmin()` (US-12)
+- [ ] 6.1 Password login: `/admin/login` with Turnstile and rate limit, signed session cookie, `proxy.ts` check, `requireAdmin()`, logout, hash script (US-12)
 - [ ] 6.2 Profile form: About, contact, tools, clients, portrait, resume (US-13)
 - [ ] 6.3 Projects CRUD with Stream upload, browser peaks, poster, stills, credits, captions (US-14)
 - [ ] 6.4 dnd-kit reorder and publish toggle (US-14)
@@ -87,7 +87,7 @@ Update the boxes after each task. Each task names the user story it serves, so c
 - [ ] 7.2 Accessibility pass against ARCHITECTURE.md §6 (US-10, US-11)
 - [ ] 7.3 `/impeccable audit` on the real build; target 18/20 (all)
 - [ ] 7.4 Performance check against the budget in ARCHITECTURE.md §5 (US-11)
-- [ ] 7.5 Vercel env vars, domain, Auth0 callbacks, Stream webhook, EmailJS template
+- [ ] 7.5 Vercel env vars (incl. `ADMIN_PASSWORD_HASH`, `SESSION_SECRET`), domain, Stream webhook, EmailJS template
 - [ ] 7.6 Replace every placeholder: clips, credits, email, socials, resume, reply time (all)
 
 ---

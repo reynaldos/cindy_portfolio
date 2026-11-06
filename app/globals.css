@@ -4,12 +4,51 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* RAZOR tokens from docs/DESIGN.md. Dark only; the site and the admin share them. */
+@theme {
+  --color-page: #060607;
+  --color-bay: #0e0e10;
+  --color-panel: #1a1a1e;
+  --color-track: #2a2a30;
+  --color-track-hi: #34343b;
+  --color-line: #3a3a42;
+  --color-monitor-fill: #232328;
+  --color-slate: #f3ebdd;
+  --color-paper: #f4f1ea;
+  --color-dim: #a9a59c;
+  --color-faint: #77746d;
+  --color-ink: #0e0e10;
+  --color-cut: #ff3b2f;
+  --color-cut-text: #ff5a4f;
+  --color-marker: #f5d90a;
+  --color-audio: #2ec4b6;
+  --color-audio-bg: #17403d;
+  --color-clip-short: #7bc67e;
+  --color-clip-com: #f28c38;
+  --color-clip-mv: #b48cf2;
+  --color-clip-trl: #5aa9f2;
+  --color-appbar: #1c1c1f;
+  --color-appbar-ink: #f2f2f2;
+
+  --font-display: var(--font-clash), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-general), -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, Menlo, monospace;
+
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 6px;
+
+  /* 24 fps: one frame is 41.67ms */
+  --ease-arrive: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-blade: cubic-bezier(0.6, 0, 0.9, 0.4);
+  --ease-cut: cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+/* shadcn/ui tokens mapped onto the RAZOR palette, so admin forms match the site */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-display);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -39,92 +78,65 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-lg: 3px;
+  --radius-xl: 6px;
+  --radius-2xl: 6px;
+  --radius-3xl: 6px;
+  --radius-4xl: 6px;
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
+  color-scheme: dark;
+  --background: var(--color-bay);
+  --foreground: var(--color-paper);
+  --card: var(--color-panel);
+  --card-foreground: var(--color-paper);
+  --popover: var(--color-panel);
+  --popover-foreground: var(--color-paper);
+  --primary: var(--color-cut);
+  --primary-foreground: var(--color-ink);
+  --secondary: var(--color-track);
+  --secondary-foreground: var(--color-paper);
+  --muted: var(--color-track);
+  --muted-foreground: var(--color-dim);
+  --accent: var(--color-track-hi);
+  --accent-foreground: var(--color-paper);
+  --destructive: var(--color-cut-text);
+  --border: var(--color-line);
+  --input: var(--color-track);
+  --ring: var(--color-cut);
+  --chart-1: var(--color-clip-short);
+  --chart-2: var(--color-clip-com);
+  --chart-3: var(--color-clip-mv);
+  --chart-4: var(--color-clip-trl);
+  --chart-5: var(--color-marker);
+  --radius: 3px;
+  --sidebar: var(--color-panel);
+  --sidebar-foreground: var(--color-paper);
+  --sidebar-primary: var(--color-cut);
+  --sidebar-primary-foreground: var(--color-ink);
+  --sidebar-accent: var(--color-track);
+  --sidebar-accent-foreground: var(--color-paper);
+  --sidebar-border: var(--color-line);
+  --sidebar-ring: var(--color-cut);
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --d-4f: 167ms;
+  --d-6f: 250ms;
+  --d-12f: 500ms;
+  --d-razor: 708ms;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    @apply bg-page font-sans;
+  }
   body {
     @apply bg-background text-foreground;
   }
-  html {
-    @apply font-sans;
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-cut;
   }
 }

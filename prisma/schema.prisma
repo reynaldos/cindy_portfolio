@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// One row, id = 1. About, contact, and the end-credits data.
+model Profile {
+  id            Int      @id @default(1)
+  name          String
+  brand         String
+  tagline       String
+  bio           String   @db.Text
+  quote         String?
+  location      String
+  studied       String?
+  tools         String[]
+  clients       String[]
+  portraitKey   String?
+  resumeKey     String?
+  contactEmail  String
+  replyTime     String?
+  instagramUrl  String?
+  vimeoUrl      String?
+  linkedinUrl   String?
+  reelProjectId String?
+  updatedAt     DateTime @updatedAt
+}
+
+// One row, id = 1. The Recent Work story; its five spots are projects with recentOrder 1–5.
+model RecentWork {
+  id         Int      @id @default(1)
+  title      String
+  copy       String   @db.Text
+  stampValue String?
+  stampText  String?
+  markers    Json
+  updatedAt  DateTime @updatedAt
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  slug      String    @unique
+  name      String
+  one       String
+  blurb     String?
+  sortOrder Int
+  projects  Project[]
+}
+
+model Project {
+  id            String         @id @default(cuid())
+  slug          String         @unique
+  title         String
+  subtitle      String?
+  client        String?
+  categoryId    String
+  category      Category       @relation(fields: [categoryId], references: [id])
+  year          Int?
+  role          String?
+  director      String?
+  productionCo  String?
+  agency        String?
+  deliverables  String?
+  description   String         @db.Text
+  credits       Json?
+  streamUid     String?
+  videoStatus   VideoStatus    @default(none)
+  durationSec   Float?
+  fps           Float?
+  width         Int?
+  height        Int?
+  peaks         Json?
+  captionsKey   String?
+  posterKey     String?
+  posterTimeSec Float          @default(1)
+  status        PubStatus      @default(draft)
+  sortOrder     Int            @default(0)
+  recentOrder   Int?           @unique
+  stills        ProjectStill[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([categoryId, status, sortOrder])
+}
+
+model ProjectStill {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  key       String
+  alt       String
+  sortOrder Int
+
+  @@index([projectId, sortOrder])
+}
+
+model ContactSubmission {
+  id          String      @id @default(cuid())
+  name        String
+  email       String
+  projectType String?
+  message     String      @db.Text
+  ipHash      String
+  emailSent   Boolean     @default(false)
+  status      InboxStatus @default(new)
+  createdAt   DateTime    @default(now())
+
+  @@index([status, createdAt])
+}
+
+// Admin login rate limit
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  ipHash    String
+  ok        Boolean
+  createdAt DateTime @default(now())
+
+  @@index([ipHash, createdAt])
+}
+
+enum VideoStatus {
+  none
+  processing
+  ready
+  error
+}
+
+enum PubStatus {
+  draft
+  published
+}
+
+enum InboxStatus {
+  new
+  read
+  archived
+}

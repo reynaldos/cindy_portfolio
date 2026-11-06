@@ -20,7 +20,7 @@ Prices and quotas are from memory and approximate. Check them before sign-up.
 | Database | **Neon Postgres + Prisma** | Small data, low traffic. |
 | Rendering | Cache Components: static shells, `'use cache'` reads with `cacheTag`, `updateTag` after admin saves | Pages come from the CDN; Cindy's edits show at once. |
 | Page transition | React `<ViewTransition>` with CSS for the razor cut | Route changes are transitions in Next 16, so no page clone is needed. |
-| Admin auth | **Auth0** (`@auth0/nextjs-auth0`) in `proxy.ts` + an email allowlist in every server action | One admin user. |
+| Admin auth | **One password**: a scrypt hash in an env var, a signed session cookie, `proxy.ts` + `requireAdmin()` in every server action | One admin user. No auth service, no new package (Node `crypto`). |
 | Contact email | **EmailJS** REST API, called from a server action | The private key stays on the server; the message is saved first. |
 | Spam | Honeypot + Cloudflare Turnstile + a per-IP rate limit | Free, no puzzle for real visitors. |
 | Reorder | dnd-kit in the admin | Your preferred tool. |
@@ -177,6 +177,15 @@ model ContactSubmission {
   @@index([status, createdAt])
 }
 
+model LoginAttempt {           // login rate limit
+  id        String   @id @default(cuid())
+  ipHash    String
+  ok        Boolean
+  createdAt DateTime @default(now())
+
+  @@index([ipHash, createdAt])
+}
+
 enum VideoStatus { none processing ready error }
 enum PubStatus   { draft published }
 enum InboxStatus { new read archived }
@@ -184,7 +193,7 @@ enum InboxStatus { new read archived }
 
 Notes:
 - A project has a detail page when it has stills or full credits.
-- No `User` table. Auth0 holds the identity; `ADMIN_EMAILS` is the allowlist.
+- No `User` table. The one admin password lives as a hash in `ADMIN_PASSWORD_HASH`.
 - Schema changes and migrations are yours to run.
 
 ---
@@ -215,7 +224,8 @@ app/
     about/page.tsx
     not-found.tsx              Media Offline
   admin/
-    layout.tsx                 requireAdmin(), admin nav
+    login/page.tsx             password form + Turnstile (outside the protected layout)
+    (panel)/layout.tsx         requireAdmin(), admin nav; the panel pages below sit in this group
     page.tsx                   inbox count, quick links
     profile/page.tsx           About, contact info, tools, clients
     recent-work/page.tsx       copy, stamp, markers, pick five spots
@@ -236,9 +246,9 @@ lib/
   actions/                     server actions
   stream.ts                    Stream API + thumbnail URL helpers
   r2.ts                        presigned upload URLs
-  auth.ts                      Auth0 client + requireAdmin()
+  auth.ts                      password check, session cookie sign/verify, requireAdmin()
   peaks.ts                     browser waveform peaks (admin)
-proxy.ts                       Auth0 for /admin and /auth
+proxy.ts                       session cookie check for /admin (except /admin/login)
 prisma/schema.prisma
 ```
 
@@ -310,8 +320,16 @@ The mockup scored 15/20 in the technical audit. These rules carry its lessons in
 
 ## 7. Admin panel
 
-- **Login:** Auth0 Universal Login. `proxy.ts` sends anyone without a session on `/admin/*` to login.
-- **Second check:** every admin server action calls `requireAdmin()`.
+- **Login:** one password, no username.
+  1. `/admin/login` has a password field and a Turnstile widget.
+  2. A server action verifies the Turnstile token, then checks the rate limit: refuse after 5 failed tries in 15 minutes from the same `ipHash` (`LoginAttempt`).
+  3. It hashes the input with `crypto.scrypt` and the salt from `ADMIN_PASSWORD_HASH`, then compares with `timingSafeEqual`.
+  4. On success it sets the cookie `cbc_admin`: a payload with an expiry 30 days out, signed with HMAC-SHA256 and `SESSION_SECRET`. The cookie is `httpOnly`, `secure`, `sameSite=lax`, `path=/admin`.
+  5. Logout is a server action that deletes the cookie.
+- **Protection:** `proxy.ts` checks the cookie signature and expiry on `/admin/*` (not `/admin/login`) and redirects to login. Every admin server action and the `(panel)` layout also call `requireAdmin()`, because server actions can be called directly.
+- **Password change:** run a small script that prints a new hash, set `ADMIN_PASSWORD_HASH` in Vercel, and redeploy.
+- **Log out everywhere:** change `SESSION_SECRET` and redeploy. Every cookie becomes invalid.
+- **Limits, accepted:** no email reset, no two-factor login, and Cindy cannot change the password herself.
 - **Look:** DESIGN.md "Admin Panel": tokens, Body and UI type, shadcn/ui forms, no editor costume.
 - **Screens:** Profile (About, contact, tools, clients), Recent Work (copy, stamp, markers, five spots), Projects (list, reorder, publish, create, edit, delete), Inbox.
 - **Uploads:** video → Stream direct upload (section 2). Portrait, poster, stills, captions, resume → R2 presigned PUT URL.
@@ -340,11 +358,13 @@ EmailJS free tier is about 200 emails a month (approximate). If Cindy outgrows i
 
 ## 9. Environment variables
 
+`.env.example` is the checked-in list. Each phase adds its keys there with a placeholder; copy it to `.env` locally. The Prisma CLI reads `.env` through `process.loadEnvFile()` in `prisma.config.ts`; Next.js reads it on its own.
+
 | Name | Used by |
 |---|---|
-| `DATABASE_URL`, `DIRECT_URL` | Prisma (Neon pooled / direct) |
-| `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, `AUTH0_CLIENT_SECRET`, `AUTH0_SECRET`, `APP_BASE_URL` | Auth0 |
-| `ADMIN_EMAILS` | `requireAdmin()` |
+| `DATABASE_URL`, `DATABASE_URL_UNPOOLED` | Prisma (Neon pooled for the app / direct for migrations); both set by the Vercel Neon integration |
+| `ADMIN_PASSWORD_HASH` | Admin login (`scrypt:<salt>:<hash>`, never the plain password) |
+| `SESSION_SECRET` | Signs the admin session cookie (32+ random bytes) |
 | `CF_ACCOUNT_ID`, `CF_STREAM_TOKEN`, `CF_STREAM_WEBHOOK_SECRET`, `NEXT_PUBLIC_STREAM_CUSTOMER_CODE` | Stream |
 | `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `NEXT_PUBLIC_MEDIA_URL` | R2 |
 | `EMAILJS_SERVICE_ID`, `EMAILJS_TEMPLATE_ID`, `EMAILJS_PUBLIC_KEY`, `EMAILJS_PRIVATE_KEY` | Contact |
@@ -357,7 +377,6 @@ EmailJS free tier is about 200 emails a month (approximate). If Cindy outgrows i
 | Package | For |
 |---|---|
 | `prisma`, `@prisma/client` | Database |
-| `@auth0/nextjs-auth0` | Admin login |
 | `zod` | Validation |
 | `hls.js` | HLS playback outside Safari |
 | `@dnd-kit/core`, `@dnd-kit/sortable` | Reorder |
@@ -378,8 +397,8 @@ EmailJS free tier is about 200 emails a month (approximate). If Cindy outgrows i
 
 ## 12. Open questions
 
-- Domain name (R2 custom domain, Auth0 callbacks, email).
+- Domain name (R2 custom domain, email).
 - Cindy's real contact email, social links, and reply time.
 - Real video files, posters, portrait, stills, and captions.
 - Confirmation of all draft copy in the mockup (directors, spot names, feedback notes, credits).
-- Who owns the Cloudflare, Auth0, Neon, and EmailJS accounts.
+- Who owns the Cloudflare, Neon, and EmailJS accounts.
