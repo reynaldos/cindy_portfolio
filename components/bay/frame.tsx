@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ViewTransition, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { Play, SkipBack, SkipForward, Volume2 } from "lucide-react";
+import { Pause, Play, SkipBack, SkipForward, Volume2 } from "lucide-react";
 import { bay } from "@/components/bay/bus";
 import { CATEGORY_COLOR, PAGES, SEQ, pageOf, tc } from "@/components/bay/const";
 import { Timeline, type Marker, type Track } from "@/components/bay/timeline";
+import type { MonitorState } from "@/components/monitor/monitor";
 import type { getCategories, getProfile, getRecentWork } from "@/lib/data";
 
 type Props = {
@@ -31,6 +32,12 @@ const stored = { get: (k: string) => { try { return localStorage.getItem(k) === 
 const storageSub = (cb: () => void) => { window.addEventListener("storage", cb); return () => window.removeEventListener("storage", cb); };
 const useStored = (k: string) => useSyncExternalStore(storageSub, () => stored.get(k), () => false);
 
+// the player's state, sent by the monitor as one window event
+const IDLE: MonitorState = { playing: false, muted: true, file: null, peaks: null, duration: 0 };
+let monitorState = IDLE;
+const stateSub = (cb: () => void) => { const h = (e: Event) => { monitorState = (e as CustomEvent<MonitorState>).detail; cb(); }; window.addEventListener("baystate", h); return () => window.removeEventListener("baystate", h); };
+const useMonitor = () => useSyncExternalStore(stateSub, () => monitorState, () => IDLE);
+
 export function BayFrame({ profile, categories, recent, children }: Props) {
   const pathname = usePathname();
   const page = pageOf(pathname);
@@ -46,6 +53,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
   const [cutting, setCutting] = useState(false);
   const [note, setNote] = useState("");
   const [date, time] = useClock().split("|");
+  const mon = useMonitor();
 
   const brand = profile?.brand ?? "Cuts By Cindy";
   const email = profile?.contactEmail ?? "";
@@ -159,6 +167,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
       data-tl-pin={tlPin || undefined}
       data-tl-open={tlOpen || undefined}
       data-cutting={cutting || undefined}
+      data-playing={mon.playing || undefined}
       onClickCapture={onNavClick}
     >
       <div className="mbar">
@@ -224,22 +233,22 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
 
       <div className="tlband">
         <div className="tlwrap">
-          <Timeline seq={seq} cap={cap} tracks={tracks} markers={markers} page={page} a1={pathname === "/about" ? "still frame · no audio" : ""} p={p} onSeek={seek} />
-          <aside className="meters" aria-label="Audio meters"><div className="ptab"><span className="on">Audio Meters</span></div><canvas /></aside>
+          <Timeline seq={seq} cap={cap} tracks={tracks} markers={markers} page={page} a1={pathname === "/about" ? "still frame · no audio" : mon.file ? (mon.peaks ? mon.file : `${mon.file} · no audio preview`) : ""} peaks={mon.peaks} p={p} onSeek={seek} />
+          <aside className="meters" aria-label="Audio meters"><div className="ptab"><span className="on">Audio Meters</span></div><canvas id="meter" /></aside>
         </div>
       </div>
 
       <section className="tlp" aria-label="Transport">
         <button type="button" className="tb" disabled={!hasClips} aria-label="Previous clip" onClick={() => bay("prev")}><SkipBack aria-hidden="true" /></button>
-        <button type="button" className="tb" aria-label="Play or pause" onClick={() => bay("toggle")}><Play aria-hidden="true" /></button>
+        <button type="button" className="tb" aria-label="Play or pause" onClick={() => bay("toggle")}>{mon.playing ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}</button>
         <button type="button" className="tb" disabled={!hasClips} aria-label="Next clip" onClick={() => bay("next")}><SkipForward aria-hidden="true" /></button>
-        <span className="tc"><span>{tc(p * SEQ)}</span><span className="nm">{projName}</span></span>
+        <span className="tc"><span>{tc(p * SEQ)}</span><span className="nm">{mon.file ?? projName}</span></span>
         <button type="button" className="hdl" aria-expanded={tlOpen} aria-label={`${tlOpen ? "Close" : "Open"} timeline`} onClick={() => setTlOpen((v) => !v)}><i />Tracks</button>
       </section>
 
       <footer className="status" aria-label="Sequence status">
         <span>{seq}</span><span>1920 × 1080 · 24 fps</span><span className="mid">60 s sequence</span>
-        <span className="mid ok">J back 5 s · K pause · L play · ← → clips</span>
+        <span className="mid ok">{mon.playing ? `Playing ${mon.file} · ${mon.muted ? "muted preview" : "sound on"}` : "J back 5 s · K pause · L play · ← → clips"}</span>
         <span className="r">LOS ANGELES {time}</span>
       </footer>
 

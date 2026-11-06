@@ -18,6 +18,15 @@ export async function getProfile() {
   return db.profile.findUnique({ where: { id: 1 } });
 }
 
+// the lander reel: whichever project the profile points at, published or not
+export async function getReel() {
+  "use cache";
+  cacheLife("max");
+  cacheTag(TAGS.profile, TAGS.projects);
+  const p = await db.profile.findUnique({ where: { id: 1 }, select: { reelProjectId: true } });
+  return p?.reelProjectId ? db.project.findUnique({ where: { id: p.reelProjectId } }) : null;
+}
+
 export async function getRecentWork() {
   "use cache";
   cacheLife("max");

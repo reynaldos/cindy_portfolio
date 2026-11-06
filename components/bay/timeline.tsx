@@ -16,6 +16,7 @@ type Props = {
   markers: Marker[];
   page: string | null;
   a1: string;
+  peaks: number[] | null;
   p: number;
   onSeek: (p: number) => void;
 };
@@ -29,7 +30,7 @@ const spread = (n: number, i: number) => {
 
 const ticks = Array.from({ length: SEQ + 1 }, (_, s) => s);
 
-export function Timeline({ seq, cap, tracks, markers, page, a1, p, onSeek }: Props) {
+export function Timeline({ seq, cap, tracks, markers, page, a1, peaks, p, onSeek }: Props) {
   const ruler = useRef<HTMLDivElement>(null);
   const scrubbing = useRef(false);
 
@@ -128,7 +129,12 @@ export function Timeline({ seq, cap, tracks, markers, page, a1, p, onSeek }: Pro
 
         <div className="th a1h"><span className="tn a">A1</span>Audio</div>
         <div className="lane a1">
-          <svg viewBox="0 0 360 32" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="16" x2="360" y2="16" stroke="var(--color-audio)" strokeWidth="1" strokeDasharray="2 3" opacity=".5" /></svg>
+          <svg viewBox="0 0 360 32" preserveAspectRatio="none" aria-hidden="true">
+            {peaks?.length
+              ? peaks.map((v, i) => { const w = 360 / peaks.length, h = Math.max(1.5, v * 30); return <rect key={i} x={(i * w).toFixed(2)} y={(16 - h / 2).toFixed(2)} width={(w * 0.7).toFixed(2)} height={h.toFixed(2)} fill="var(--color-audio)" />; })
+              : <line x1="0" y1="16" x2="360" y2="16" stroke="var(--color-audio)" strokeWidth="1" strokeDasharray="2 3" opacity=".5" />}
+            <rect id="wavePos" x="0" y="0" width="1" height="32" fill="var(--color-paper)" opacity=".9" />
+          </svg>
           <span className="tag">{a1}</span>
         </div>
 

@@ -7,6 +7,9 @@ export function generateStaticParams() {
   return Object.keys(CATEGORY_COLOR).map((category) => ({ category }));
 }
 
+// the razor cut reveals a finished page, so navigation waits for the data instead of flashing a shell
+export const instant = false;
+
 // Placeholder until Phase 4 builds the category page
 export default async function Category({ params }: PageProps<"/projects/[category]">) {
   const { category } = await params;

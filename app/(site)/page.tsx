@@ -1,10 +1,24 @@
-// Placeholder until Phase 4 builds the home page
-export default function Home() {
+import { Play } from "lucide-react";
+import { Monitor } from "@/components/monitor/monitor";
+import { PlayReel } from "@/components/monitor/play-reel";
+import { getProfile, getReel } from "@/lib/data";
+import { clipFromProject } from "@/lib/media";
+
+// Home. Phase 4 adds the inspector and end credits.
+export default async function Home() {
+  const [profile, reel] = await Promise.all([getProfile(), getReel()]);
   return (
-    <div className="gut py-4">
-      <h1 className="font-display text-5xl font-bold uppercase" tabIndex={-1} data-h1>Cuts By Cindy</h1>
-      <p className="font-sans text-dim mt-3">Video Editor / Sharing stories of culture and connection.</p>
-      <div style={{ height: "120vh" }} aria-hidden="true" />
+    <div className="grid">
+      <div className="main">
+        <Monitor clips={reel ? [clipFromProject(reel)] : []} mode="reel">
+          <div className="hero">
+            <h1 tabIndex={-1} data-h1>{profile?.brand ?? "Cuts By Cindy"}</h1>
+            <p>{profile?.tagline ?? "Video Editor."}</p>
+            {reel?.streamUid && <PlayReel><Play aria-hidden="true" />Play reel</PlayReel>}
+          </div>
+        </Monitor>
+        <div style={{ height: "60vh" }} aria-hidden="true" />
+      </div>
     </div>
   );
 }

@@ -149,6 +149,12 @@
   inherits: false;
   initial-value: 0%;
 }
+/* the frame around the stage does not animate; only the stage is cut */
+::view-transition-group(root),
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
 ::view-transition-image-pair(stage) {
   isolation: auto;
 }
@@ -172,8 +178,14 @@
   100% { --cut-d: 105%; }
 }
 @keyframes razor-new {
-  0%, 41% { opacity: 0.6; transform: scale(1.02); }
-  70%, 100% { opacity: 1; transform: none; }
+  0%, 41% { opacity: 0.6; }
+  70%, 100% { opacity: 1; }
+}
+/* the blade is a live layer above the old snapshot */
+::view-transition-group(blade),
+::view-transition-old(blade),
+::view-transition-new(blade) {
+  animation: none;
 }
 /* reduced motion: a 200ms crossfade instead */
 @media (prefers-reduced-motion: reduce) {
