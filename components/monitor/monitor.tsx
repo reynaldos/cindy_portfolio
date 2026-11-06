@@ -6,6 +6,7 @@ import { Maximize, Pause, Play, SkipBack, SkipForward, Volume2, VolumeX } from "
 import type Hls from "hls.js";
 import { onBay } from "@/components/bay/bus";
 import { tc } from "@/components/bay/const";
+import { emitMonitor } from "@/components/monitor/state";
 import type { Clip } from "@/lib/media";
 
 type Props = {
@@ -13,15 +14,12 @@ type Props = {
   index?: number;
   mode: "reel" | "clips";
   sticky?: boolean;
+  compact?: boolean;
+  still?: { src: string | null; alt: string; file: string; fmt?: string };
   children?: React.ReactNode;
 };
 
-export type MonitorState = { playing: boolean; muted: boolean; file: string | null; peaks: number[] | null; duration: number };
-
-// the frame and the timeline read the player state from this event
-const emit = (s: MonitorState) => window.dispatchEvent(new CustomEvent("baystate", { detail: s }));
-
-export function Monitor({ clips, index = 0, mode, sticky, children }: Props) {
+export function Monitor({ clips, index = 0, mode, sticky, compact, still, children }: Props) {
   const video = useRef<HTMLVideoElement>(null);
   const hls = useRef<Hls | null>(null);
   const audio = useRef<{ ctx: AudioContext; an: AnalyserNode[] } | null>(null);
@@ -35,8 +33,8 @@ export function Monitor({ clips, index = 0, mode, sticky, children }: Props) {
   const fps = clip?.fps ?? 24;
 
   useEffect(() => {
-    emit({ playing, muted, file: clip?.file ?? null, peaks: clip?.peaks ?? null, duration: dur || clip?.durationSec || 0 });
-  }, [playing, muted, clip, dur]);
+    emitMonitor({ playing, muted, file: clip?.file ?? null, peaks: clip?.peaks ?? null, duration: dur || clip?.durationSec || 0, index: idx });
+  }, [playing, muted, clip, dur, idx]);
 
   // the stream attaches on the first play, never before
   const attach = useCallback(async (v: HTMLVideoElement, src: string) => {
@@ -89,7 +87,7 @@ export function Monitor({ clips, index = 0, mode, sticky, children }: Props) {
     else if (a === "back" && v) v.currentTime = Math.max(0, v.currentTime - 5);
     else if (a === "mute" && v) { v.muted = !v.muted; setMuted(v.muted); if (!v.muted) ensureAudio(); }
     else if (mode === "clips" && (a === "prev" || a === "next")) setIdx((i) => Math.max(0, Math.min(clips.length - 1, i + (a === "next" ? 1 : -1))));
-    else if (mode === "clips" && a === "select" && typeof d === "number") setIdx(Math.max(0, Math.min(clips.length - 1, d)));
+    else if (a === "select" && typeof d === "number") setIdx(Math.max(0, Math.min(clips.length - 1, d)));
   }), [play, mode, clips.length]);
 
   // a clip change keeps the play state; a paused monitor just swaps the poster
@@ -119,26 +117,38 @@ export function Monitor({ clips, index = 0, mode, sticky, children }: Props) {
 
   useEffect(() => () => hls.current?.destroy(), []);
 
-  const onTime = () => {
-    const v = video.current!;
+  // timeupdate can arrive while the old page unmounts, so read the element from the event, not the ref
+  const onTime = (v: HTMLVideoElement) => {
     setT(v.currentTime);
     const d = v.duration || dur;
     document.getElementById("wavePos")?.setAttribute("x", d ? ((v.currentTime / d) * 360).toFixed(1) : "0");
   };
+
+  // a still frame: About's portrait. No player, no transport.
+  if (still) return (
+    <div className="mon-wrap gut"><div className="mon-box">
+      <div className="ptab"><span className="on">Program: {still.file}</span><span className="r">{still.fmt ?? ""}</span></div>
+      <div className="monitor">
+        {still.src ? <Image className="poster" src={still.src} alt={still.alt} fill sizes="(min-width: 1024px) 60vw, 100vw" priority /> : <div className="ph"><span className="lbl">{still.alt}</span></div>}
+        <i className="sm a" /><i className="sm b" /><i className="sm c" /><i className="sm d" />
+        <div className="burn"><span>{still.file}</span><span><span className="mt">SRC </span>00:00:00:01</span></div>
+      </div>
+    </div></div>
+  );
 
   const cur = tc(t, fps), tot = tc(dur, fps);
   const fmt = clip?.width ? `${clip.width} × ${clip.height} · ${Math.round((clip.fps ?? 24) * 100) / 100} fps` : "";
   const canPlay = !!clip?.src;
 
   return (
-    <div className={`mon-wrap gut ${sticky ? "sticky" : ""}`}>
+    <div className={`mon-wrap gut ${sticky ? "sticky" : ""} ${compact ? "fit" : ""}`}>
       <div className="mon-box">
-        <div className="ptab"><span className="on">Program: {clip?.file ?? "CBC_REEL"}</span><span className="r">{fmt}</span></div>
+        <div className="ptab"><span className="on">Program: {clip?.file ?? "—"}</span><span className="r">{fmt}</span></div>
         <div className="monitor" data-status={status}>
-          {clip?.poster ? <Image className="poster" src={clip.poster} alt="" fill sizes="(min-width: 1024px) 60vw, 100vw" priority={mode === "reel"} /> : !canPlay && <div className="ph"><span className="lbl">{clip ? "Video coming soon" : "No reel yet"}</span></div>}
+          {clip?.poster ? <Image className="poster" src={clip.poster} alt="" fill sizes="(min-width: 1024px) 60vw, 100vw" priority={mode === "reel"} /> : !canPlay && <div className="ph"><span className="lbl">Video coming soon</span></div>}
           <video ref={video} playsInline preload="none" muted crossOrigin="anonymous" aria-label="Program monitor" poster={clip?.poster ?? undefined}
             onPlay={() => { setPlaying(true); setStatus("idle"); }} onPause={() => setPlaying(false)} onEnded={() => setPlaying(false)}
-            onLoadedMetadata={(e) => setDur(e.currentTarget.duration)} onTimeUpdate={onTime} onError={() => setStatus("error")} onVolumeChange={(e) => setMuted(e.currentTarget.muted)}>
+            onLoadedMetadata={(e) => setDur(e.currentTarget.duration)} onTimeUpdate={(e) => onTime(e.currentTarget)} onError={() => setStatus("error")} onVolumeChange={(e) => setMuted(e.currentTarget.muted)}>
             {clip?.captions && <track kind="captions" src={clip.captions} srcLang="en" label="English" default />}
           </video>
           <div className="offline"><b>MEDIA OFFLINE</b><span>{clip?.file ?? "clip"} did not load</span></div>

@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { bay } from "@/components/bay/bus";
+import { fitNote } from "@/components/bay/note";
 import { PAGES, SEQ, tc } from "@/components/bay/const";
 
-export type Clip = { label: string; href?: string; color?: string; index?: number; current?: boolean };
+export type Clip = { label: string; href?: string; color?: string; index?: number; current?: boolean; strip?: string[] };
 export type Track = { name: string; clips: Clip[] };
 export type Marker = { label: string; note: string; at: number };
 
@@ -48,17 +49,6 @@ export function Timeline({ seq, cap, tracks, markers, page, a1, peaks, p, onSeek
     document.addEventListener("keydown", onKey);
     return () => { document.removeEventListener("click", onClick); document.removeEventListener("keydown", onKey); };
   }, []);
-
-  // a note near an edge moves sideways to stay 8px inside the app frame
-  const fitNote = (m: HTMLElement) => {
-    const n = m.querySelector<HTMLElement>(".note"), app = m.closest<HTMLElement>(".app");
-    if (!n || !app) return;
-    n.style.setProperty("--nx", "0px");
-    const r = n.getBoundingClientRect(), a = app.getBoundingClientRect();
-    if (!r.width) return;
-    const dx = r.left < a.left + 8 ? a.left + 8 - r.left : r.right > a.right - 8 ? a.right - 8 - r.right : 0;
-    n.style.setProperty("--nx", `${dx}px`);
-  };
 
   const n = tracks.length;
   return (
@@ -109,7 +99,9 @@ export function Timeline({ seq, cap, tracks, markers, page, a1, peaks, p, onSeek
             <div key={`l${t.name}`} className={`lane${x}`}>
               {markers.map((m) => <i key={m.label} className="mguide" style={{ left: `${m.at * 100}%` }} />)}
               {t.clips.map((c, j) => {
-                const style = { ...spread(t.clips.length, j), "--c": c.color } as React.CSSProperties;
+                // six Stream frames laid side by side make the film strip
+                const film = c.strip?.length ? { backgroundImage: c.strip.map((u) => `url(${u})`).join(","), backgroundPosition: c.strip.map((_, k) => `${(k / (c.strip!.length - 1)) * 100}% 0`).join(","), backgroundSize: `${100 / c.strip.length}% 100%`, backgroundRepeat: "no-repeat" } : {};
+                const style = { ...spread(t.clips.length, j), ...film, "--c": c.color } as unknown as React.CSSProperties;
                 const cls = `clip film ${c.current ? "sel" : ""}`;
                 if (c.href) return <Link key={j} href={c.href} className={cls} style={style} title={c.label}><span>{c.label}</span></Link>;
                 if (c.index !== undefined) return <button key={j} type="button" className={cls} style={style} title={c.label} onClick={() => bay("select", c.index)}><span>{c.label}</span></button>;

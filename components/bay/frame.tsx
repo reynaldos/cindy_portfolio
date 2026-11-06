@@ -7,8 +7,10 @@ import { Pause, Play, SkipBack, SkipForward, Volume2 } from "lucide-react";
 import { bay } from "@/components/bay/bus";
 import { CATEGORY_COLOR, PAGES, SEQ, pageOf, tc } from "@/components/bay/const";
 import { Timeline, type Marker, type Track } from "@/components/bay/timeline";
-import type { MonitorState } from "@/components/monitor/monitor";
+import { useClock } from "@/components/bay/clock";
+import { useMonitor } from "@/components/monitor/state";
 import type { getCategories, getProfile, getRecentWork } from "@/lib/data";
+import { stripUrls } from "@/lib/media";
 
 type Props = {
   profile: Awaited<ReturnType<typeof getProfile>>;
@@ -19,24 +21,13 @@ type Props = {
 
 type MenuItem = [label: string, act: string, key?: string, pressed?: boolean] | null;
 
-const laTime = () => new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/Los_Angeles" }).format(new Date());
-const laDate = () => new Intl.DateTimeFormat("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "America/Los_Angeles" }).format(new Date());
 const reduced = () => document.documentElement.classList.contains("rm") || matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-// the LA clock, read every 15 s; the server renders the placeholder
-const clockSub = (cb: () => void) => { const id = setInterval(cb, 15000); return () => clearInterval(id); };
-const useClock = () => useSyncExternalStore(clockSub, () => `${laDate()}|${laTime()}`, () => "|--:--");
 
 // one localStorage flag, shared through a storage event so the server snapshot stays false
 const stored = { get: (k: string) => { try { return localStorage.getItem(k) === "1"; } catch { return false; } }, set: (k: string, v: boolean) => { try { localStorage.setItem(k, v ? "1" : "0"); } catch {} window.dispatchEvent(new Event("storage")); } };
 const storageSub = (cb: () => void) => { window.addEventListener("storage", cb); return () => window.removeEventListener("storage", cb); };
 const useStored = (k: string) => useSyncExternalStore(storageSub, () => stored.get(k), () => false);
 
-// the player's state, sent by the monitor as one window event
-const IDLE: MonitorState = { playing: false, muted: true, file: null, peaks: null, duration: 0 };
-let monitorState = IDLE;
-const stateSub = (cb: () => void) => { const h = (e: Event) => { monitorState = (e as CustomEvent<MonitorState>).detail; cb(); }; window.addEventListener("baystate", h); return () => window.removeEventListener("baystate", h); };
-const useMonitor = () => useSyncExternalStore(stateSub, () => monitorState, () => IDLE);
 
 export function BayFrame({ profile, categories, recent, children }: Props) {
   const pathname = usePathname();
@@ -52,7 +43,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
   const [p, setP] = useState(0);
   const [cutting, setCutting] = useState(false);
   const [note, setNote] = useState("");
-  const [date, time] = useClock().split("|");
+  const [date, time] = useClock();
   const mon = useMonitor();
 
   const brand = profile?.brand ?? "Cuts By Cindy";
@@ -148,9 +139,10 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
   // what the context tracks show depends on the page
   const tracks: Track[] = (() => {
     if (pathname === "/") return [{ name: "Reel", clips: [{ label: "Showreel", index: 0, color: "var(--color-line)" }] }];
-    if (pathname === "/projects") return categories.map((c) => ({ name: c.name, clips: c.projects.map((pr) => ({ label: pr.subtitle ?? pr.title, href: `/projects/${c.slug}`, color: CATEGORY_COLOR[c.slug] })) }));
-    if (cat) return [{ name: cat.name, clips: cat.projects.map((pr, i) => ({ label: pr.subtitle ?? pr.title, index: i, color: CATEGORY_COLOR[cat.slug] })) }];
-    if (pathname === "/recent-work" && recent) return [{ name: recent.title, clips: recent.spots.map((pr, i) => ({ label: pr.subtitle ?? pr.title, index: i, color: CATEGORY_COLOR[pr.category.slug] })) }];
+    const strip = (pr: { streamUid: string | null; durationSec: number | null }) => (pr.streamUid && pr.durationSec ? stripUrls(pr.streamUid, pr.durationSec) : undefined);
+    if (pathname === "/projects") return categories.map((c) => ({ name: c.name, clips: c.projects.map((pr) => ({ label: pr.subtitle ?? pr.title, href: `/projects/${c.slug}`, color: CATEGORY_COLOR[c.slug], strip: strip(pr) })) }));
+    if (cat) return [{ name: cat.name, clips: cat.projects.map((pr, i) => ({ label: pr.subtitle ?? pr.title, index: i, current: i === mon.index, color: CATEGORY_COLOR[cat.slug], strip: strip(pr) })) }];
+    if (pathname === "/recent-work" && recent) return [{ name: recent.title, clips: recent.spots.map((pr, i) => ({ label: pr.subtitle ?? pr.title, index: i, current: i === mon.index, color: CATEGORY_COLOR[pr.category.slug], strip: strip(pr) })) }];
     if (pathname === "/about") return [{ name: "Tools", clips: (profile?.tools ?? []).map((t) => ({ label: t })) }];
     return [{ name: "Offline", clips: [{ label: "MEDIA OFFLINE" }] }];
   })();

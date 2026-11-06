@@ -57,7 +57,7 @@ export async function getCategoryProjects(slug: string) {
   cacheTag(TAGS.projects, TAGS.category(slug));
   return db.category.findUnique({
     where: { slug },
-    include: { projects: { where: { status: "published" }, orderBy: { sortOrder: "asc" } } },
+    include: { projects: { where: { status: "published" }, orderBy: { sortOrder: "asc" }, include: { stills: { select: { id: true } } } } },
   });
 }
 

@@ -1,9 +1,25 @@
-// Placeholder until Phase 4 builds the projects page
-export default function Projects() {
+import { Monitor } from "@/components/monitor/monitor";
+import { Credits } from "@/components/pages/credits";
+import { TrackInspector, Tracks } from "@/components/pages/tracks";
+import { getCategories, getProfile } from "@/lib/data";
+import { clipFromProject, type Clip } from "@/lib/media";
+
+export default async function Projects() {
+  const [categories, profile] = await Promise.all([getCategories(), getProfile()]);
+  const total = categories.reduce((n, c) => n + c.projects.length, 0);
+  // the monitor previews each track's first clip; an empty track shows its name as a placeholder
+  const clips: Clip[] = categories.map((c) => c.projects[0] ? clipFromProject(c.projects[0]) : { id: c.slug, title: c.name, file: `${c.slug.toUpperCase().replace(/-/g, "_")}.mp4`, src: null, poster: null, durationSec: null, fps: null, width: null, height: null, peaks: null, captions: null });
   return (
-    <div className="gut py-4">
-      <h1 className="font-display text-5xl font-semibold" tabIndex={-1} data-h1>Four tracks. Pick one.</h1>
-      <div style={{ height: "120vh" }} aria-hidden="true" />
-    </div>
+    <>
+      <div className="page">
+        <div className="main">
+          <div className="head gut"><div className="kick">Projects · {total} cuts</div><h1 className="title" tabIndex={-1} data-h1>Four tracks. Pick one.</h1></div>
+          <Monitor clips={clips} mode="reel" compact />
+          <Tracks categories={categories} />
+        </div>
+        <TrackInspector categories={categories} />
+      </div>
+      <Credits profile={profile} />
+    </>
   );
 }
