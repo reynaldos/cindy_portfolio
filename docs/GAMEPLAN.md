@@ -80,8 +80,8 @@ Update the boxes after each task. Each task names the user story it serves, so c
 
 ## Phase 6 — Admin
 - [x] 6.1 Password login: `/admin/login` with optional Turnstile and a rate limit, signed session cookie, `proxy.ts` check, `requireAdmin()` under Suspense in the panel layout, logout, `scripts/hash-password.ts` (US-12)
-- [ ] 6.2 Profile form: About, contact, tools, clients, portrait, resume (US-13)
-- [ ] 6.3 Projects CRUD with Stream upload, browser peaks, poster, stills, credits, captions (US-14)
+- [x] 6.2 Profile form: About, contact, tools, clients, reel pick, portrait and resume straight to R2 via presigned PUT (`lib/r2.ts`, aws4fetch); needs `R2_*` keys and bucket CORS (US-13)
+- [x] 6.3 Projects CRUD: list by category, create, edit, delete (drops Stream video and R2 files); tus upload straight to Stream, peaks scanned in the browser (files up to 300 MB), poster frame or custom poster, stills with alt and arrows, credits as "Role: Name" lines, captions .vtt, draft/published (US-14)
 - [ ] 6.4 dnd-kit reorder and publish toggle (US-14)
 - [ ] 6.5 Recent Work editor: copy, stamp, markers, five spots (US-15)
 - [ ] 6.6 Inbox: list, mark read, archive, reply link (US-16)

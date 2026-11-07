@@ -5,7 +5,7 @@ import { z } from "zod";
 import { requireAdmin } from "@/lib/auth";
 import { TAGS } from "@/lib/data";
 import { db } from "@/lib/db";
-import { deleteObject, presignPut } from "@/lib/r2";
+import { deleteObject } from "@/lib/r2";
 
 export type SaveResult = { ok: true } | { error: string } | undefined;
 
@@ -42,16 +42,4 @@ export async function saveProfile(_: SaveResult, form: FormData): Promise<SaveRe
   for (const k of [old?.portraitKey, old?.resumeKey]) if (k && ![parsed.data.portraitKey, parsed.data.resumeKey].includes(k)) await deleteObject(k).catch(() => {});
   updateTag(TAGS.profile);
   return { ok: true };
-}
-
-const TYPES = { portrait: ["image/jpeg", "image/png", "image/webp"], resume: ["application/pdf"] };
-const MAX = 10 * 1024 * 1024;
-
-// the browser PUTs the file to the returned URL, then submits the key with the form
-export async function uploadUrl(kind: keyof typeof TYPES, name: string, type: string, size: number): Promise<{ url: string; key: string } | { error: string }> {
-  await requireAdmin();
-  if (!TYPES[kind].includes(type)) return { error: `Use ${TYPES[kind].map((t) => t.split("/")[1]).join(", ")}.` };
-  if (size > MAX) return { error: "The file is larger than 10 MB." };
-  const key = `profile/${kind}-${Date.now()}.${name.split(".").pop()?.toLowerCase() ?? "bin"}`;
-  return { url: await presignPut(key), key };
 }
