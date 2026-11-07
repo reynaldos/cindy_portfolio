@@ -79,7 +79,7 @@ Update the boxes after each task. Each task names the user story it serves, so c
 - EmailJS and Turnstile keys still to add to `.env` (see `.env.example`); until then a real send saves the row and shows the failure state with the email.
 
 ## Phase 6 — Admin
-- [ ] 6.1 Password login: `/admin/login` with Turnstile and rate limit, signed session cookie, `proxy.ts` check, `requireAdmin()`, logout, hash script (US-12)
+- [x] 6.1 Password login: `/admin/login` with optional Turnstile and a rate limit, signed session cookie, `proxy.ts` check, `requireAdmin()` under Suspense in the panel layout, logout, `scripts/hash-password.ts` (US-12)
 - [ ] 6.2 Profile form: About, contact, tools, clients, portrait, resume (US-13)
 - [ ] 6.3 Projects CRUD with Stream upload, browser peaks, poster, stills, credits, captions (US-14)
 - [ ] 6.4 dnd-kit reorder and publish toggle (US-14)
