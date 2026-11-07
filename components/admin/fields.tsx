@@ -30,6 +30,9 @@ export function Area({ name, label: l, v, rows }: { name: string; label: string;
 
 // Radix refuses an empty item value, so "" rides under a stand-in and goes back to "" in the hidden input
 const NONE = "__none";
+export const selectTrigger = `${field} rounded-xs justify-between hover:bg-track focus-visible:ring-0 focus-visible:border-cut data-[size=default]:h-12 [&_svg]:text-dim`;
+export const selectContent = "rounded-xs bg-panel text-paper ring-line font-mono text-sm";
+export const selectItem = "rounded-xs focus:bg-track focus:text-paper";
 export function Select({ name, label: l, v, options, onChange }: { name: string; label: string; v: Values; options: [string, string][]; onChange?: (value: string) => void }) {
   const [value, setValue] = useState(v[name] || NONE);
   return (
@@ -37,9 +40,9 @@ export function Select({ name, label: l, v, options, onChange }: { name: string;
       {l}
       <input type="hidden" name={name} value={value === NONE ? "" : value} />
       <Root value={value} onValueChange={(val) => { setValue(val); onChange?.(val === NONE ? "" : val); }}>
-        <SelectTrigger className={`${field} rounded-xs justify-between hover:bg-track focus-visible:ring-0 focus-visible:border-cut data-[size=default]:h-12 [&_svg]:text-dim`}><SelectValue /></SelectTrigger>
-        <SelectContent position="popper" className="rounded-xs bg-panel text-paper ring-line font-mono text-sm">
-          {options.map(([val, text]) => <SelectItem key={val} value={val || NONE} className="rounded-xs focus:bg-track focus:text-paper">{text}</SelectItem>)}
+        <SelectTrigger className={selectTrigger}><SelectValue /></SelectTrigger>
+        <SelectContent position="popper" className={selectContent}>
+          {options.map(([val, text]) => <SelectItem key={val} value={val || NONE} className={selectItem}>{text}</SelectItem>)}
         </SelectContent>
       </Root>
     </label>
