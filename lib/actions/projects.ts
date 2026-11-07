@@ -115,3 +115,19 @@ export async function removeVideo(id: string) {
   if (!/^https?:/.test(p.streamUid)) await deleteVideo(p.streamUid).catch(() => {});
   await refresh(id);
 }
+
+// the whole order of one category, as the dialog lays it out left to right
+export async function setOrder(categoryId: string, ids: string[]): Promise<{ ok: true } | { error: string }> {
+  await requireAdmin();
+  const own = await db.project.findMany({ where: { categoryId }, select: { id: true } });
+  if (own.length !== ids.length || !own.every((p) => ids.includes(p.id))) return { error: "The list changed. Reload and try again." };
+  await db.$transaction(ids.map((id, i) => db.project.update({ where: { id }, data: { sortOrder: i } })));
+  await refresh(ids[0]);
+  return { ok: true };
+}
+
+export async function setStatus(id: string, status: "draft" | "published") {
+  await requireAdmin();
+  await db.project.update({ where: { id }, data: { status } });
+  await refresh(id);
+}

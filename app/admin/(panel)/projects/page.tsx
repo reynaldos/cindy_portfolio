@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Select, field, kick } from "@/components/admin/fields";
-import { createProject } from "@/lib/actions/projects";
+import { OrderDialog } from "@/components/admin/order-dialog";
+import { createProject, setStatus } from "@/lib/actions/projects";
 import { db } from "@/lib/db";
 
 export const instant = false;
@@ -19,18 +20,23 @@ export default async function AdminProjects() {
       </form>
       {cats.map((c) => (
         <section key={c.id} className="mb-6 max-w-2xl">
-          <h2 className={`${kick} mb-2`}>{c.name} · {c.projects.length}</h2>
+          <div className="flex items-center justify-between mb-2">
+            <h2 className={kick}>{c.name} · {c.projects.length}</h2>
+            <OrderDialog categoryId={c.id} categoryName={c.name} slug={c.slug} items={c.projects.map((p) => ({ id: p.id, title: p.title, live: p.status === "published" }))} />
+          </div>
           {c.projects.length === 0 && <p className="font-mono text-xs text-dim">None yet.</p>}
           <ul className="grid gap-px bg-line border border-line">
-            {c.projects.map((p) => (
-              <li key={p.id}>
-                <Link href={`/admin/projects/${p.id}`} className="flex items-center gap-3 bg-panel hover:bg-track px-4 py-3">
+            {c.projects.map((p) => { const live = p.status === "published"; return (
+              <li key={p.id} className="flex items-center gap-2 bg-panel px-2 py-1">
+                <Link href={`/admin/projects/${p.id}`} className="flex items-center gap-3 flex-1 min-w-0 hover:bg-track px-2 py-2 rounded-xs">
                   <span className="font-sans text-sm flex-1 truncate">{p.title}{p.subtitle && <span className="text-dim"> · {p.subtitle}</span>}</span>
-                  <span className={`font-mono text-[11px] uppercase ${p.status === "published" ? "text-paper" : "text-dim"}`}>{p.status}</span>
                   <span className={`font-mono text-[11px] uppercase ${p.videoStatus === "error" ? "text-cut-text" : "text-dim"}`}>{VIDEO[p.videoStatus]}</span>
                 </Link>
+                <form action={setStatus.bind(null, p.id, live ? "draft" : "published")}>
+                  <button type="submit" aria-pressed={live} title={live ? "Unpublish" : "Publish"} className={`font-mono text-[11px] uppercase h-9 px-2 rounded-xs border ${live ? "border-paper text-paper" : "border-line text-dim hover:text-paper"}`}>{live ? "Live" : "Draft"}</button>
+                </form>
               </li>
-            ))}
+            ); })}
           </ul>
         </section>
       ))}
