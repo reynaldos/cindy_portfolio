@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
 
+export const instant = false;
+
 // Overview: what needs attention, and where everything is
 export default async function AdminHome() {
   const [inbox, drafts, published, ready] = await Promise.all([
