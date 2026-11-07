@@ -2,16 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import { ViewTransition, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Pause, Play, SkipBack, SkipForward, Volume2 } from "lucide-react";
 import { bay } from "@/components/bay/bus";
 import { CATEGORY_COLOR, PAGES, SEQ, pageOf, tc } from "@/components/bay/const";
 import { Timeline, type Marker, type Track } from "@/components/bay/timeline";
+import { Brackets } from "@/components/bay/brackets";
 import { ContactDialog } from "@/components/contact/contact-dialog";
 import { useClock } from "@/components/bay/clock";
 import { useMonitor } from "@/components/monitor/state";
 import type { getCategories, getProfile, getRecentWork } from "@/lib/data";
-import { stripUrls } from "@/lib/media";
+import { clipFromProject, stripUrls } from "@/lib/media";
 
 type Props = {
   profile: Awaited<ReturnType<typeof getProfile>>;
@@ -25,9 +27,9 @@ type MenuItem = [label: string, act: string, key?: string, pressed?: boolean] | 
 const reduced = () => document.documentElement.classList.contains("rm") || matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // one localStorage flag, shared through a storage event so the server snapshot stays false
-const stored = { get: (k: string) => { try { return localStorage.getItem(k) === "1"; } catch { return false; } }, set: (k: string, v: boolean) => { try { localStorage.setItem(k, v ? "1" : "0"); } catch {} window.dispatchEvent(new Event("storage")); } };
+const stored = { get: (k: string, def = false) => { try { const v = localStorage.getItem(k); return v === null ? def : v === "1"; } catch { return def; } }, set: (k: string, v: boolean) => { try { localStorage.setItem(k, v ? "1" : "0"); } catch {} window.dispatchEvent(new Event("storage")); } };
 const storageSub = (cb: () => void) => { window.addEventListener("storage", cb); return () => window.removeEventListener("storage", cb); };
-const useStored = (k: string) => useSyncExternalStore(storageSub, () => stored.get(k), () => false);
+const useStored = (k: string, def = false) => useSyncExternalStore(storageSub, () => stored.get(k, def), () => def);
 
 
 export function BayFrame({ profile, categories, recent, children }: Props) {
@@ -37,9 +39,12 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
   const stage = useRef<HTMLElement>(null);
   const sheet = useRef<HTMLDialogElement>(null);
   const binOpen = useStored("cbc-bin-open");
+  const binIcons = useStored("cbc-bin-icons");
+  const about = useRef<HTMLDialogElement>(null);
   const [tlPin, setTlPin] = useState(false);
   const [tlOpen, setTlOpen] = useState(false);
   const [rm, setRm] = useState(false);
+  const inspOn = useStored("cbc-insp", true);
   const [menu, setMenu] = useState<number | null>(null);
   const [p, setP] = useState(0);
   const [cutting, setCutting] = useState(false);
@@ -120,18 +125,29 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
   const menus: [string, MenuItem[]][] = [
     ["File", [["New inquiry…", "contact", "⌘N"], null, ["Copy email address", "copy"], ...(profile?.instagramUrl ? [["Instagram", `link:${profile.instagramUrl}`] as MenuItem] : []), ...(profile?.vimeoUrl ? [["Vimeo", `link:${profile.vimeoUrl}`] as MenuItem] : []), null, ["Close menu", "close", "esc"]]],
     ["Clip", [["Play / Pause", "toggle", "L"], ["Pause", "pause", "K"], ["Back 5 seconds", "back", "J"], ["Play / Pause", "toggle", "Space"], null, ["Previous clip", "prev", "←"], ["Next clip", "next", "→"], ["Watch full cut (sound)", "watch"], ["Mute / Unmute", "mute", "M"], null, ["Go to start", "home", "Home"], ["Go to end credits", "end", "End"]]],
-    ["Window", [["Project bin", "bin", "", binOpen], ["Timeline (keep open)", "tlpin", "", tlPin], null, ["Reduce motion", "rm", "", rm]]],
-    ["Help", [["Keyboard shortcuts", "keys", "?"], ["About Cindy", "link:/about"]]],
+    ["Window", [["Project bin", "bin", "", binOpen], ["Inspector", "insp", "", inspOn], ["Timeline (keep open)", "tlpin", "", tlPin], null, ["Reduce motion", "rm", "", rm]]],
+    ["Help", [["Keyboard shortcuts", "keys", "?"], ["About Cindy", "link:/about"], null, ["Who made this", "made"]]],
   ];
+
+  // an open menu closes on a click, a tap, or a focus move anywhere outside the menu bar
+  useEffect(() => {
+    if (menu === null) return;
+    const outside = (e: Event) => { if (!(e.target as Element).closest?.(".menus")) setMenu(null); };
+    document.addEventListener("pointerdown", outside, true);
+    document.addEventListener("focusin", outside, true);
+    return () => { document.removeEventListener("pointerdown", outside, true); document.removeEventListener("focusin", outside, true); };
+  }, [menu]);
 
   const act = (a: string) => {
     setMenu(null);
     const st = stage.current!;
     if (a === "copy") copyEmail();
     else if (a === "bin") toggleBin();
+    else if (a === "insp") stored.set("cbc-insp", !inspOn);
     else if (a === "tlpin") setTlPin((v) => !v);
     else if (a === "rm") setRm((v) => !v);
     else if (a === "keys") sheet.current?.showModal();
+    else if (a === "made") about.current?.showModal();
     else if (a === "home") st.scrollTo({ top: 0, behavior: reduced() ? "auto" : "smooth" });
     else if (a === "end") st.scrollTo({ top: st.scrollHeight, behavior: reduced() ? "auto" : "smooth" });
     else if (a !== "close") bay(a as Parameters<typeof bay>[0]);
@@ -157,6 +173,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
       ref={app}
       className="app"
       data-bin-open={binOpen || undefined}
+      data-hide-insp={!inspOn || undefined}
       data-tl-pin={tlPin || undefined}
       data-tl-open={tlOpen || undefined}
       data-cutting={cutting || undefined}
@@ -199,20 +216,34 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
       <div className="work">
         <aside className="bin" aria-label="Project bin">
           <div className="ptab">
-            <span className="on">Project: {brand}</span>
+            <span className="on" title={`Project: ${brand}`}>Project</span>
+            <span className="vt"><button type="button" aria-pressed={!binIcons} onClick={() => stored.set("cbc-bin-icons", false)}>List</button><button type="button" aria-pressed={binIcons} onClick={() => stored.set("cbc-bin-icons", true)}>Icons</button></span>
             <button type="button" className="binx" aria-expanded={binOpen} aria-label="Project bin" title="Show or hide the project bin" onClick={toggleBin}>
               <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>
             </button>
           </div>
           <div className="bin-list">
-            <Link className="bi" href="/" aria-current={pathname === "/" ? "page" : undefined} title="Reel"><i className="ic clip" />Reel</Link>
-            <Link className="bi" href="/projects" aria-current={pathname === "/projects" ? "page" : undefined} title="Projects"><i className="ic bin" />Projects<span className="bc">( {String(categories.reduce((n, c) => n + c.projects.length, 0)).padStart(2, "0")} )</span></Link>
-            {categories.map((c) => (
-              <Link key={c.slug} className="bi sub" href={`/projects/${c.slug}`} aria-current={catSlug === c.slug ? "page" : undefined} title={c.name}><i className="dot" style={{ "--c": CATEGORY_COLOR[c.slug] } as React.CSSProperties} />{c.name}<span className="bc">( {String(c.projects.length).padStart(2, "0")} )</span></Link>
-            ))}
-            <Link className="bi" href="/recent-work" aria-current={pathname === "/recent-work" ? "page" : undefined} title="Recent Work"><i className="ic bin" />Recent Work<span className="bc">( {String(recent?.spots.length ?? 0).padStart(2, "0")} )</span></Link>
-            <Link className="bi" href="/about" aria-current={pathname === "/about" ? "page" : undefined} title="About"><i className="ic still" />About<span className="bc">.tif</span></Link>
-            <button type="button" className="bi" title="End credits" onClick={() => act("end")}><i className="ic clip" />End credits<span className="bc">end</span></button>
+            {binOpen && binIcons ? (
+              <div className="bin-grid">
+                {categories.flatMap((c) => c.projects.map((pr) => { const k = clipFromProject(pr); return (
+                  <Link key={pr.id} href={`/projects/${c.slug}/${pr.slug}`} aria-current={pathname === `/projects/${c.slug}/${pr.slug}` ? "page" : undefined} style={{ "--c": CATEGORY_COLOR[c.slug] } as React.CSSProperties} title={k.title}>
+                    <span className="pic">{k.poster && <Image src={k.poster} alt="" fill sizes="120px" />}</span>
+                    <span className="n">{pr.subtitle ?? pr.title}</span><span className="d">{pr.durationSec ? tc(pr.durationSec, pr.fps ?? 24) : "—"} · {c.one}</span>
+                  </Link>
+                ); }))}
+              </div>
+            ) : (
+              <>
+                <Link className="bi" href="/" aria-current={pathname === "/" ? "page" : undefined} title="Reel"><i className="ic clip" />Reel</Link>
+                <Link className="bi" href="/projects" aria-current={pathname === "/projects" ? "page" : undefined} title="Projects"><i className="ic bin" />Projects<span className="bc">( {String(categories.reduce((n, c) => n + c.projects.length, 0)).padStart(2, "0")} )</span></Link>
+                {categories.map((c) => (
+                  <Link key={c.slug} className="bi sub" href={`/projects/${c.slug}`} aria-current={catSlug === c.slug ? "page" : undefined} title={c.name}><i className="dot" style={{ "--c": CATEGORY_COLOR[c.slug] } as React.CSSProperties} />{c.name}<span className="bc">( {String(c.projects.length).padStart(2, "0")} )</span></Link>
+                ))}
+                <Link className="bi" href="/recent-work" aria-current={pathname === "/recent-work" ? "page" : undefined} title="Recent Work"><i className="ic bin" />Recent Work<span className="bc">( {String(recent?.spots.length ?? 0).padStart(2, "0")} )</span></Link>
+                <Link className="bi" href="/about" aria-current={pathname === "/about" ? "page" : undefined} title="About"><i className="ic still" />About<span className="bc">.tif</span></Link>
+                <button type="button" className="bi" title="End credits" onClick={() => act("end")}><i className="ic clip" />End credits<span className="bc">end</span></button>
+              </>
+            )}
           </div>
           <div className="bin-foot">{categories.length} bins · 24 fps</div>
         </aside>
@@ -255,6 +286,18 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
           <p className="text-dim text-xs mt-4 font-sans">When a button or link has focus, Space or Enter presses it. Keys do nothing while you type in a field.</p>
         </div>
       </dialog>
+      <dialog ref={about} className="about-dev" aria-labelledby="made-title" onClick={(e) => { if (e.target === e.currentTarget) about.current?.close(); }}>
+        <div className="bar"><button type="button" onClick={() => about.current?.close()} aria-label="Close" /></div>
+        <div className="body">
+          <div className="logo"><Image src="/rey.png" alt="" width={88} height={88} /></div>
+          <h2 id="made-title">Cuts By Cindy</h2>
+          <div className="sub">Video editor portfolio · 2026</div>
+          <dl><dt>Designed by</dt><dd>Rey Sanchez</dd><dt>Developed by</dt><dd>Rey Sanchez</dd></dl>
+          <a className="site" href="https://reysanchez.dev" target="_blank" rel="noopener">reysanchez.dev ↗</a>
+          <div className="fine">Made in Atlanta.</div>
+        </div>
+      </dialog>
+      <Brackets />
       <ContactDialog email={email} replyTime={profile?.replyTime ?? null} links={[["Instagram", profile?.instagramUrl], ["Vimeo", profile?.vimeoUrl], ["LinkedIn", profile?.linkedinUrl]].flatMap(([name, url]) => (url ? [{ name: name!, url }] : []))} />
       <div className="sr" aria-live="polite">{note || `Now showing: ${projName}`}</div>
     </div>

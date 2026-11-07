@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useRef, useState } from "react";
 import { enqueue, useJob } from "@/components/admin/queue";
 import { Area, FileButton, Section, Select, Status, Text, Upload, field, label, putFile, type Values } from "@/components/admin/fields";
 import { deleteProject, removeVideo, saveProject, type SaveResult } from "@/lib/actions/projects";

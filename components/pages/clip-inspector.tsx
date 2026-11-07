@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import { tc } from "@/components/bay/const";
+import { Shuffle } from "@/components/pages/shuffle";
 import { WatchButton } from "@/components/pages/ui";
 import type { Project } from "@/lib/generated/prisma/client";
 
@@ -12,7 +13,7 @@ export function ClipInspector({ p, one, color, i, n, nextTitle, detailHref }: Pr
   return (
     <>
       <div className="kick"><span className="dot" style={{ "--c": color } as React.CSSProperties} />{one} · {i + 1} / {n}</div>
-      <h2 className="h2">{p.title}{p.subtitle ? ` · ${p.subtitle}` : ""}</h2>
+      <h2 className="h2"><Shuffle text={p.subtitle ? `${p.title} · ${p.subtitle}` : p.title} /></h2>
       <dl className="meta">
         {p.client && <><dt>Client</dt><dd>{p.client}</dd></>}
         {p.director && <><dt>Director</dt><dd>{p.director}</dd></>}

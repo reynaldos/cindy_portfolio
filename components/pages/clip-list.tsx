@@ -56,7 +56,7 @@ export function ClipRows({ category, projects }: Props) {
       {projects.map((pr, i) => {
         const c = clipFromProject(pr);
         return (
-          <article key={pr.id} className={`row ${i === index ? "sel" : ""}`} style={{ "--c": CATEGORY_COLOR[category.slug] } as React.CSSProperties} data-i={i} onClick={() => pick(i)}>
+          <article key={pr.id} className={`row ${i === index ? "sel" : ""}`} data-tgt style={{ "--c": CATEGORY_COLOR[category.slug] } as React.CSSProperties} data-i={i} onClick={() => pick(i)}>
             <span className="thumb">{c.poster && <Image src={c.poster} alt="" fill sizes="160px" />}<span className="no">{String(i + 1).padStart(2, "0")}</span></span>
             <span className="tx">
               <button type="button" className="t" onClick={(e) => { e.stopPropagation(); pick(i); }}>{c.title}</button>
