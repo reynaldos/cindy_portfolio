@@ -177,8 +177,12 @@
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .fmt { font-size: 12px; color: var(--color-dim); border: 1px solid var(--color-line); padding: 8px 12px; margin-bottom: 16px; }
 .prog { height: 8px; background: var(--color-track); margin: 12px 0; overflow: hidden; }
-.prog i { display: block; height: 100%; width: 40%; background: var(--color-paper); animation: prog 1.2s ease-in-out infinite; }
-@keyframes prog { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+.prog i { display: block; height: 100%; width: 0; background: var(--color-paper); animation: render 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+.fmt.render { display: flex; justify-content: space-between; font-family: var(--font-mono); }
+@property --pct { syntax: "<integer>"; inherits: false; initial-value: 0; }
+.pct { counter-reset: pct var(--pct); animation: pct 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+.pct::after { content: counter(pct) "%"; }
+@keyframes pct { to { --pct: 100; } }
 .alt { border-top: 1px solid var(--color-line); margin-top: 16px; padding-top: 12px; font-size: 13px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
 .alt a { color: var(--color-paper); }
 

@@ -40,7 +40,8 @@ export function ContactDialog({ email, replyTime, links }: Props) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     setState({ kind: "sending" });
-    const r: ContactResult = await sendInquiry({ ...draft, website: String(form.get("website") ?? ""), openedAt: String(openedAt), turnstile: String(form.get("cf-turnstile-response") ?? "") });
+    // the render bar gets at least two seconds on screen, like a real export
+    const [r]: [ContactResult, unknown] = await Promise.all([sendInquiry({ ...draft, website: String(form.get("website") ?? ""), openedAt: String(openedAt), turnstile: String(form.get("cf-turnstile-response") ?? "") }), new Promise((done) => setTimeout(done, 2000))]);
     if (r.ok) { setState({ kind: "success" }); setDraft(EMPTY); }
     else if (r.field) setState({ kind: "error", field: r.field, error: r.error });
     else setState({ kind: "failure", error: r.error });
@@ -52,7 +53,7 @@ export function ContactDialog({ email, replyTime, links }: Props) {
     <dialog ref={dlg} className="sheet" aria-labelledby="contact-title" onClose={() => { if (state.kind === "error") setState({ kind: "idle" }); }}>
       <div className="sheet-t"><span id="contact-title">Export Settings — Send Cindy a message</span><button type="button" onClick={() => dlg.current?.close()}>Close</button></div>
       <div className="sheet-b">
-        {state.kind === "sending" && <><p ref={status} tabIndex={-1} className="h3">Exporting your message…</p><div className="prog"><i /></div></>}
+        {state.kind === "sending" && <><p ref={status} tabIndex={-1} className="h3">Exporting your message…</p><div className="prog" role="progressbar" aria-label="Export progress"><i /></div><p className="fmt render" aria-hidden="true"><span>Encoding · H.264 · 1920×1080</span><span className="pct" /></p></>}
         {state.kind === "success" && <><p ref={status} tabIndex={-1} className="h3">Export complete.</p><p>{replyTime ? `Cindy will reply ${replyTime}.` : "Cindy will reply soon."}</p></>}
         {state.kind === "failure" && <><p ref={status} tabIndex={-1} className="h3 err">Export failed.</p><p>{state.error} Email Cindy directly:</p><button type="button" className="btn sec" onClick={() => setState({ kind: "idle" })}>Try again</button></>}
         {(state.kind === "idle" || state.kind === "error") && (

@@ -82,9 +82,9 @@ Update the boxes after each task. Each task names the user story it serves, so c
 - [x] 6.1 Password login: `/admin/login` with optional Turnstile and a rate limit, signed session cookie, `proxy.ts` check, `requireAdmin()` under Suspense in the panel layout, logout, `scripts/hash-password.ts` (US-12)
 - [x] 6.2 Profile form: About, contact, tools, clients, reel pick, portrait and resume straight to R2 via presigned PUT (`lib/r2.ts`, aws4fetch); needs `R2_*` keys and bucket CORS (US-13)
 - [x] 6.3 Projects CRUD: list by category, create, edit, delete (drops Stream video and R2 files); tus upload straight to Stream, peaks scanned in the browser (files up to 300 MB), poster frame or custom poster, stills with alt and arrows, credits as "Role: Name" lines, captions .vtt, draft/published (US-14)
-- [ ] 6.4 dnd-kit reorder and publish toggle (US-14)
-- [ ] 6.5 Recent Work editor: copy, stamp, markers, five spots (US-15)
-- [ ] 6.6 Inbox: list, mark read, archive, reply link (US-16)
+- [x] 6.4 "Set order" per category opens a track dialog: drag the clips left/right (dnd-kit, keyboard too), Save writes the whole order in one transaction; Live/Draft toggle on every row (US-14)
+- [x] 6.5 Recent Work editor: story copy and stamp, feedback pins (label, note, position slider), up to five spots on a drag track with a grouped picker; one transaction resets and writes recentOrder (US-15)
+- [x] 6.6 Inbox: New / Read / Archived tabs with counts, each message with a Reply mailto, Mark read, Archive, Move to New; "email not sent" flag when EmailJS failed (US-16)
 
 ## Phase 7 — Launch
 - [ ] 7.1 Metadata, Open Graph image per project, `sitemap.ts`, `robots.ts` (US-01)
