@@ -33,7 +33,7 @@ export function ProjectForm({ id, values, cats, stills: initialStills, video, pu
             URL slug (must be unique)
             <span className="flex items-center bg-track border border-line rounded-xs has-focus-visible:border-cut">
               <span className="pl-3 font-mono text-sm text-dim whitespace-nowrap">/projects/{catSlug}/</span>
-              <input name="slug" defaultValue={values.slug} required pattern="[a-z0-9]+(-[a-z0-9]+)*" title="Lowercase letters, numbers, and dashes" className="h-11 bg-transparent px-1 text-paper text-sm font-mono focus:outline-none w-full min-w-0" />
+              <input name="slug" defaultValue={values.slug} required pattern="[a-z0-9]+(-[a-z0-9]+)*" title="Lowercase letters, numbers, and dashes" className="h-12 bg-transparent px-1 text-paper text-sm font-mono focus:outline-none w-full min-w-0" />
             </span>
           </label>
           <Area name="description" label="Description (shown in the clip list)" v={values} rows={4} />
@@ -98,7 +98,7 @@ function Stills({ initial, enabled }: { initial: Still[]; enabled: boolean }) {
         {stills.map((s, i) => (
           <li key={s.key} className="flex items-center gap-3">
             <Image src={r2Url(s.key)} alt="" width={96} height={54} unoptimized className="w-24 aspect-video object-cover border border-line shrink-0" />
-            <input value={s.alt} onChange={(e) => setStills((all) => all.map((x, k) => (k === i ? { ...x, alt: e.target.value } : x)))} placeholder="Describe the frame (alt text)" aria-label="Alt text" className={`${field} h-9`} />
+            <input value={s.alt} onChange={(e) => setStills((all) => all.map((x, k) => (k === i ? { ...x, alt: e.target.value } : x)))} placeholder="Describe the frame (alt text)" aria-label="Alt text" className={`${field} h-10`} />
             <button type="button" onClick={() => move(i, -1)} disabled={i === 0} aria-label="Move up" className="font-mono text-xs text-dim hover:text-paper disabled:opacity-30">↑</button>
             <button type="button" onClick={() => move(i, 1)} disabled={i === stills.length - 1} aria-label="Move down" className="font-mono text-xs text-dim hover:text-paper disabled:opacity-30">↓</button>
             <button type="button" onClick={() => setStills((all) => all.filter((_, k) => k !== i))} className="font-mono text-xs text-dim hover:text-paper underline">Remove</button>

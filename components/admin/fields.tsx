@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { Select as Root, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { uploadUrl, type UploadKind } from "@/lib/actions/upload";
 
 // Plain form parts shared by every admin form
 export type Values = Record<string, string>;
 
-export const field = "h-11 bg-track border border-line rounded-xs px-3 text-paper text-sm font-mono focus:border-cut focus:outline-none w-full";
+export const field = "h-12 bg-track border border-line rounded-xs px-3 text-paper text-sm font-mono focus:border-cut focus:outline-none w-full";
 export const label = "grid gap-1 font-mono text-[11px] uppercase tracking-[0.08em] text-dim";
 export const kick = "font-mono text-[11px] uppercase tracking-[0.08em] text-dim";
 
@@ -27,8 +28,22 @@ export function Area({ name, label: l, v, rows }: { name: string; label: string;
   return <label className={label}>{l}<textarea name={name} rows={rows} defaultValue={v[name] ?? ""} className={`${field} h-auto py-2 leading-relaxed`} /></label>;
 }
 
+// Radix refuses an empty item value, so "" rides under a stand-in and goes back to "" in the hidden input
+const NONE = "__none";
 export function Select({ name, label: l, v, options, onChange }: { name: string; label: string; v: Values; options: [string, string][]; onChange?: (value: string) => void }) {
-  return <label className={label}>{l}<select name={name} defaultValue={v[name] ?? ""} onChange={(e) => onChange?.(e.target.value)} className={field}>{options.map(([val, text]) => <option key={val} value={val}>{text}</option>)}</select></label>;
+  const [value, setValue] = useState(v[name] || NONE);
+  return (
+    <label className={label}>
+      {l}
+      <input type="hidden" name={name} value={value === NONE ? "" : value} />
+      <Root value={value} onValueChange={(val) => { setValue(val); onChange?.(val === NONE ? "" : val); }}>
+        <SelectTrigger className={`${field} rounded-xs justify-between hover:bg-track focus-visible:ring-0 focus-visible:border-cut data-[size=default]:h-12 [&_svg]:text-dim`}><SelectValue /></SelectTrigger>
+        <SelectContent position="popper" className="rounded-xs bg-panel text-paper ring-line font-mono text-sm">
+          {options.map(([val, text]) => <SelectItem key={val} value={val || NONE} className="rounded-xs focus:bg-track focus:text-paper">{text}</SelectItem>)}
+        </SelectContent>
+      </Root>
+    </label>
+  );
 }
 
 export function Status({ state }: { state: { error: string } | { ok: true } | undefined }) {

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { field, kick } from "@/components/admin/fields";
+import { Select, field, kick } from "@/components/admin/fields";
 import { createProject } from "@/lib/actions/projects";
 import { db } from "@/lib/db";
 
@@ -14,7 +14,7 @@ export default async function AdminProjects() {
       <h1 className="font-display text-4xl font-semibold mb-6">Projects</h1>
       <form action={createProject} className="flex gap-2 flex-wrap items-end bg-panel border border-line p-4 mb-6 max-w-2xl">
         <label className={`${kick} grid gap-1 flex-1 min-w-48`}>New project title<input name="title" required className={field} /></label>
-        <label className={`${kick} grid gap-1`}>Category<select name="categoryId" className={field}>{cats.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select></label>
+        <div className="min-w-48"><Select name="categoryId" label="Category" v={{ categoryId: cats[0]?.id ?? "" }} options={cats.map((c): [string, string] => [c.id, c.name])} /></div>
         <button type="submit" className="btn pri">Create</button>
       </form>
       {cats.map((c) => (
