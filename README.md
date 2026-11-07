@@ -29,6 +29,11 @@ The portfolio of Cindy Peralta, a video editor in Los Angeles. The site is built
 - The panel is at `/admin`. It has one password.
 - Make the hash with `pnpm exec tsx scripts/hash-password.ts "your password"` and put the output in `.env` as `ADMIN_PASSWORD_HASH`. Set `SESSION_SECRET` to a long random string (`openssl rand -hex 32`).
 - To log every session out, change `SESSION_SECRET` and redeploy.
+- Uploads (portrait, resume, posters, stills) go from the browser straight to R2. They need `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, and `R2_BUCKET` in `.env` (Cloudflare → R2 → Manage API tokens → Object Read & Write, this bucket only), plus this CORS policy on the bucket (R2 → bucket → Settings → CORS policy), with your real domain added to `AllowedOrigins`:
+
+  ```json
+  [{ "AllowedOrigins": ["http://localhost:3000"], "AllowedMethods": ["PUT"], "AllowedHeaders": ["content-type"], "MaxAgeSeconds": 3600 }]
+  ```
 
 ## Scripts
 
