@@ -40,11 +40,10 @@ export async function scanPeaks(ctx: AudioContext, uid: string, durationSec: num
     source.connect(node).connect(mute).connect(ctx.destination);
 
     const peaks = new Array<number>(BINS).fill(0);
-    let samples = 0;
-    node.port.onmessage = ({ data: [m, n] }: MessageEvent<[number, number]>) => {
-      // output time × rate = media time, so the bin follows playback whatever the speed
-      samples += n;
-      const t = (samples / ctx.sampleRate) * rate;
+    // bins follow the player's own clock: silent blocks while it buffers or has not started must not shift the wave
+    node.port.onmessage = ({ data: [m] }: MessageEvent<[number, number]>) => {
+      if (v.paused || v.seeking || v.readyState < 3) return;
+      const t = v.currentTime;
       const i = Math.min(BINS - 1, Math.floor((t / durationSec) * BINS));
       if (m > peaks[i]) peaks[i] = m;
       onProgress?.(Math.min(1, t / durationSec));

@@ -130,7 +130,8 @@
 .marker.rt .note { left: auto; right: 0; }
 .marker:hover .note, .marker:focus-visible .note, .marker[aria-expanded="true"] .note { display: block; }
 .a1 svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-.a1 .tag { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--color-dim); background: var(--color-bay); padding: 1px 6px; letter-spacing: 0.08em; white-space: nowrap; max-width: calc(100% - 12px); overflow: hidden; text-overflow: ellipsis; }
+/* the file name sits in the lane's top-right corner and never hides the wave */
+.a1 .tag { position: absolute; right: 6px; top: 2px; font-size: 9px; line-height: 1; color: var(--color-dim); background: color-mix(in srgb, var(--color-bay) 70%, transparent); padding: 1px 4px; letter-spacing: 0.08em; white-space: nowrap; max-width: 40%; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
 .playhead { position: absolute; top: 0; bottom: 0; left: 112px; width: calc(100% - 112px); pointer-events: none; z-index: 6; container-type: inline-size; }
 .playhead i { position: absolute; top: 0; bottom: 0; left: -1px; width: 2px; background: var(--color-cut); transform: translateX(calc(100cqw * var(--p, 0))); transition: transform var(--d-4f) var(--ease-arrive); }
 .playhead i::before { content: ""; position: absolute; top: 0; left: -5px; width: 12px; height: 10px; background: var(--color-cut); clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%); }

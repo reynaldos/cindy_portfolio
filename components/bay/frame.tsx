@@ -88,7 +88,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
       if (k === "m") bay("mute");
       else if (k === "j") { e.preventDefault(); bay("back"); }
       else if (k === "k") bay("pause");
-      else if (k === "l") bay("play");
+      else if (k === "l") bay("toggle");
       else if (k === " ") { e.preventDefault(); bay("toggle"); }
       else if (k === "arrowleft") { e.preventDefault(); bay("prev"); }
       else if (k === "arrowright") { e.preventDefault(); bay("next"); }
@@ -119,7 +119,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
 
   const menus: [string, MenuItem[]][] = [
     ["File", [["New inquiry…", "contact", "⌘N"], null, ["Copy email address", "copy"], ...(profile?.instagramUrl ? [["Instagram", `link:${profile.instagramUrl}`] as MenuItem] : []), ...(profile?.vimeoUrl ? [["Vimeo", `link:${profile.vimeoUrl}`] as MenuItem] : []), null, ["Close menu", "close", "esc"]]],
-    ["Clip", [["Play", "play", "L"], ["Pause", "pause", "K"], ["Back 5 seconds", "back", "J"], ["Play / Pause", "toggle", "Space"], null, ["Previous clip", "prev", "←"], ["Next clip", "next", "→"], ["Watch full cut (sound)", "watch"], ["Mute / Unmute", "mute", "M"], null, ["Go to start", "home", "Home"], ["Go to end credits", "end", "End"]]],
+    ["Clip", [["Play / Pause", "toggle", "L"], ["Pause", "pause", "K"], ["Back 5 seconds", "back", "J"], ["Play / Pause", "toggle", "Space"], null, ["Previous clip", "prev", "←"], ["Next clip", "next", "→"], ["Watch full cut (sound)", "watch"], ["Mute / Unmute", "mute", "M"], null, ["Go to start", "home", "Home"], ["Go to end credits", "end", "End"]]],
     ["Window", [["Project bin", "bin", "", binOpen], ["Timeline (keep open)", "tlpin", "", tlPin], null, ["Reduce motion", "rm", "", rm]]],
     ["Help", [["Keyboard shortcuts", "keys", "?"], ["About Cindy", "link:/about"]]],
   ];
@@ -149,7 +149,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
   })();
   const markers: Marker[] = pathname === "/recent-work" && Array.isArray(recent?.markers) ? (recent.markers as Marker[]) : [];
   const seq = cat ? cat.name.toUpperCase().replace(/ /g, "_") : { "/": "CBC_REEL", "/projects": "PROJECTS", "/recent-work": "RECENT_WORK", "/about": "ABOUT" }[pathname] ?? "OFFLINE";
-  const cap = cat || pathname === "/recent-work" ? "V2 clips select · V1 clips open pages · ← → clips · L play" : pathname === "/projects" ? "Click a clip to open its category" : "V1 clips open pages · click the ruler to seek";
+  const cap = cat || pathname === "/recent-work" ? "V2 clips select · V1 clips open pages · ← → clips · L play/pause" : pathname === "/projects" ? "Click a clip to open its category" : "V1 clips open pages · click the ruler to seek";
   const hasClips = !!cat || pathname === "/recent-work";
 
   return (
@@ -241,7 +241,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
 
       <footer className="status" aria-label="Sequence status">
         <span>{seq}</span><span>1920 × 1080 · 24 fps</span><span className="mid">60 s sequence</span>
-        <span className="mid ok">{mon.playing ? `Playing ${mon.file} · ${mon.muted ? "muted preview" : "sound on"}` : "J back 5 s · K pause · L play · ← → clips"}</span>
+        <span className="mid ok">{mon.playing ? `Playing ${mon.file} · ${mon.muted ? "muted preview" : "sound on"}` : "J back 5 s · K pause · L play/pause · ← → clips"}</span>
         <span className="r">LOS ANGELES {time}</span>
       </footer>
 
