@@ -128,7 +128,7 @@ export function Monitor({ clips, index = 0, mode, sticky, compact, still, childr
   if (still) return (
     <div className="mon-wrap gut"><div className="mon-box">
       <div className="ptab"><span className="on">Program: {still.file}</span><span className="r">{still.fmt ?? ""}</span></div>
-      <div className="monitor">
+      <div className="monitor" data-tgt>
         {still.src ? <Image className="poster" src={still.src} alt={still.alt} fill sizes="(min-width: 1024px) 60vw, 100vw" priority /> : <div className="ph"><span className="lbl">{still.alt}</span></div>}
         <i className="sm a" /><i className="sm b" /><i className="sm c" /><i className="sm d" />
         <div className="burn"><span>{still.file}</span><span><span className="mt">SRC </span>00:00:00:01</span></div>
@@ -144,7 +144,7 @@ export function Monitor({ clips, index = 0, mode, sticky, compact, still, childr
     <div className={`mon-wrap gut ${sticky ? "sticky" : ""} ${compact ? "fit" : ""}`}>
       <div className="mon-box">
         <div className="ptab"><span className="on">Program: {clip?.file ?? "—"}</span><span className="r">{fmt}</span></div>
-        <div className="monitor" data-status={status}>
+        <div className="monitor" data-status={status} data-tgt>
           {clip?.poster ? <Image className="poster" src={clip.poster} alt="" fill sizes="(min-width: 1024px) 60vw, 100vw" priority={mode === "reel"} /> : !canPlay && <div className="ph"><span className="lbl">Video coming soon</span></div>}
           <video ref={video} playsInline preload="none" muted crossOrigin="anonymous" aria-label="Program monitor" poster={clip?.poster ?? undefined}
             onPlay={() => { setPlaying(true); setStatus("idle"); }} onPause={() => setPlaying(false)} onEnded={() => setPlaying(false)}

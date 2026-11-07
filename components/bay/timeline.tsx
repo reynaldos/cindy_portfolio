@@ -103,8 +103,8 @@ export function Timeline({ seq, cap, tracks, markers, page, a1, peaks, p, onSeek
                 const film = c.strip?.length ? { backgroundImage: c.strip.map((u) => `url(${u})`).join(","), backgroundPosition: c.strip.map((_, k) => `${(k / (c.strip!.length - 1)) * 100}% 0`).join(","), backgroundSize: `${100 / c.strip.length}% 100%`, backgroundRepeat: "no-repeat" } : {};
                 const style = { ...spread(t.clips.length, j), ...film, "--c": c.color } as unknown as React.CSSProperties;
                 const cls = `clip film ${c.current ? "sel" : ""}`;
-                if (c.href) return <Link key={j} href={c.href} className={cls} style={style} title={c.label}><span>{c.label}</span></Link>;
-                if (c.index !== undefined) return <button key={j} type="button" className={cls} style={style} title={c.label} onClick={() => bay("select", c.index)}><span>{c.label}</span></button>;
+                if (c.href) return <Link key={j} href={c.href} className={cls} style={style} title={c.label} data-tgt><span>{c.label}</span></Link>;
+                if (c.index !== undefined) return <button key={j} type="button" className={cls} style={style} title={c.label} data-tgt onClick={() => bay("select", c.index)}><span>{c.label}</span></button>;
                 return <span key={j} className="clip static navc" style={style}>{c.label}</span>;
               })}
             </div>,
@@ -115,7 +115,7 @@ export function Timeline({ seq, cap, tracks, markers, page, a1, peaks, p, onSeek
         <div className="lane">
           {markers.map((m) => <i key={m.label} className="mguide" style={{ left: `${m.at * 100}%` }} />)}
           {PAGES.map(([href, name], i) => (
-            <Link key={href} href={href} className="clip navc" style={spread(PAGES.length, i)} aria-current={page === href ? "page" : undefined}>{name}</Link>
+            <Link key={href} href={href} className="clip navc" style={spread(PAGES.length, i)} aria-current={page === href ? "page" : undefined} data-tgt>{name}</Link>
           ))}
         </div>
 

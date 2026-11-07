@@ -24,6 +24,12 @@ export async function createUpload(bytes: number, name: string) {
   return { uploadUrl: res.headers.get("Location")!, uid: res.headers.get("stream-media-id")! };
 }
 
+export async function getVideo(uid: string): Promise<StreamVideo> {
+  const res = await fetch(`${API}/${uid}`, { headers: auth, cache: "no-store" });
+  if (!res.ok) throw new Error(`Stream get failed: ${res.status}`);
+  return (await res.json()).result;
+}
+
 export async function deleteVideo(uid: string) {
   const res = await fetch(`${API}/${uid}`, { method: "DELETE", headers: auth });
   if (!res.ok && res.status !== 404) throw new Error(`Stream delete failed: ${res.status}`);

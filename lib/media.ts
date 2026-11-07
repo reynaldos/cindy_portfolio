@@ -3,6 +3,8 @@ import type { Project } from "@/lib/generated/prisma/client";
 // URL helpers for Stream and R2. Safe on the client; they read only NEXT_PUBLIC values.
 const STREAM = `https://customer-${process.env.NEXT_PUBLIC_STREAM_CUSTOMER_CODE}.cloudflarestream.com`;
 
+export const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
 export const r2Url = (key: string) => `${process.env.NEXT_PUBLIC_MEDIA_URL}/${key}`;
 
 // a streamUid that is already a URL plays as-is, so any HLS link works as a stand-in

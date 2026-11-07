@@ -7,6 +7,8 @@ import { Flap } from "@/components/pages/flap";
 import { ContactButton } from "@/components/pages/ui";
 import { getCategories, getProfile, getRecentWork, getReel } from "@/lib/data";
 import { clipFromProject } from "@/lib/media";
+import { JsonLd } from "@/components/seo/json-ld";
+import { personLd, serviceLd, siteLd } from "@/lib/seo";
 
 export default async function Home() {
   const [profile, reel, categories, recent] = await Promise.all([getProfile(), getReel(), getCategories(), getRecentWork()]);
@@ -42,6 +44,7 @@ export default async function Home() {
         </aside>
       </div>
       <Credits profile={profile} />
+      {profile && <JsonLd data={[personLd(profile), serviceLd(profile), siteLd(profile)]} />}
     </>
   );
 }

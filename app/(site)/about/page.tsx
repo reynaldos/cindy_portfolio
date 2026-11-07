@@ -4,6 +4,8 @@ import { ContactButton } from "@/components/pages/ui";
 import { getProfile } from "@/lib/data";
 import { r2Url } from "@/lib/media";
 
+export const metadata = { title: "About", description: "Who Cindy Peralta is, what she cuts with, and where she works." };
+
 // a two-letter code for each tool, like a track tag
 const code = (t: string) => t.replace(/^Adobe\s+/, "").split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 

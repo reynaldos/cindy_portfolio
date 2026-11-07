@@ -4,6 +4,7 @@ import Link from "next/link";
 import { bay } from "@/components/bay/bus";
 import { CATEGORY_COLOR } from "@/components/bay/const";
 import { useMonitor } from "@/components/monitor/state";
+import { Shuffle } from "@/components/pages/shuffle";
 import { clipFromProject } from "@/lib/media";
 import type { Category, Project } from "@/lib/generated/prisma/client";
 
@@ -17,7 +18,7 @@ export function Tracks({ categories }: Props) {
   return (
     <div className="rows gut">
       {categories.map((cat, i) => (
-        <Link key={cat.slug} href={`/projects/${cat.slug}`} className="track-row" style={{ "--c": CATEGORY_COLOR[cat.slug] } as React.CSSProperties} onPointerEnter={() => bay("select", i)} onFocus={() => bay("select", i)}>
+        <Link key={cat.slug} href={`/projects/${cat.slug}`} className="track-row" data-tgt style={{ "--c": CATEGORY_COLOR[cat.slug] } as React.CSSProperties} onPointerEnter={() => bay("select", i)} onFocus={() => bay("select", i)}>
           <span className="nm"><b>{cat.name}</b><span className="small dimt">V{categories.length + 1 - i} · {String(cat.projects.length).padStart(2, "0")} clips · {total(cat)}</span></span>
           <span className="ln">{cat.projects.map((p) => { const k = clipFromProject(p); return <span key={p.id} style={k.poster ? { backgroundImage: `url(${k.poster})` } : undefined}><i>{p.subtitle ?? p.title}</i></span>; })}</span>
         </Link>
@@ -35,7 +36,7 @@ export function TrackInspector({ categories }: Props) {
         {c && (
           <>
             <div className="kick"><span className="dot" style={{ "--c": CATEGORY_COLOR[c.slug] } as React.CSSProperties} />Track · {c.name}</div>
-            <h2 className="h2">{c.name} ( {String(c.projects.length).padStart(2, "0")} )</h2>
+            <h2 className="h2"><Shuffle text={`${c.name} ( ${String(c.projects.length).padStart(2, "0")} )`} /></h2>
             {c.blurb && <p>{c.blurb}</p>}
             <dl className="meta"><dt>Clips</dt><dd>{c.projects.length ? c.projects.map((p) => p.subtitle ?? p.title).join(", ") : "Coming soon"}</dd><dt>Total</dt><dd>{total(c)}</dd></dl>
             <p className="small dimt">Color = category. {c.name} are always this color, on every page.</p>

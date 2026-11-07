@@ -65,6 +65,18 @@
 .app:not([data-bin-open]) .binx { width: 100%; }
 .app:not([data-bin-open]) .bi { font-size: 0; gap: 0; padding: 0; justify-content: center; min-height: 40px; }
 .bin-list { overflow: auto; padding: 8px 0; flex: 1; }
+.ptab .vt { margin-left: auto; display: flex; gap: 2px; flex: none; }
+.ptab .vt button { background: var(--color-panel); border: 0; color: var(--color-dim); padding: 0 8px; font-size: 11px; cursor: pointer; min-height: 24px; min-width: 24px; font-family: inherit; }
+.ptab .vt button[aria-pressed="true"] { color: var(--color-paper); box-shadow: inset 0 -2px 0 var(--color-cut); }
+.app:not([data-bin-open]) .ptab .vt { display: none; }
+.bin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 8px; }
+.bin-grid a { background: var(--color-bay); padding: 0 0 5px; text-align: left; cursor: pointer; color: var(--color-paper); font-size: 11px; border-top: 3px solid var(--c, var(--color-line)); min-width: 0; text-decoration: none; display: block; }
+.bin-grid a:hover { box-shadow: inset 0 0 0 1px var(--color-marker); }
+.bin-grid a[aria-current="page"] { outline: 2px solid var(--color-paper); outline-offset: -2px; }
+.bin-grid .pic { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; display: block; overflow: hidden; }
+.bin-grid .pic img { object-fit: cover; }
+.bin-grid .n { display: block; padding: 4px 6px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bin-grid .d { display: block; padding: 0 6px; color: var(--color-dim); font-variant-numeric: tabular-nums; }
 .bi { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 34px; padding: 0 10px 0 12px; background: none; border: 0; text-align: left; font-size: 12px; color: var(--color-paper); cursor: pointer; border-left: 3px solid transparent; text-decoration: none; font-family: inherit; }
 .bi.sub { padding-left: 28px; color: var(--color-dim); }
 .bi:hover { background: var(--color-track); }
@@ -130,7 +142,33 @@
 .marker.rt .note { left: auto; right: 0; }
 .marker:hover .note, .marker:focus-visible .note, .marker[aria-expanded="true"] .note { display: block; }
 .a1 svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-.a1 .tag { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--color-dim); background: var(--color-bay); padding: 1px 6px; letter-spacing: 0.08em; white-space: nowrap; max-width: calc(100% - 12px); overflow: hidden; text-overflow: ellipsis; }
+/* target cursor: four corners that slide onto the hovered clip, row, or monitor */
+.brackets { position: fixed; pointer-events: none; z-index: 50; display: none; transition: left var(--d-4f) var(--ease-arrive), top var(--d-4f) var(--ease-arrive), width var(--d-4f) var(--ease-arrive), height var(--d-4f) var(--ease-arrive); }
+.brackets i { position: absolute; width: 10px; height: 10px; border: 0 solid var(--color-marker); }
+.brackets i:nth-child(1) { left: -4px; top: -4px; border-left-width: 2px; border-top-width: 2px; }
+.brackets i:nth-child(2) { right: -4px; top: -4px; border-right-width: 2px; border-top-width: 2px; }
+.brackets i:nth-child(3) { left: -4px; bottom: -4px; border-left-width: 2px; border-bottom-width: 2px; }
+.brackets i:nth-child(4) { right: -4px; bottom: -4px; border-right-width: 2px; border-bottom-width: 2px; }
+
+/* "Who made this": the macOS About panel */
+.about-dev { width: min(300px, calc(100% - 32px)); text-align: center; padding: 0; border: 0; border-radius: 10px; overflow: hidden; background: #242427; color: #f2f2f2; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 48px 120px rgba(0, 0, 0, 0.85); font-family: var(--font-sys, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif); margin: auto; }
+.about-dev::backdrop { background: rgba(14, 14, 16, 0.72); }
+.about-dev .bar { height: 28px; display: flex; align-items: center; padding: 0 8px; }
+.about-dev .bar button { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; border: 0; padding: 0; cursor: pointer; }
+.about-dev .bar button:focus-visible { outline: 2px solid var(--color-paper); outline-offset: 2px; }
+.about-dev .body { padding: 8px 24px 28px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.about-dev .logo { width: 88px; height: 88px; margin-bottom: 12px; display: grid; place-items: center; }
+.about-dev h2 { font: 700 22px/1.2 inherit; margin: 0; letter-spacing: -0.01em; }
+.about-dev .sub { font-size: 12px; color: #9a9a9f; margin-bottom: 14px; }
+.about-dev dl { display: grid; grid-template-columns: auto auto; gap: 4px 10px; font-size: 12px; margin: 0; }
+.about-dev dt { text-align: right; font-weight: 600; }
+.about-dev dd { margin: 0; text-align: left; color: #d8d8dc; }
+.about-dev a.site { margin-top: 16px; font-size: 12px; padding: 4px 12px; border-radius: 6px; background: rgba(255, 255, 255, 0.1); color: #f2f2f2; text-decoration: none; }
+.about-dev a.site:hover { background: rgba(255, 255, 255, 0.18); }
+.about-dev .fine { font-size: 10px; color: #7a7a80; margin-top: 16px; }
+
+/* the file name sits in the lane's top-right corner and never hides the wave */
+.a1 .tag { position: absolute; right: 6px; top: 2px; font-size: 9px; line-height: 1; color: var(--color-dim); background: color-mix(in srgb, var(--color-bay) 70%, transparent); padding: 1px 4px; letter-spacing: 0.08em; white-space: nowrap; max-width: 40%; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
 .playhead { position: absolute; top: 0; bottom: 0; left: 112px; width: calc(100% - 112px); pointer-events: none; z-index: 6; container-type: inline-size; }
 .playhead i { position: absolute; top: 0; bottom: 0; left: -1px; width: 2px; background: var(--color-cut); transform: translateX(calc(100cqw * var(--p, 0))); transition: transform var(--d-4f) var(--ease-arrive); }
 .playhead i::before { content: ""; position: absolute; top: 0; left: -5px; width: 12px; height: 10px; background: var(--color-cut); clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%); }
@@ -177,8 +215,12 @@
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .fmt { font-size: 12px; color: var(--color-dim); border: 1px solid var(--color-line); padding: 8px 12px; margin-bottom: 16px; }
 .prog { height: 8px; background: var(--color-track); margin: 12px 0; overflow: hidden; }
-.prog i { display: block; height: 100%; width: 40%; background: var(--color-paper); animation: prog 1.2s ease-in-out infinite; }
-@keyframes prog { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+.prog i { display: block; height: 100%; width: 0; background: var(--color-paper); animation: render 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+.fmt.render { display: flex; justify-content: space-between; font-family: var(--font-mono); }
+@property --pct { syntax: "<integer>"; inherits: false; initial-value: 0; }
+.pct { counter-reset: pct var(--pct); animation: pct 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+.pct::after { content: counter(pct) "%"; }
+@keyframes pct { to { --pct: 100; } }
 .alt { border-top: 1px solid var(--color-line); margin-top: 16px; padding-top: 12px; font-size: 13px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
 .alt a { color: var(--color-paper); }
 
@@ -315,6 +357,8 @@ html.rm .app *, html.rm .app *::before, html.rm .app *::after { animation: none 
 /* pages: main column + inspector */
 .page { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 2px; background: var(--color-bay); min-height: var(--sh, 100%); }
 .page.wide-insp { grid-template-columns: minmax(0, 1fr) 440px; }
+.app[data-hide-insp] .page, .app[data-hide-insp] .page.wide-insp { grid-template-columns: 1fr; }
+.app[data-hide-insp] .insp { display: none; }
 .main { min-width: 0; background: var(--color-bay); }
 .insp { background: var(--color-panel); position: sticky; top: 0; align-self: start; max-height: var(--sh, 100vh); min-height: var(--sh, 100vh); overflow: auto; display: flex; flex-direction: column; min-width: 0; }
 .insp-b { padding: 16px max(16px, env(safe-area-inset-right, 0px)) 16px 16px; font-family: var(--font-mono); }

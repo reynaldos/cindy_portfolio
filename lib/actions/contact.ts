@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { headers } from "next/headers";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { clientIp, human } from "@/lib/human";
 
 const Inquiry = z.object({
   name: z.string().trim().min(1, "Add your name.").max(120),
@@ -28,7 +29,7 @@ export async function sendInquiry(raw: Record<string, string>): Promise<ContactR
   // bots fill the hidden field or send within three seconds; tell them nothing
   if (d.website || Date.now() - d.openedAt < 3000) return { ok: true };
 
-  const ip = (await headers()).get("x-forwarded-for")?.split(",")[0].trim() ?? "local";
+  const ip = clientIp(await headers());
   if (!(await human(d.turnstile, ip))) return { ok: false, error: "The spam check did not pass. Try again, or email Cindy directly." };
   const ipHash = createHash("sha256").update(ip).digest("hex");
   const recent = await db.contactSubmission.count({ where: { ipHash, createdAt: { gt: new Date(Date.now() - 10 * 60 * 1000) } } });
@@ -39,15 +40,6 @@ export async function sendInquiry(raw: Record<string, string>): Promise<ContactR
   const sent = await sendEmail(d).catch(() => false);
   if (sent) await db.contactSubmission.update({ where: { id: row.id }, data: { emailSent: true } });
   return sent ? { ok: true } : { ok: false, error: "The message is saved, but the email did not go out." };
-}
-
-// Turnstile is optional: with no secret in the env, every visitor passes
-async function human(token: string | undefined, ip: string) {
-  const secret = process.env.TURNSTILE_SECRET_KEY;
-  if (!secret) return true;
-  if (!token) return false;
-  const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body: new URLSearchParams({ secret, response: token, remoteip: ip }) });
-  return res.ok && (await res.json()).success === true;
 }
 
 async function sendEmail(d: z.infer<typeof Inquiry>) {
