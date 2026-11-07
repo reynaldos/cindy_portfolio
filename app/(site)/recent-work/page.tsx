@@ -4,6 +4,8 @@ import { SpotInspector, Spots, type Marker } from "@/components/pages/spots";
 import { getProfile, getRecentWork } from "@/lib/data";
 import { clipFromProject } from "@/lib/media";
 
+export const metadata = { title: "Recent Work", description: "The latest job, from rough cut to delivery: five spots, the feedback rounds, and the timeline.", alternates: { canonical: "/recent-work" } };
+
 export default async function RecentWork() {
   const [recent, profile] = await Promise.all([getRecentWork(), getProfile()]);
   const spots = recent?.spots ?? [];

@@ -7,8 +7,18 @@ import { ClipInspector } from "@/components/pages/clip-inspector";
 import { Credits } from "@/components/pages/credits";
 import { getCategoryProjects, getProfile, getProject } from "@/lib/data";
 import { clipFromProject, r2Url } from "@/lib/media";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbLd, videoLd } from "@/lib/seo";
 
 export const instant = false;
+
+// the poster is the share image; the default brand card stands in when there is none
+export async function generateMetadata({ params }: { params: Promise<{ category: string; slug: string }> }) {
+  const p = await getProject((await params).slug);
+  if (!p) return {};
+  const poster = clipFromProject(p).poster;
+  return { title: p.subtitle ? `${p.title} · ${p.subtitle}` : p.title, description: p.description, alternates: { canonical: `/projects/${p.category.slug}/${p.slug}` }, openGraph: poster ? { images: [{ url: poster, width: 1280, height: 720 }] } : undefined };
+}
 
 // Project detail: stills and full credits for one cut
 export default async function Detail({ params }: { params: Promise<{ category: string; slug: string }> }) {
@@ -45,6 +55,7 @@ export default async function Detail({ params }: { params: Promise<{ category: s
         </aside>
       </div>
       <Credits profile={profile} />
+      <JsonLd data={[videoLd(p), breadcrumbLd([["Projects", "/projects"], [cat.name, `/projects/${cat.slug}`], [p.title, `/projects/${cat.slug}/${p.slug}`]])]} />
     </>
   );
 }

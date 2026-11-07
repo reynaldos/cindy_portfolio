@@ -87,7 +87,7 @@ Update the boxes after each task. Each task names the user story it serves, so c
 - [x] 6.6 Inbox: New / Read / Archived tabs with counts, each message with a Reply mailto, Mark read, Archive, Move to New; "email not sent" flag when EmailJS failed (US-16)
 
 ## Phase 7 — Launch
-- [ ] 7.1 Metadata, Open Graph image per project, `sitemap.ts`, `robots.ts` (US-01)
+- [x] 7.1 Root metadata with title template and `metadataBase` (`NEXT_PUBLIC_SITE_URL`), titles per page, project posters as share images, a generated brand share card (built-in font: the renderer takes no woff2), `sitemap.ts`, `robots.ts` (US-01)
 - [ ] 7.2 Accessibility pass against ARCHITECTURE.md §6 (US-10, US-11)
 - [ ] 7.3 `/impeccable audit` on the real build; target 18/20 (all)
 - [ ] 7.4 Performance check against the budget in ARCHITECTURE.md §5 (US-11)

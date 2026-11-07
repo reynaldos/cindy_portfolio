@@ -4,6 +4,8 @@ import { TrackInspector, Tracks } from "@/components/pages/tracks";
 import { getCategories, getProfile } from "@/lib/data";
 import { clipFromProject, type Clip } from "@/lib/media";
 
+export const metadata = { title: "Projects", description: "Commercials, music videos, short films, and trailers cut by Cindy Peralta.", alternates: { canonical: "/projects" } };
+
 export default async function Projects() {
   const [categories, profile] = await Promise.all([getCategories(), getProfile()]);
   const total = categories.reduce((n, c) => n + c.projects.length, 0);
