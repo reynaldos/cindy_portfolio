@@ -8,7 +8,7 @@ import { TAGS } from "@/lib/data";
 import { db } from "@/lib/db";
 import { Prisma } from "@/lib/generated/prisma/client";
 import { deleteObject } from "@/lib/r2";
-import { createUpload, deleteVideo } from "@/lib/stream";
+import { createUpload, deleteVideo, getVideo } from "@/lib/stream";
 
 export type SaveResult = { ok: true } | { error: string } | undefined;
 
@@ -74,7 +74,7 @@ export async function saveProject(id: string, _: SaveResult, form: FormData): Pr
   const keep = new Set([data.posterKey, data.captionsKey, ...stills.map((s) => s.key)]);
   for (const k of [old.posterKey, old.captionsKey, ...old.stills.map((s) => s.key)]) if (k && !keep.has(k)) await deleteObject(k).catch(() => {});
   await refresh(id);
-  return { ok: true };
+  redirect("/admin/projects");
 }
 
 export async function deleteProject(id: string) {
@@ -130,4 +130,25 @@ export async function setStatus(id: string, status: "draft" | "published") {
   await requireAdmin();
   await db.project.update({ where: { id }, data: { status } });
   await refresh(id);
+}
+
+// Asks Stream how the encode is going and writes the answer, so the admin never waits on the webhook
+export async function videoState(id: string) {
+  await requireAdmin();
+  const p = await db.project.findUnique({ where: { id }, select: { streamUid: true, videoStatus: true } });
+  if (!p?.streamUid || p.videoStatus !== "processing" || /^https?:/.test(p.streamUid)) return p?.videoStatus ?? "none";
+  const v = await getVideo(p.streamUid).catch(() => null);
+  if (!v) return "processing";
+  if (v.readyToStream) await db.project.update({ where: { id }, data: { videoStatus: "ready", durationSec: v.duration, width: v.input?.width, height: v.input?.height } });
+  else if (v.status?.state === "error") await db.project.update({ where: { id }, data: { videoStatus: "error" } });
+  else return "processing";
+  await refresh(id);
+  return v.readyToStream ? "ready" : "error";
+}
+
+// Ready videos still without a waveform; the admin scans them one by one in the background
+export async function needPeaks() {
+  await requireAdmin();
+  const rows = await db.project.findMany({ where: { videoStatus: "ready", peaks: { equals: Prisma.DbNull }, streamUid: { not: null }, durationSec: { not: null } }, select: { id: true, title: true, streamUid: true, durationSec: true }, orderBy: { durationSec: "asc" } });
+  return rows.map((r) => ({ id: r.id, title: r.title, uid: r.streamUid!, durationSec: r.durationSec! }));
 }

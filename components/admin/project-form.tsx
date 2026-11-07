@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useActionState, useState } from "react";
-import { Upload as TusUpload } from "tus-js-client";
-import { Area, FileButton, Section, Select, Status, Text, Upload, field, kick, label, putFile, type Values } from "@/components/admin/fields";
-import { deleteProject, removeVideo, savePeaks, saveProject, videoUpload, type SaveResult } from "@/lib/actions/projects";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect, useRef, useState } from "react";
+import { enqueue, useJob } from "@/components/admin/queue";
+import { Area, FileButton, Section, Select, Status, Text, Upload, field, label, putFile, type Values } from "@/components/admin/fields";
+import { deleteProject, removeVideo, saveProject, type SaveResult } from "@/lib/actions/projects";
+import { tc } from "@/components/bay/const";
 import { r2Url, thumbUrl } from "@/lib/media";
 
 type Still = { key: string; alt: string };
@@ -20,7 +22,7 @@ export function ProjectForm({ id, values, cats, stills: initialStills, video, pu
   const catSlug = cats.find((c) => c.id === catId)?.slug ?? "";
   return (
     <div className="grid gap-6 max-w-2xl">
-      <VideoBox id={id} video={video} />
+      <VideoBox id={id} title={values.title} video={video} />
       <form action={action} className="grid gap-6">
         <Section title="Clip">
           <Text name="title" label="Title" v={values} required />
@@ -50,9 +52,7 @@ export function ProjectForm({ id, values, cats, stills: initialStills, video, pu
           <Area name="credits" label="Full credits, one per line as Role: Name" v={values} rows={5} />
         </Section>
         <Section title="Poster">
-          <label className={`${kick} grid gap-1 max-w-48`}>Poster frame (seconds into the video)<input name="posterTimeSec" type="number" min={0} step={0.1} defaultValue={values.posterTimeSec} className={field} /></label>
-          {video.uid && !video.uid.startsWith("http") && video.status === "ready" && <Image src={thumbUrl(video.uid, Number(values.posterTimeSec) || 1)!} alt="" width={192} height={108} unoptimized className="w-48 aspect-video object-cover border border-line" />}
-          <Upload name="posterKey" kind="poster" label="Custom poster (optional)" hint="Replaces the video frame. Landscape 16:9, 1920×1080. JPG, PNG, or WebP under 10 MB." accept={IMG} initial={values.posterKey} enabled={uploads} preview={(key) => <Image src={r2Url(key)} alt="" width={192} height={108} unoptimized className="w-48 aspect-video object-cover border border-line" />} />
+          <PosterPicker values={values} video={video} uploads={uploads} />
         </Section>
         <Section title="Stills">
           <Stills initial={initialStills} enabled={uploads} />
@@ -113,58 +113,90 @@ function Stills({ initial, enabled }: { initial: Still[]; enabled: boolean }) {
   );
 }
 
-const LABEL = { none: "No video yet", processing: "Processing on Cloudflare Stream — the site updates when it is ready", ready: "Ready", error: "Stream could not encode this file" };
-
-// The video goes from the browser straight to Stream over tus, so a dropped connection resumes
-function VideoBox({ id, video }: { id: string; video: Video }) {
-  const [pct, setPct] = useState<number | null>(null);
-  const [msg, setMsg] = useState("");
-  async function onPick([file]: File[]) {
-    if (!file) return;
-    setMsg("Starting…");
-    const res = await videoUpload(id, file.name, file.size);
-    if ("error" in res) return setMsg(res.error);
-    setPct(0);
-    const peaks = peaksFrom(file);
-    await new Promise<void>((resolve) => {
-      new TusUpload(file, {
-        uploadUrl: res.uploadUrl,
-        chunkSize: 50 * 1024 * 1024,
-        onProgress: (sent, total) => setPct(Math.round((sent / total) * 100)),
-        onError: (e) => { setMsg(`Upload failed: ${e.message}`); resolve(); },
-        onSuccess: () => { setMsg("Uploaded. Stream is encoding it now."); resolve(); },
-      }).start();
-    });
-    const p = await peaks;
-    if (p) await savePeaks(id, p);
-    setPct(null);
-    location.reload();
-  }
+// Poster: a frame from the video (the default) or an uploaded image. Saving on the video tab drops a saved image.
+function PosterPicker({ values, video, uploads }: { values: Values; video: Video; uploads: boolean }) {
+  const [mode, setMode] = useState<"video" | "upload">("video");
   return (
-    <Section title="Video">
-      <p className="font-sans text-xs text-dim -mt-1">MP4 or MOV, H.264, any size. Landscape 16:9 plays best. {LABEL[video.status]}{video.status === "ready" && video.durationSec ? ` · ${Math.round(video.durationSec)}s` : ""}{video.uid && !video.peaks && video.status !== "none" ? " · no waveform (the file was too large to scan)" : ""}</p>
-      {pct !== null && <progress value={pct} max={100} className="w-full h-2 accent-cut" aria-label="Upload progress" />}
-      <div className="flex items-center gap-3 flex-wrap">
-        <FileButton accept="video/mp4,video/quicktime" onPick={onPick} disabled={pct !== null}>{video.uid ? "Replace video" : "Choose video"}</FileButton>
-        {video.uid && pct === null && <button type="button" onClick={async () => { if (confirm("Remove the video from this project?")) { await removeVideo(id); location.reload(); } }} className="font-mono text-xs text-dim hover:text-paper underline">Remove</button>}
-        <p className="font-mono text-xs text-dim" aria-live="polite">{pct !== null ? `${pct}%` : msg}</p>
+    <>
+      <div className="flex gap-px bg-line border border-line w-fit" role="group" aria-label="Poster source">
+        {([["video", "Frame from the video"], ["upload", "Upload an image"]] as const).map(([m, text]) => <button key={m} type="button" onClick={() => setMode(m)} aria-pressed={mode === m} className={`font-mono text-[11px] uppercase h-9 px-3 ${mode === m ? "bg-track text-paper" : "bg-panel text-dim hover:text-paper"}`}>{text}</button>)}
       </div>
-    </Section>
+      {mode === "video" ? (
+        <>
+          <input type="hidden" name="posterKey" value="" />
+          {values.posterKey && <p className="font-mono text-xs text-dim">An uploaded poster is saved. Saving on this tab removes it and uses the frame instead.</p>}
+          <PosterScrub initial={Math.round((Number(values.posterTimeSec) || 1) / STEP) * STEP} video={video} />
+        </>
+      ) : (
+        <>
+          <input type="hidden" name="posterTimeSec" value={values.posterTimeSec || "1"} />
+          <Upload name="posterKey" kind="poster" label="Poster image" hint="Landscape 16:9, 1920×1080. JPG, PNG, or WebP under 10 MB." accept={IMG} initial={values.posterKey} enabled={uploads} preview={(key) => <Image src={r2Url(key)} alt="" width={384} height={216} unoptimized className="w-full max-w-96 aspect-video object-cover border border-line" />} />
+        </>
+      )}
+    </>
   );
 }
 
-// 240 loudness bins from the file's audio, for the A1 waveform. Skipped above 300 MB: decoding needs the whole file in memory.
-async function peaksFrom(file: File): Promise<number[] | null> {
-  if (file.size > 300 * 1024 * 1024) return null;
-  try {
-    const ctx = new AudioContext();
-    const buf = await ctx.decodeAudioData(await file.arrayBuffer());
-    const data = buf.getChannelData(0), step = Math.floor(data.length / 240);
-    const peaks = Array.from({ length: 240 }, (_, i) => { let m = 0; for (let k = i * step; k < (i + 1) * step; k += 16) m = Math.max(m, Math.abs(data[k])); return m; });
-    const max = Math.max(...peaks) || 1;
-    await ctx.close();
-    return peaks.map((v) => Math.round((v / max) * 100) / 100);
-  } catch {
-    return null;
-  }
+// Scrub with Stream's thumbnails: small JPEGs from the edge, no video pipeline. The ones around the slider are
+// fetched ahead (from the first hover or focus on the slider), so a drag shows frames at once. Only the time is saved; Stream renders the full poster from it.
+const STEP = 0.5, AHEAD = 12, H = 270;
+function PosterScrub({ initial, video }: { initial: number; video: Video }) {
+  const [t, setT] = useState(initial);
+  const seen = useRef(new Set<string>());
+  const ready = !!video.uid && !video.uid.startsWith("http") && video.status === "ready" && !!video.durationSec;
+  const max = ready ? Math.floor(video.durationSec! / STEP) * STEP : 0;
+  const url = (sec: number) => thumbUrl(video.uid!, Math.round(sec * 10) / 10, H)!;
+  const prefetch = (sec: number) => {
+    for (let k = -AHEAD; k <= AHEAD; k++) {
+      const u = Math.min(max, Math.max(0, sec + k * STEP));
+      const src = url(u);
+      if (seen.current.has(src)) continue;
+      seen.current.add(src);
+      new window.Image().src = src;
+    }
+  };
+  const onSlide = (val: number) => { setT(val); prefetch(val); };
+  return (
+    <div className="grid gap-2 max-w-2xl">
+      <input type="hidden" name="posterTimeSec" value={t} />
+      {ready ? (
+        <>
+          <Image src={url(t)} alt="" width={480} height={H} unoptimized priority className="w-full aspect-video bg-ink border border-line object-contain" />
+          <div className="flex items-center gap-3">
+            <input type="range" min={0} max={max} step={STEP} value={t} onChange={(e) => onSlide(Number(e.target.value))} onPointerEnter={() => prefetch(t)} onFocus={() => prefetch(t)} aria-label="Poster frame time" className="flex-1 accent-cut" />
+            <span className="font-mono text-xs text-dim w-20 text-right">{tc(t)}</span>
+            {t !== initial && <button type="button" onClick={() => onSlide(initial)} className="font-mono text-xs text-dim hover:text-paper underline">Reset</button>}
+          </div>
+        </>
+      ) : (
+        <p className="font-sans text-xs text-dim">Scrub to a frame once the video is ready.</p>
+      )}
+    </div>
+  );
+}
+
+// One flow on screen: Uploading → Encoding → Scanning audio → Ready. The shell's render queue does the work;
+// this box only hands it the file and shows where the job is.
+function VideoBox({ id, title, video }: { id: string; title: string; video: Video }) {
+  const job = useJob(id);
+  const router = useRouter();
+  const stage = job && job.stage !== "done"
+    ? { queued: "Queued · waiting for the pipe", uploading: `Uploading · ${Math.round(job.pct * 100)}%`, encoding: "Encoding on Cloudflare Stream…", scanning: `Scanning audio for the waveform · ${Math.round(job.pct * 100)}%`, error: `Failed · ${job.error}` }[job.stage]
+    : video.status === "processing" ? "Encoding on Cloudflare Stream… (open any admin page and it keeps going)" : video.status === "ready" && !video.peaks ? "Scanning audio for the waveform…" : video.status === "ready" ? `Ready · ${Math.round(video.durationSec ?? 0)}s` : video.status === "error" ? "Stream could not encode this file" : "No video yet";
+  const live = (job && job.stage !== "done" && job.stage !== "error") || video.status === "processing" || (video.status === "ready" && !video.peaks);
+  const busy = job?.stage === "queued" || job?.stage === "uploading";
+  return (
+    <Section title="Video">
+      <p className="font-sans text-xs text-dim -mt-1">MP4 or MOV, H.264, any size. Landscape 16:9 plays best. You can keep editing other projects while it uploads; just keep the tab open.</p>
+      <div className="flex items-center gap-2 font-mono text-xs">
+        <span className={`h-2 w-2 rounded-full ${video.status === "error" || job?.stage === "error" ? "bg-cut" : live ? "bg-paper animate-pulse" : video.status === "ready" ? "bg-paper" : "bg-line"}`} aria-hidden="true" />
+        <span aria-live="polite">{stage}</span>
+      </div>
+      {busy && <progress value={job.pct} max={1} className="w-full h-2 accent-cut" aria-label="Upload progress" />}
+      <div className="flex items-center gap-3 flex-wrap">
+        <FileButton accept="video/mp4,video/quicktime" onPick={([file]) => file && enqueue(id, title, file)} disabled={busy}>{video.uid ? "Replace video" : "Choose video"}</FileButton>
+        {video.uid && !busy && <button type="button" onClick={async () => { if (confirm("Remove the video from this project?")) { await removeVideo(id); router.refresh(); } }} className="font-mono text-xs text-dim hover:text-paper underline">Remove</button>}
+      </div>
+    </Section>
+  );
 }

@@ -42,6 +42,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      // browser extensions add attributes here before React loads; that is not a mismatch worth a warning
+      suppressHydrationWarning
       className={`${clash.variable} ${general.variable} ${jetbrains.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>

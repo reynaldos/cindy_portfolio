@@ -26,10 +26,10 @@ export function AdminNav({ children }: { children: React.ReactNode }) {
         <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-dim">Cuts By Cindy · Admin</span>
       </header>
       {open && <button type="button" onClick={() => setOpen(false)} aria-label="Close menu" className="md:hidden fixed inset-0 top-12 z-10 bg-ink/70" />}
-      <aside id="admin-nav" className={`${open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform motion-reduce:transition-none fixed md:sticky top-12 md:top-0 bottom-0 left-0 md:h-dvh z-10 w-64 md:w-auto bg-panel border-r border-line p-4 flex flex-col gap-1`}>
+      <aside id="admin-nav" className={`${open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform motion-reduce:transition-none fixed md:sticky top-12 md:top-0 bottom-0 left-0 md:h-dvh z-10 w-64 md:w-auto bg-panel border-r border-line p-4 flex flex-col gap-1 min-w-0 overflow-hidden`}>
         <div className="hidden md:block font-mono text-[11px] uppercase tracking-[0.08em] text-dim mb-3">Cuts By Cindy · Admin</div>
         {NAV.map(([href, name]) => <Link key={href} href={href} onClick={() => setOpen(false)} aria-current={path === href ? "page" : undefined} className={`font-mono text-sm px-3 py-2 rounded-xs hover:bg-track ${path === href ? "bg-track text-paper" : "text-paper"}`}>{name}</Link>)}
-        <div className="mt-auto pt-4 flex flex-col gap-2">
+        <div className="mt-auto pt-4 flex flex-col gap-2 min-w-0">
           <Link href="/" className="font-mono text-xs text-dim hover:text-paper px-3 py-2">View site ↗</Link>
           {children}
         </div>
