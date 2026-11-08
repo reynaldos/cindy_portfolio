@@ -170,6 +170,7 @@
 .about-dev a.site { margin-top: 16px; font-size: 12px; padding: 4px 12px; border-radius: 6px; background: rgba(255, 255, 255, 0.1); color: #f2f2f2; text-decoration: none; }
 .about-dev a.site:hover { background: rgba(255, 255, 255, 0.18); }
 .about-dev .fine { font-size: 10px; color: #7a7a80; margin-top: 16px; }
+.about-dev .legal { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); width: 100%; line-height: 1.5; }
 
 /* the file name sits in the lane's top-right corner and never hides the wave */
 .a1 .tag { position: absolute; right: 6px; top: 2px; font-size: 9px; line-height: 1; color: var(--color-dim); background: color-mix(in srgb, var(--color-bay) 70%, transparent); padding: 1px 4px; letter-spacing: 0.08em; white-space: nowrap; max-width: 40%; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
@@ -332,16 +333,20 @@ html.rm .app *, html.rm .app *::before, html.rm .app *::after { animation: none 
 .transport .tc .tot { color: var(--color-dim); }
 
 /* the home hero sits on the monitor */
-.hero { position: absolute; left: 5%; right: 5%; bottom: 11%; pointer-events: none; }
-.hero h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 7.4cqw, 124px); line-height: 0.88; letter-spacing: -0.02em; margin: 0; text-transform: uppercase; text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6); }
-.hero p { margin: 12px 0 0; font-family: var(--font-sans); font-size: clamp(13px, 1.2cqw, 17px); line-height: 1.5; border-left: 1px solid var(--color-paper); padding-left: 10px; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8); }
+.hero { position: absolute; left: 5%; right: 5%; bottom: 11%; pointer-events: none; isolation: isolate; }
+.hero::before { content: ""; position: absolute; inset: -40% -8% -30% -8%; background: radial-gradient(ellipse at 20% 70%, rgba(14, 14, 16, 0.55), transparent 65%); z-index: -1; pointer-events: none; }
+.hero h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 7.4cqw, 124px); line-height: 0.88; letter-spacing: -0.02em; margin: 0; text-transform: uppercase; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7), 0 6px 24px rgba(0, 0, 0, 0.8), 0 0 60px rgba(0, 0, 0, 0.5); }
+.hero p { margin: 12px 0 0; font-family: var(--font-sans); font-size: clamp(13px, 1.2cqw, 17px); line-height: 1.5; border-left: 1px solid var(--color-paper); padding-left: 10px; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 3px 14px rgba(0, 0, 0, 0.8); }
 .hero .btn { pointer-events: auto; margin-top: 16px; }
+/* the page title takes script focus after a cut so readers announce it; that focus never needs a ring */
+[data-h1]:focus { outline: none; }
 .hero h1, .hero p { transition: font-size var(--d-6f) var(--ease-arrive), opacity var(--d-6f) var(--ease-arrive); }
 .app[data-playing] .hero h1 { font-size: clamp(24px, 3.2cqw, 48px); }
 .app[data-playing] .hero p { opacity: 0; height: 0; margin: 0; overflow: hidden; }
 .btn { min-height: 48px; padding: 0 16px; border-radius: 3px; font-size: 13px; font-weight: 700; cursor: pointer; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); text-decoration: none; }
 .btn svg { width: 12px; height: 12px; fill: currentColor; }
-.btn.sq { width: 48px; padding: 0; justify-content: center; }
+/* grid, not flex: Safari does not centre flex content inside a <button> */
+.btn.sq { width: 48px; padding: 0; display: grid; place-items: center; }
 .btn.sq svg { width: 16px; height: 16px; }
 .btn.pri { background: var(--color-cut); color: var(--color-ink); }
 .btn.pri:hover { background: var(--color-cut-text); }
@@ -358,7 +363,7 @@ html.rm .app *, html.rm .app *::before, html.rm .app *::after { animation: none 
   .mon-wrap { padding-top: 12px; }
   .mon-wrap .ptab { display: none; }
   .mon-box { width: 100%; }
-  .transport button { min-height: 44px; min-width: 44px; }
+  .transport button { min-height: 44px; min-width: 44px; padding: 0; display: grid; place-items: center; }
   .transport kbd, .transport .tot { display: none; }
   /* the label stays for screen readers; only the glyph shows */
   .transport .lbl { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
