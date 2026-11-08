@@ -161,7 +161,7 @@ export function Monitor({ clips, index = 0, mode, sticky, compact, still, childr
         <div className="ptab"><span className="on">Program: {clip?.file ?? "—"}</span><span className="r">{fmt}</span></div>
         <div className="monitor" data-status={status} data-tgt>
           {clip?.poster ? <Image className="poster" src={clip.poster} alt="" fill sizes="(min-width: 1024px) 60vw, 100vw" priority={mode === "reel"} /> : !canPlay && <div className="ph"><span className="lbl">Video coming soon</span></div>}
-          <video ref={video} playsInline preload="none" muted crossOrigin="anonymous" aria-label="Program monitor" poster={clip?.poster ?? undefined}
+          <video ref={video} playsInline preload="none" muted crossOrigin="anonymous" aria-label="Program monitor"
             onPlay={() => { setPlaying(true); setStarted(true); setStatus("idle"); }} onPause={() => setPlaying(false)} onEnded={() => setPlaying(false)}
             onLoadedMetadata={(e) => setDur(e.currentTarget.duration)} onTimeUpdate={(e) => onTime(e.currentTarget)} onError={() => setStatus("error")} onVolumeChange={(e) => setMuted(e.currentTarget.muted)}>
             {clip?.captions && <track kind="captions" src={clip.captions} srcLang="en" label="English" default />}
