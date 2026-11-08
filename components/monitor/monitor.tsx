@@ -6,7 +6,7 @@ import { Maximize, Pause, Play, SkipBack, SkipForward, Volume2, VolumeX } from "
 import type Hls from "hls.js";
 import { onBay } from "@/components/bay/bus";
 import { tc } from "@/components/bay/const";
-import { emitMonitor } from "@/components/monitor/state";
+import { emitMonitor, IDLE } from "@/components/monitor/state";
 import type { Clip } from "@/lib/media";
 
 type Props = {
@@ -25,6 +25,7 @@ export function Monitor({ clips, index = 0, mode, sticky, compact, still, childr
   const audio = useRef<{ ctx: AudioContext; an: AnalyserNode[] } | null>(null);
   const [idx, setIdx] = useState(index);
   const [playing, setPlaying] = useState(false);
+  const [started, setStarted] = useState(false);
   const [muted, setMuted] = useState(true);
   const [t, setT] = useState(0);
   const [dur, setDur] = useState(0);
@@ -33,8 +34,8 @@ export function Monitor({ clips, index = 0, mode, sticky, compact, still, childr
   const fps = clip?.fps ?? 24;
 
   useEffect(() => {
-    emitMonitor({ playing, muted, file: clip?.file ?? null, peaks: clip?.peaks ?? null, duration: dur || clip?.durationSec || 0, index: idx });
-  }, [playing, muted, clip, dur, idx]);
+    emitMonitor({ playing, started, muted, file: clip?.file ?? null, peaks: clip?.peaks ?? null, duration: dur || clip?.durationSec || 0, index: idx });
+  }, [playing, started, muted, clip, dur, idx]);
 
   // the stream attaches on the first play, never before
   const attach = useCallback(async (v: HTMLVideoElement, src: string) => {
@@ -115,7 +116,20 @@ export function Monitor({ clips, index = 0, mode, sticky, compact, still, childr
     return () => { cancelAnimationFrame(raf); ro.disconnect(); };
   }, [playing, muted]);
 
-  useEffect(() => () => hls.current?.destroy(), []);
+  // Leaving the page stops the clip: a detached <video> wired into an AudioContext would keep playing on its own.
+  // Coming back (the router keeps the page alive) re-syncs the state with the element, which is paused by then.
+  useEffect(() => {
+    const v = video.current;
+    const sync = setTimeout(() => { setPlaying(!!v && !v.paused); setStarted(false); }, 0);
+    return () => {
+      clearTimeout(sync);
+      v?.pause();
+      hls.current?.destroy();
+      void audio.current?.ctx.close();
+      audio.current = null;
+      emitMonitor({ ...IDLE });
+    };
+  }, []);
 
   // timeupdate can arrive while the old page unmounts, so read the element from the event, not the ref
   const onTime = (v: HTMLVideoElement) => {
@@ -147,7 +161,7 @@ export function Monitor({ clips, index = 0, mode, sticky, compact, still, childr
         <div className="monitor" data-status={status} data-tgt>
           {clip?.poster ? <Image className="poster" src={clip.poster} alt="" fill sizes="(min-width: 1024px) 60vw, 100vw" priority={mode === "reel"} /> : !canPlay && <div className="ph"><span className="lbl">Video coming soon</span></div>}
           <video ref={video} playsInline preload="none" muted crossOrigin="anonymous" aria-label="Program monitor" poster={clip?.poster ?? undefined}
-            onPlay={() => { setPlaying(true); setStatus("idle"); }} onPause={() => setPlaying(false)} onEnded={() => setPlaying(false)}
+            onPlay={() => { setPlaying(true); setStarted(true); setStatus("idle"); }} onPause={() => setPlaying(false)} onEnded={() => setPlaying(false)}
             onLoadedMetadata={(e) => setDur(e.currentTarget.duration)} onTimeUpdate={(e) => onTime(e.currentTarget)} onError={() => setStatus("error")} onVolumeChange={(e) => setMuted(e.currentTarget.muted)}>
             {clip?.captions && <track kind="captions" src={clip.captions} srcLang="en" label="English" default />}
           </video>

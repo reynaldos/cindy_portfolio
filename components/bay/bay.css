@@ -338,21 +338,17 @@ html.rm .app *, html.rm .app *::before, html.rm .app *::after { animation: none 
 .transport .tc .tot { color: var(--color-dim); }
 
 /* the home hero sits on the monitor */
-.hero { position: absolute; left: 5%; right: 5%; bottom: 11%; pointer-events: none; isolation: isolate; }
-.hero::before { content: ""; position: absolute; inset: -40% -8% -30% -8%; background: radial-gradient(ellipse at 20% 70%, color-mix(in srgb, var(--color-ink) 55%, transparent), transparent 65%); z-index: -1; pointer-events: none; }
-.hero h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 7.4cqw, 124px); line-height: 0.88; letter-spacing: -0.02em; margin: 0; text-transform: uppercase; text-shadow: 0 2px 4px color-mix(in srgb, var(--color-black) 70%, transparent), 0 6px 24px color-mix(in srgb, var(--color-black) 80%, transparent), 0 0 60px color-mix(in srgb, var(--color-black) 50%, transparent); }
-.hero p { margin: 12px 0 0; font-family: var(--font-sans); font-size: clamp(13px, 1.2cqw, 17px); line-height: 1.5; border-left: 1px solid var(--color-paper); padding-left: 10px; text-shadow: 0 1px 3px color-mix(in srgb, var(--color-black) 90%, transparent), 0 3px 14px color-mix(in srgb, var(--color-black) 80%, transparent); }
+.hero { position: absolute; left: 5%; right: 5%; bottom: 7%; pointer-events: none; }
+.hero h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 6cqw, 112px); line-height: 0.88; letter-spacing: -0.02em; margin: 0; text-transform: uppercase; text-shadow: 0 0.02em 0.06em color-mix(in srgb, var(--color-black) 55%, transparent), 0 0.06em 0.3em color-mix(in srgb, var(--color-black) 55%, transparent); }
+.hero p { margin: 12px 0 0; font-family: var(--font-sans); font-size: clamp(13px, 1.2cqw, 17px); line-height: 1.5; border-left: 1px solid var(--color-paper); padding-left: 10px; text-shadow: 0 0.06em 0.4em color-mix(in srgb, var(--color-black) 80%, transparent); }
 .hero .btn { pointer-events: auto; margin-top: 16px; }
 /* the page title takes script focus after a cut so readers announce it; that focus never needs a ring */
 [data-h1]:focus { outline: none; }
 .hero h1, .hero p { transition: font-size var(--d-6f) var(--ease-arrive), opacity var(--d-6f) var(--ease-arrive); }
 .app[data-playing] .hero h1 { font-size: clamp(24px, 3.2cqw, 48px); }
-.app[data-playing] .hero p { opacity: 0; height: 0; margin: 0; overflow: hidden; }
+.app[data-playing] .hero p { font-size: clamp(12px, 1cqw, 14px); }
 .btn { min-height: 48px; padding: 0 16px; border-radius: 3px; font-size: 13px; font-weight: 700; cursor: pointer; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); text-decoration: none; }
 .btn svg { width: 12px; height: 12px; fill: currentColor; }
-/* grid, not flex: Safari does not centre flex content inside a <button> */
-.btn.sq { width: 48px; padding: 0; display: grid; place-items: center; }
-.btn.sq svg { width: 16px; height: 16px; }
 .btn.pri { background: var(--color-cut); color: var(--color-ink); }
 .btn.pri:hover { background: var(--color-cut-text); }
 .btn.pri:active { transform: translateY(1px); }
