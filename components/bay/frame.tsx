@@ -126,7 +126,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
     ["File", [["New inquiry…", "contact", "⌘N"], null, ["Copy email address", "copy"], ...(profile?.instagramUrl ? [["Instagram", `link:${profile.instagramUrl}`] as MenuItem] : []), ...(profile?.vimeoUrl ? [["Vimeo", `link:${profile.vimeoUrl}`] as MenuItem] : []), null, ["Close menu", "close", "esc"]]],
     ["Clip", [["Play / Pause", "toggle", "L"], ["Pause", "pause", "K"], ["Back 5 seconds", "back", "J"], ["Play / Pause", "toggle", "Space"], null, ["Previous clip", "prev", "←"], ["Next clip", "next", "→"], ["Watch full cut (sound)", "watch"], ["Mute / Unmute", "mute", "M"], null, ["Go to start", "home", "Home"], ["Go to end credits", "end", "End"]]],
     ["Window", [["Project bin", "bin", "", binOpen], ["Inspector", "insp", "", inspOn], ["Timeline (keep open)", "tlpin", "", tlPin], null, ["Reduce motion", "rm", "", rm]]],
-    ["Help", [["Keyboard shortcuts", "keys", "?"], ["About Cindy", "link:/about"], null, ["Who made this", "made"]]],
+    ["Help", [["Keyboard shortcuts", "keys", "?"], ["About Cindy", "link:/about"], null, ["Admin", "link:/admin"], ["Who made this", "made"]]],
   ];
 
   // an open menu closes on a click, a tap, or a focus move anywhere outside the menu bar
@@ -181,7 +181,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
       onClickCapture={onNavClick}
     >
       <div className="mbar">
-        <span className="mark" aria-hidden="true" />
+        <Image className="mark" src="/cbc.svg" alt="" width={16} height={16} />
         <Link href="/" className="appname" title="Home">{brand}</Link>
         <div className="menus">
           {menus.map(([name, items], i) => (
@@ -289,12 +289,12 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
       <dialog ref={about} className="about-dev" aria-labelledby="made-title" onClick={(e) => { if (e.target === e.currentTarget) about.current?.close(); }}>
         <div className="bar"><button type="button" onClick={() => about.current?.close()} aria-label="Close" /></div>
         <div className="body">
-          <div className="logo"><Image src="/rey.png" alt="" width={88} height={88} /></div>
+          <div className="logo"><Image src="/cbc.svg" alt="" width={88} height={88} /></div>
           <h2 id="made-title">Cuts By Cindy</h2>
           <div className="sub">Video editor portfolio · 2026</div>
           <dl><dt>Designed by</dt><dd>Rey Sanchez</dd><dt>Developed by</dt><dd>Rey Sanchez</dd></dl>
           <a className="site" href="https://reysanchez.dev" target="_blank" rel="noopener">reysanchez.dev ↗</a>
-          <div className="fine">Made in Atlanta.</div>
+          <div className="fine">Based in Atlanta.</div>
         </div>
       </dialog>
       <Brackets />

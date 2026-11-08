@@ -16,7 +16,7 @@
 
 /* app bar: a CBC mark, the brand, and four dropdown menus */
 .mbar { height: 26px; flex: none; display: flex; align-items: center; padding: 0 max(12px, env(safe-area-inset-right, 0px)) 0 max(12px, env(safe-area-inset-left, 0px)); background: var(--color-appbar); font: 13px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--color-appbar-ink); position: relative; z-index: 40; user-select: none; -webkit-user-select: none; }
-.mbar .mark { width: 16px; height: 16px; flex: none; margin: 0 10px 0 2px; border-radius: 2px; background: linear-gradient(120deg, var(--color-cut) 0 45%, var(--color-appbar) 45% 55%, var(--color-cut) 55%); }
+.mbar .mark { width: 16px; height: 16px; flex: none; margin: 0 10px 0 2px; display: block; }
 .mbar .appname { font-weight: 700; padding: 0 10px 0 0; white-space: nowrap; color: inherit; text-decoration: none; display: flex; align-items: center; height: 26px; }
 .mbar .menus { display: flex; }
 .mbar .menus > div { position: relative; }

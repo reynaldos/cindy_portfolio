@@ -13,7 +13,7 @@ export default function Image() {
       <div style={{ width: "100%", height: "100%", background: "#0e0e10", color: "#f4f1ea", display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 110px", position: "relative" }}>
         {corner("left", "top")}{corner("right", "top")}{corner("left", "bottom")}{corner("right", "bottom")}
         <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 24, color: "#8a8a93", letterSpacing: 2 }}>
-          <div style={{ width: 14, height: 14, background: "#ff3b2f", borderRadius: 7 }} />REC · PROGRAM: CUTS_BY_CINDY_REEL.mp4
+          <svg width="28" height="28" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#ff3b2f" /><path d="M38 0 L50 0 L26 64 L14 64 Z" fill="#1c1c1f" /><path d="M20 12 a7 7 0 1 0 0 14 M50 38 a7 7 0 1 0 0 14" fill="none" stroke="#1c1c1f" strokeWidth="3.2" strokeLinecap="round" /></svg>REC · PROGRAM: CUTS_BY_CINDY_REEL.mp4
         </div>
         <div style={{ fontSize: 124, fontWeight: 700, lineHeight: 1, marginTop: 24, letterSpacing: -4 }}>Cuts By Cindy</div>
         <div style={{ fontSize: 40, marginTop: 20, color: "#c9c5bc" }}>Video Editor · Los Angeles</div>
