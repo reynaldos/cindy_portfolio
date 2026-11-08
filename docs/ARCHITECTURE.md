@@ -89,7 +89,7 @@ model Profile {               // one row, id = 1
   contactEmail  String
   replyTime     String?              // "within 2 business days"
   instagramUrl  String?
-  vimeoUrl      String?
+  youtubeUrl      String?
   linkedinUrl   String?
   reelProjectId String?              // the lander reel
   updatedAt     DateTime @updatedAt

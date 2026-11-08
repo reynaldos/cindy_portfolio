@@ -24,7 +24,7 @@ model Profile {
   contactEmail  String
   replyTime     String?
   instagramUrl  String?
-  vimeoUrl      String?
+  youtubeUrl      String?
   linkedinUrl   String?
   reelProjectId String?
   updatedAt     DateTime @updatedAt

@@ -337,7 +337,7 @@ There are no pills and no circles, except the record dot and the category dots. 
 - The draft stays when the dialog closes.
 
 ### End Credits (signature)
-- A black block at the end of every page: credit lines (Edited by, Contact, Instagram, Vimeo, Resume, Based in), one client marquee, "THAT'S A WRAP.", and "Start a project".
+- A black block at the end of every page: credit lines (Edited by, Contact, Instagram, YouTube, Resume, Based in), one client marquee, "THAT'S A WRAP.", and "Start a project".
 - The marquee pauses on hover, and a click on it toggles pause. It has no button. It also pauses while keyboard focus is anywhere in the end credits. It is static under reduced motion.
 
 ### Razor Cut (signature motion)

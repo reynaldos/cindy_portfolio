@@ -27,7 +27,7 @@ const Profile = z.object({
   contactEmail: z.email(),
   replyTime: z.string().trim().transform((v) => v || null),
   instagramUrl: url,
-  vimeoUrl: url,
+  youtubeUrl: url,
   linkedinUrl: url,
   reelProjectId: z.string().transform((v) => v || null),
   portraitKey: z.string().transform((v) => v || null),

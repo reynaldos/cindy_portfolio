@@ -17,7 +17,7 @@ export function personLd(p: Profile) {
     address: { "@type": "PostalAddress", addressLocality: p.location.split(",")[0].trim(), addressRegion: "CA", addressCountry: "US" },
     knowsAbout: ["Video editing", "Commercial editing", "Music video editing", "Short film editing", "Trailer editing", ...p.tools],
     ...(p.studied ? { alumniOf: p.studied } : {}),
-    sameAs: [p.instagramUrl, p.vimeoUrl, p.linkedinUrl].filter(Boolean),
+    sameAs: [p.instagramUrl, p.youtubeUrl, p.linkedinUrl].filter(Boolean),
   };
 }
 

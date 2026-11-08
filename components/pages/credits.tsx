@@ -12,7 +12,7 @@ export function Credits({ profile }: { profile: Profile | null }) {
       <dl className="lines">
         <dt>Edited by</dt><dd>{profile.name}</dd>
         <dt>Contact</dt><dd><a href={`mailto:${profile.contactEmail}`}>{profile.contactEmail}</a> <CopyEmail email={profile.contactEmail} /></dd>
-        {([["Instagram", profile.instagramUrl], ["Vimeo", profile.vimeoUrl], ["LinkedIn", profile.linkedinUrl]] as const).map(([name, url]) => url && <Fragment key={name}><dt>{name}</dt><dd><a href={url} target="_blank" rel="noopener">{url.replace(/^https?:\/\/(www\.)?/, "")}</a></dd></Fragment>)}
+        {([["Instagram", profile.instagramUrl], ["YouTube", profile.youtubeUrl], ["LinkedIn", profile.linkedinUrl]] as const).map(([name, url]) => url && <Fragment key={name}><dt>{name}</dt><dd><a href={url} target="_blank" rel="noopener">{url.replace(/^https?:\/\/(www\.)?/, "")}</a></dd></Fragment>)}
         {profile.resumeKey && <><dt>Resume</dt><dd><a href={r2Url(profile.resumeKey)} target="_blank" rel="noopener">Resume (PDF)</a></dd></>}
         <dt>Based in</dt><dd>{profile.location} · <LaClock /></dd>
       </dl>

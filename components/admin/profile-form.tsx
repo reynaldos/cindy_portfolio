@@ -36,7 +36,7 @@ export function ProfileForm({ values, projects, uploads }: Props) {
           <Text name="replyTime" label="Reply time (optional, e.g. 1–2 days)" v={values} />
         </div>
         <Text name="instagramUrl" label="Instagram URL" v={values} type="url" />
-        <Text name="vimeoUrl" label="Vimeo URL" v={values} type="url" />
+        <Text name="youtubeUrl" label="YouTube URL" v={values} type="url" />
         <Text name="linkedinUrl" label="LinkedIn URL" v={values} type="url" />
       </Section>
       <Section title="Reel">

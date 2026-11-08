@@ -123,7 +123,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
   const copyEmail = () => navigator.clipboard?.writeText(email).then(() => setNote("Email copied"), () => setNote(`Email: ${email}`));
 
   const menus: [string, MenuItem[]][] = [
-    ["File", [["New inquiry…", "contact", "⌘N"], null, ["Copy email address", "copy"], ...(profile?.instagramUrl ? [["Instagram", `link:${profile.instagramUrl}`] as MenuItem] : []), ...(profile?.vimeoUrl ? [["Vimeo", `link:${profile.vimeoUrl}`] as MenuItem] : []), null, ["Close menu", "close", "esc"]]],
+    ["File", [["New inquiry…", "contact", "⌘N"], null, ["Copy email address", "copy"], ...(profile?.instagramUrl ? [["Instagram", `link:${profile.instagramUrl}`] as MenuItem] : []), ...(profile?.youtubeUrl ? [["YouTube", `link:${profile.youtubeUrl}`] as MenuItem] : []), null, ["Close menu", "close", "esc"]]],
     ["Clip", [["Play / Pause", "toggle", "L"], ["Pause", "pause", "K"], ["Back 5 seconds", "back", "J"], ["Play / Pause", "toggle", "Space"], null, ["Previous clip", "prev", "←"], ["Next clip", "next", "→"], ["Watch full cut (sound)", "watch"], ["Mute / Unmute", "mute", "M"], null, ["Go to start", "home", "Home"], ["Go to end credits", "end", "End"]]],
     ["Window", [["Project bin", "bin", "", binOpen], ["Inspector", "insp", "", inspOn], ["Timeline (keep open)", "tlpin", "", tlPin], null, ["Reduce motion", "rm", "", rm]]],
     ["Help", [["Keyboard shortcuts", "keys", "?"], ["About Cindy", "link:/about"], null, ["Admin", "link:/admin"], ["Who made this", "made"]]],
@@ -300,7 +300,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
         </div>
       </dialog>
       <Brackets />
-      <ContactDialog email={email} replyTime={profile?.replyTime ?? null} links={[["Instagram", profile?.instagramUrl], ["Vimeo", profile?.vimeoUrl], ["LinkedIn", profile?.linkedinUrl]].flatMap(([name, url]) => (url ? [{ name: name!, url }] : []))} />
+      <ContactDialog email={email} replyTime={profile?.replyTime ?? null} links={[["Instagram", profile?.instagramUrl], ["YouTube", profile?.youtubeUrl], ["LinkedIn", profile?.linkedinUrl]].flatMap(([name, url]) => (url ? [{ name: name!, url }] : []))} />
       <div className="sr" aria-live="polite">{note || `Now showing: ${projName}`}</div>
     </div>
   );
