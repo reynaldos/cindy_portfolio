@@ -1,11 +1,10 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { CATEGORY_SLUGS } from "@/components/bay/const";
+import { notFound, permanentRedirect } from "next/navigation";
 import { Monitor } from "@/components/monitor/monitor";
 import { CatChips } from "@/components/pages/chips";
 import { ClipInspectorLive, ClipRows } from "@/components/pages/clip-list";
 import { Credits } from "@/components/pages/credits";
-import { getCategories, getCategoryProjects, getProfile } from "@/lib/data";
+import { getCategories, getCategoryProjects, getCategorySlug, getProfile } from "@/lib/data";
 import { clipFromProject } from "@/lib/media";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbLd, videoLd } from "@/lib/seo";
@@ -15,18 +14,17 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   return cat ? { title: cat.name, description: cat.blurb ?? `${cat.name} cut by Cindy Peralta.`, alternates: { canonical: `/projects/${cat.slug}` } } : {};
 }
 
-// the four categories are fixed, so the build needs no database for them
-export function generateStaticParams() {
-  return CATEGORY_SLUGS.map((category) => ({ category }));
-}
-
 // the razor cut reveals a finished page, so navigation waits for the data instead of flashing a shell
 export const instant = false;
 
 export default async function Category({ params }: PageProps<"/projects/[category]">) {
   const { category } = await params;
   const [cat, categories, profile] = await Promise.all([getCategoryProjects(category), getCategories(), getProfile()]);
-  if (!cat) notFound();
+  if (!cat) {
+    const now = await getCategorySlug(category);
+    if (now) permanentRedirect(`/projects/${now}`);
+    notFound();
+  }
   return (
     <>
       <div className="page">

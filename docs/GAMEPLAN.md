@@ -28,6 +28,9 @@ Update the boxes after each task. Each task names the user story it serves, so c
 | US-14 | Cindy | create, edit, delete, publish, and reorder projects, with video upload | I can add new work myself |
 | US-15 | Cindy | pick and order the Recent Work spots and edit their story | the featured work stays fresh |
 | US-16 | Cindy | read and archive contact messages | I never miss an inquiry, even when email fails |
+| US-17 | Cindy | list the skills used on each project, picked from a bank of skills I used before | each clip shows what I did on it |
+| US-18 | Cindy | add, rename, and delete categories, with the URL following the name | the site fits the work I have, not four fixed boxes |
+| US-19 | Cindy | upload a video for the home page hero instead of picking a project | the first thing a visitor sees is the cut I choose |
 
 ---
 
@@ -93,6 +96,15 @@ Update the boxes after each task. Each task names the user story it serves, so c
 - [ ] 7.4 Performance check against the budget in ARCHITECTURE.md §5 (US-11)
 - [ ] 7.5 Vercel env vars (incl. `ADMIN_PASSWORD_HASH`, `SESSION_SECRET`), domain, Stream webhook, EmailJS template
 - [ ] 7.6 Replace every placeholder: clips, credits, email, socials, resume, reply time (all)
+
+## Phase 8 — Client requests
+- [x] 8.1 Contact dialog: project type dropdown uses the Radix/Lucide `Select`, portalled inside the dialog (US-08)
+- [x] 8.2 Contact dialog: a closed dialog in "failure" reopens on the form; "success" stays on the success screen; the draft stays until a send succeeds (US-08)
+- [x] 8.3 Skills per project: `Project.skills String[]` (planned SQL in `prisma/postgres/migrations/planned/`), chip field with a bank of every skill in use, shown in the inspector; seed carries six draft projects from LinkedIn (US-17)
+- [x] 8.4 Custom hero video: "Upload a reel of its own" on the Profile page makes a hidden draft "Home reel" project and points the home page at it, so the project upload path is reused; no schema change; the list marks it "home reel" (US-19)
+- [x] 8.5 Dynamic categories: add and delete (while empty) in the dialog, the singular is derived from the name, slug follows the name, `Category.oldSlugs` redirects old category and project links (planned SQL), fixed slugs removed from `const.ts` and the category page is no longer prebuilt (US-18)
+- [x] 8.6 SEO text follows the categories: root description and keywords, Person and Service JSON-LD, llms.txt (US-18)
+- LinkedIn import dropped: Cindy copies the data by hand.
 
 ---
 

@@ -11,12 +11,15 @@ export const instant = false;
 const VIDEO = { none: "no video", processing: "processing", ready: "ready", error: "video error" };
 
 export default async function AdminProjects() {
-  const cats = await db.category.findMany({ orderBy: { sortOrder: "asc" }, include: { projects: { orderBy: { sortOrder: "asc" } } } });
+  const [cats, profile] = await Promise.all([
+    db.category.findMany({ orderBy: { sortOrder: "asc" }, include: { projects: { orderBy: { sortOrder: "asc" } } } }),
+    db.profile.findUnique({ where: { id: 1 }, select: { reelProjectId: true } }),
+  ]);
   return (
     <>
       <div className="flex items-center justify-between mb-6 max-w-2xl">
         <h1 className="font-display text-4xl font-semibold">Projects</h1>
-        <CategoriesDialog cats={cats.map((c) => ({ id: c.id, name: c.name, slug: c.slug, color: c.color, count: c.projects.length }))} />
+        <CategoriesDialog cats={cats.map((c) => ({ id: c.id, name: c.name, color: c.color, count: c.projects.length }))} />
       </div>
       <form action={createProject} className="flex gap-2 flex-wrap items-end bg-panel border border-line p-4 mb-6 max-w-2xl">
         <label className={`${kick} grid gap-1 flex-1 min-w-48`}>New project title<input name="title" required className={field} /></label>
@@ -34,7 +37,7 @@ export default async function AdminProjects() {
             {c.projects.map((p) => { const live = p.status === "published"; return (
               <li key={p.id} className="flex items-center gap-2 bg-panel px-2 py-1">
                 <Link href={`/admin/projects/${p.id}`} className="flex items-center gap-3 flex-1 min-w-0 hover:bg-track px-2 py-2 rounded-xs">
-                  <span className="font-sans text-sm flex-1 truncate">{p.title}{p.subtitle && <span className="text-dim"> · {p.subtitle}</span>}</span>
+                  <span className="font-sans text-sm flex-1 truncate">{p.title}{p.subtitle && <span className="text-dim"> · {p.subtitle}</span>}{p.id === profile?.reelProjectId && <span className="text-dim"> · home reel</span>}</span>
                   <span className={`font-mono text-[11px] uppercase ${p.videoStatus === "error" ? "text-cut-text" : "text-dim"}`}>{VIDEO[p.videoStatus]}</span>
                 </Link>
                 <form action={setStatus.bind(null, p.id, live ? "draft" : "published")}>

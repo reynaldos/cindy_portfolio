@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useActionState, useRef, useState } from "react";
+import { X } from "lucide-react";
 import { enqueue, useJob } from "@/components/admin/queue";
 import { Area, FileButton, Section, Select, Status, Text, Upload, field, label, putFile, type Values } from "@/components/admin/fields";
 import { deleteProject, removeVideo, saveProject, type SaveResult } from "@/lib/actions/projects";
@@ -12,11 +13,11 @@ import { r2Url, thumbUrl } from "@/lib/media";
 
 type Still = { key: string; alt: string };
 type Video = { uid: string | null; status: "none" | "processing" | "ready" | "error"; peaks: boolean; durationSec: number | null };
-type Props = { id: string; values: Values; cats: { id: string; name: string; slug: string }[]; stills: Still[]; video: Video; publicUrl: string | null; uploads: boolean };
+type Props = { id: string; values: Values; cats: { id: string; name: string; slug: string }[]; skills: string[]; bank: string[]; stills: Still[]; video: Video; publicUrl: string | null; uploads: boolean };
 
 const IMG = "image/jpeg,image/png,image/webp";
 
-export function ProjectForm({ id, values, cats, stills: initialStills, video, publicUrl, uploads }: Props) {
+export function ProjectForm({ id, values, cats, skills, bank, stills: initialStills, video, publicUrl, uploads }: Props) {
   const [state, action, pending] = useActionState<SaveResult, FormData>(saveProject.bind(null, id), undefined);
   const [catId, setCatId] = useState(values.categoryId);
   const catSlug = cats.find((c) => c.id === catId)?.slug ?? "";
@@ -51,6 +52,9 @@ export function ProjectForm({ id, values, cats, stills: initialStills, video, pu
           </div>
           <Area name="credits" label="Full credits, one per line as Role: Name" v={values} rows={5} />
         </Section>
+        <Section title="Skills">
+          <Skills initial={skills} bank={bank} />
+        </Section>
         <Section title="Poster">
           <PosterPicker values={values} video={video} uploads={uploads} />
         </Section>
@@ -72,6 +76,32 @@ export function ProjectForm({ id, values, cats, stills: initialStills, video, pu
       <form action={deleteProject.bind(null, id)} onSubmit={(e) => { if (!confirm("Delete this project, its video, and its files? This cannot be undone.")) e.preventDefault(); }} className="border-t border-line pt-4">
         <button type="submit" className="font-mono text-xs text-cut-text hover:underline">Delete project</button>
       </form>
+    </div>
+  );
+}
+
+// Skills: chips on the project; type one and press Enter, or click one from the bank of skills used before. The form carries them one per line.
+function Skills({ initial, bank }: { initial: string[]; bank: string[] }) {
+  const [skills, setSkills] = useState(initial);
+  const [draft, setDraft] = useState("");
+  const add = (s: string) => { const v = s.trim(); if (v && !skills.includes(v)) setSkills([...skills, v]); setDraft(""); };
+  const rest = bank.filter((b) => !skills.includes(b));
+  return (
+    <div className="grid gap-3">
+      <input type="hidden" name="skills" value={skills.join("\n")} />
+      <ul className="flex flex-wrap gap-2 empty:hidden">
+        {skills.map((s) => <li key={s} className="flex items-center gap-1 bg-track border border-line rounded-xs pl-2 font-mono text-xs text-paper">{s}<button type="button" onClick={() => setSkills(skills.filter((x) => x !== s))} aria-label={`Remove ${s}`} className="h-8 w-8 grid place-items-center text-dim hover:text-paper"><X size={12} /></button></li>)}
+      </ul>
+      <label className={label}>
+        Add a skill (Enter to add)
+        <input value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(draft); } }} onBlur={() => add(draft)} className={field} placeholder="Adobe Premiere Pro" />
+      </label>
+      {rest.length > 0 && (
+        <div className="grid gap-1">
+          <span className={label}>Used before</span>
+          <ul className="flex flex-wrap gap-2">{rest.map((s) => <li key={s}><button type="button" onClick={() => add(s)} className="h-8 px-2 border border-dashed border-line rounded-xs font-mono text-xs text-dim hover:text-paper hover:border-paper">+ {s}</button></li>)}</ul>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { Monitor } from "@/components/monitor/monitor";
 import { ClipInspector } from "@/components/pages/clip-inspector";
 import { Credits } from "@/components/pages/credits";
@@ -23,7 +23,9 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
 export default async function Detail({ params }: { params: Promise<{ category: string; slug: string }> }) {
   const { category, slug } = await params;
   const [p, cat, profile] = await Promise.all([getProject(slug), getCategoryProjects(category), getProfile()]);
-  if (!p || !cat || p.category.slug !== category) notFound();
+  if (!p) notFound();
+  // an old category slug in the link still finds the project
+  if (!cat || p.category.slug !== category) permanentRedirect(`/projects/${p.category.slug}/${p.slug}`);
   const i = cat.projects.findIndex((x) => x.id === p.id), next = cat.projects[i + 1];
   const color = cat.color;
   return (

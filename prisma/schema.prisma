@@ -24,7 +24,7 @@ model Profile {
   contactEmail  String
   replyTime     String?
   instagramUrl  String?
-  vimeoUrl      String?
+  youtubeUrl      String?
   linkedinUrl   String?
   reelProjectId String?
   updatedAt     DateTime @updatedAt
@@ -48,6 +48,7 @@ model Category {
   one       String
   blurb     String?
   color     String    @default("#f28c38")
+  oldSlugs  String[]  @default([])
   sortOrder Int
   projects  Project[]
 }
@@ -66,6 +67,7 @@ model Project {
   productionCo  String?
   agency        String?
   deliverables  String?
+  skills        String[]       @default([])
   description   String         @db.Text
   credits       Json?
   streamUid     String?

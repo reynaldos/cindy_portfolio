@@ -43,7 +43,7 @@ export default async function Home() {
         </aside>
       </div>
       <Credits profile={profile} />
-      {profile && <JsonLd data={[personLd(profile), serviceLd(profile), siteLd(profile)]} />}
+      {profile && <JsonLd data={[personLd(profile, categories), serviceLd(profile, categories), siteLd(profile)]} />}
     </>
   );
 }

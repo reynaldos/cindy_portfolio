@@ -8,11 +8,14 @@ export const instant = false;
 
 export default async function AdminProject({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [p, cats] = await Promise.all([
+  const [p, cats, used] = await Promise.all([
     db.project.findUnique({ where: { id }, include: { stills: { orderBy: { sortOrder: "asc" } } } }),
     db.category.findMany({ orderBy: { sortOrder: "asc" }, select: { id: true, name: true, slug: true } }),
+    db.project.findMany({ select: { skills: true } }),
   ]);
   if (!p) notFound();
+  // every skill on any project, for the chip bank
+  const bank = [...new Set(used.flatMap((x) => x.skills))].sort((a, b) => a.localeCompare(b));
   const credits = Array.isArray(p.credits) ? (p.credits as { role: string; name: string }[]).map((c) => `${c.role}: ${c.name}`).join("\n") : "";
   const values = Object.fromEntries(Object.entries(p).map(([k, v]) => [k, v == null || typeof v === "object" ? "" : String(v)]));
   const cat = cats.find((c) => c.id === p.categoryId);
@@ -24,6 +27,8 @@ export default async function AdminProject({ params }: { params: Promise<{ id: s
         id={p.id}
         values={{ ...values, credits }}
         cats={cats}
+        skills={p.skills}
+        bank={bank}
         stills={p.stills.map((s) => ({ key: s.key, alt: s.alt }))}
         video={{ uid: p.streamUid, status: p.videoStatus, peaks: Array.isArray(p.peaks), durationSec: p.durationSec }}
         publicUrl={cat && p.status === "published" ? `/projects/${cat.slug}/${p.slug}` : null}

@@ -23,6 +23,7 @@ export function ClipInspector({ p, one, color, i, n, nextTitle, detailHref }: Pr
         {p.role && <><dt>Role</dt><dd>{p.role}</dd></>}
         {p.durationSec && <><dt>Runtime</dt><dd>{tc(p.durationSec, p.fps ?? 24)}</dd></>}
         {p.deliverables && <><dt>Delivery</dt><dd>{p.deliverables}</dd></>}
+        {p.skills.length > 0 && <><dt>Skills</dt><dd>{p.skills.join(" · ")}</dd></>}
         {p.width && <><dt>Source</dt><dd className="small">{p.width} × {p.height}{p.fps ? ` · ${Math.round(p.fps * 100) / 100} fps` : ""}</dd></>}
       </dl>
       <p>{p.description}</p>

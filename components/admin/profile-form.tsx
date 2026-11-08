@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useActionState } from "react";
 import { Area, Section, Select, Status, Text, Upload, type Values } from "@/components/admin/fields";
-import { saveProfile, type SaveResult } from "@/lib/actions/profile";
+import { createReelProject, saveProfile, type SaveResult } from "@/lib/actions/profile";
 import { r2Url } from "@/lib/media";
 
 type Props = { values: Values; projects: { id: string; title: string }[]; uploads: boolean };
@@ -11,6 +11,7 @@ type Props = { values: Values; projects: { id: string; title: string }[]; upload
 export function ProfileForm({ values, projects, uploads }: Props) {
   const [state, action, pending] = useActionState<SaveResult, FormData>(saveProfile, undefined);
   return (
+    <>
     <form action={action} className="grid gap-6 max-w-2xl">
       <Section title="About">
         <Text name="name" label="Name" v={values} />
@@ -35,16 +36,20 @@ export function ProfileForm({ values, projects, uploads }: Props) {
           <Text name="replyTime" label="Reply time (optional, e.g. 1–2 days)" v={values} />
         </div>
         <Text name="instagramUrl" label="Instagram URL" v={values} type="url" />
-        <Text name="vimeoUrl" label="Vimeo URL" v={values} type="url" />
+        <Text name="youtubeUrl" label="YouTube URL" v={values} type="url" />
         <Text name="linkedinUrl" label="LinkedIn URL" v={values} type="url" />
       </Section>
       <Section title="Reel">
         <Select name="reelProjectId" label="Project played on the home page" v={values} options={[["", "None"], ...projects.map((p): [string, string] => [p.id, p.title])]} />
+        <p className="font-sans text-xs text-dim">Or play a video that is not one of the clips. This makes a hidden &ldquo;Home reel&rdquo; project, points the home page at it, and opens it so you can upload the video.</p>
+        <button type="submit" form="new-reel" className="btn sec w-fit">Upload a reel of its own</button>
       </Section>
       <div className="flex items-center gap-4">
         <button type="submit" disabled={pending} className="btn pri disabled:opacity-60">{pending ? "Saving…" : "Save"}</button>
         <Status state={state} />
       </div>
     </form>
+    <form id="new-reel" action={createReelProject} />
+    </>
   );
 }
