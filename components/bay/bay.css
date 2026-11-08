@@ -340,7 +340,7 @@ html.rm .app *, html.rm .app *::before, html.rm .app *::after { animation: none 
 .transport .tc .tot { color: var(--color-dim); }
 
 /* the home hero sits on the monitor */
-.hero { position: absolute; left: 5%; right: 5%; bottom: 7%; pointer-events: none; }
+.hero { position: absolute; left: 5%; right: 5%; bottom: max(7%, 32px); pointer-events: none; } /* the floor keeps it clear of the burn-in bar on a phone */
 .hero h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 6cqw, 112px); line-height: 0.88; letter-spacing: -0.02em; margin: 0; text-transform: uppercase; text-shadow: 0 0.02em 0.06em color-mix(in srgb, var(--color-black) 55%, transparent), 0 0.06em 0.3em color-mix(in srgb, var(--color-black) 55%, transparent); }
 .hero p { margin: 12px 0 0; font-family: var(--font-sans); font-size: clamp(13px, 1.2cqw, 17px); line-height: 1.5; border-left: 1px solid var(--color-paper); padding-left: 10px; text-shadow: 0 0.06em 0.4em color-mix(in srgb, var(--color-black) 80%, transparent); }
 .hero .btn { pointer-events: auto; margin-top: 16px; }
