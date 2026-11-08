@@ -159,3 +159,14 @@ export async function pendingVideos() {
     scanning: rows.filter((r) => r.videoStatus === "ready").map((r) => ({ id: r.id, title: r.title, uid: r.streamUid!, durationSec: r.durationSec! })),
   };
 }
+
+// Category names and order, from the dialog's top-to-bottom list. Slugs stay: the routes and colours key on them.
+export async function saveCategories(rows: { id: string; name: string }[]): Promise<{ ok: true } | { error: string }> {
+  await requireAdmin();
+  const own = await db.category.findMany({ select: { id: true, slug: true } });
+  if (own.length !== rows.length || !own.every((c) => rows.some((r) => r.id === c.id))) return { error: "The list changed. Reload and try again." };
+  if (rows.some((r) => !r.name.trim())) return { error: "Every category needs a name." };
+  await db.$transaction(rows.map((r, i) => db.category.update({ where: { id: r.id }, data: { name: r.name.trim(), sortOrder: i + 1 } })));
+  for (const t of [TAGS.categories, TAGS.projects, TAGS.recent, ...own.map((c) => TAGS.category(c.slug))]) updateTag(t);
+  return { ok: true };
+}
