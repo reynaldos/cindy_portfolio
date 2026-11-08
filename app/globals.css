@@ -24,10 +24,10 @@
   --color-marker: #f5d90a;
   --color-audio: #2ec4b6;
   --color-audio-bg: #17403d;
-  --color-clip-short: #7bc67e;
-  --color-clip-com: #f28c38;
-  --color-clip-mv: #b48cf2;
-  --color-clip-trl: #5aa9f2;
+  --color-black: #000000;
+  --color-menu: rgb(40 40 44 / 0.97);
+  --color-menu-text: #f2f2f2;
+  --color-menu-dim: #9a9a9f;
   --color-appbar: #1c1c1f;
   --color-appbar-ink: #f2f2f2;
 
@@ -106,10 +106,6 @@
   --border: var(--color-line);
   --input: var(--color-track);
   --ring: var(--color-cut);
-  --chart-1: var(--color-clip-short);
-  --chart-2: var(--color-clip-com);
-  --chart-3: var(--color-clip-mv);
-  --chart-4: var(--color-clip-trl);
   --chart-5: var(--color-marker);
   --radius: 3px;
   --sidebar: var(--color-panel);

@@ -1,9 +1,10 @@
 import { useSyncExternalStore } from "react";
 
 // The player's state, sent by the monitor as one window event and read anywhere with useMonitor()
-export type MonitorState = { playing: boolean; muted: boolean; file: string | null; peaks: number[] | null; duration: number; index: number };
+// started: a clip has played on this page since it was shown; the hero button hides on it
+export type MonitorState = { playing: boolean; started: boolean; muted: boolean; file: string | null; peaks: number[] | null; duration: number; index: number };
 
-export const IDLE: MonitorState = { playing: false, muted: true, file: null, peaks: null, duration: 0, index: 0 };
+export const IDLE: MonitorState = { playing: false, started: false, muted: true, file: null, peaks: null, duration: 0, index: 0 };
 let state = IDLE;
 
 export const emitMonitor = (s: MonitorState) => window.dispatchEvent(new CustomEvent("baystate", { detail: s }));

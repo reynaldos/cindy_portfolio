@@ -28,7 +28,7 @@ export function Spots({ spots, markers, stampValue, stampText }: { spots: Spot[]
           ))}
           <div className="proc-track">
             {spots.length === 0 && <span className="small dimt" style={{ padding: 8 }}>Spots coming soon.</span>}
-            {spots.map((s, i) => { const c = clipFromProject(s); return (
+            {spots.map((s, i) => { const c = clipFromProject(s, { poster: 480 }); return (
               <button key={s.id} type="button" data-tgt className={i === index ? "sel" : ""} style={{ ...(c.poster ? { backgroundImage: `url(${c.poster})` } : {}), "--c": s.category.color } as React.CSSProperties} onClick={() => bay("select", i)}>
                 <i>Spot {i + 1}/{spots.length}{s.subtitle ? ` · ${s.subtitle}` : ""}{s.durationSec && <><br /><span className="dimt">{tc(s.durationSec, s.fps ?? 24)}</span></>}</i>
               </button>

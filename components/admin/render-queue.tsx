@@ -100,7 +100,7 @@ export function RenderQueue() {
   if (jobs.length === 0) return null;
   return (
     <section className="border border-line bg-ink mt-4 font-mono w-full min-w-0" aria-label="Render queue" aria-live="polite">
-      <div className="flex justify-between px-3 py-2 text-[10px] uppercase tracking-[0.08em] text-dim border-b border-line"><span>Render queue</span><span>{jobs.filter((j) => j.stage !== "done" && j.stage !== "error").length} active</span></div>
+      <div className="flex justify-between px-3 py-2 text-[11px] uppercase tracking-[0.08em] text-dim border-b border-line"><span>Render queue</span><span>{jobs.filter((j) => j.stage !== "done" && j.stage !== "error").length} active</span></div>
       <ul>
         {jobs.map((j) => <Row key={j.projectId} job={j} />)}
       </ul>
@@ -121,7 +121,7 @@ function Row({ job }: { job: Job }) {
       <div className="h-1.5 bg-track overflow-hidden" role="progressbar" aria-valuenow={job.stage === "encoding" ? undefined : pct} aria-valuemin={0} aria-valuemax={100} aria-label={`${STAGE[job.stage]} ${job.title}`}>
         <i className={`block h-full ${job.stage === "error" ? "bg-cut" : job.stage === "encoding" ? "bg-dim animate-pulse" : "bg-paper"} ${job.stage === "queued" ? "opacity-30" : ""}`} style={{ width: `${job.stage === "queued" || job.stage === "encoding" ? 100 : pct}%`, transition: "width .4s linear" }} />
       </div>
-      <div className="flex justify-between gap-2 text-[10px] text-dim min-w-0">
+      <div className="flex justify-between gap-2 text-[11px] text-dim min-w-0">
         <span className="truncate min-w-0">{job.stage === "error" ? job.error : job.stage === "uploading" ? "→ Cloudflare Stream" : job.stage === "encoding" ? "Stream is encoding · H.264 · adaptive" : job.stage === "scanning" ? "Reading audio for the A1 waveform" : job.stage === "queued" ? "Waiting for the pipe" : "Ready on the site"}</span>
         {(job.stage === "done" || job.stage === "error") && <button type="button" onClick={() => dismiss(job.projectId)} aria-label={`Clear ${job.title}`} className="shrink-0 hover:text-paper px-1">✕</button>}
       </div>

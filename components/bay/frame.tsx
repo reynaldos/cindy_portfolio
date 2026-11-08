@@ -49,7 +49,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
   const [p, setP] = useState(0);
   const [cutting, setCutting] = useState(false);
   const [note, setNote] = useState("");
-  const [date, time] = useClock();
+  const [date, time, year] = useClock();
   const mon = useMonitor();
 
   const brand = profile?.brand ?? "Cuts By Cindy";
@@ -126,7 +126,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
     ["File", [["New inquiry…", "contact", "⌘N"], null, ["Copy email address", "copy"], ...(profile?.instagramUrl ? [["Instagram", `link:${profile.instagramUrl}`] as MenuItem] : []), ...(profile?.vimeoUrl ? [["Vimeo", `link:${profile.vimeoUrl}`] as MenuItem] : []), null, ["Close menu", "close", "esc"]]],
     ["Clip", [["Play / Pause", "toggle", "L"], ["Pause", "pause", "K"], ["Back 5 seconds", "back", "J"], ["Play / Pause", "toggle", "Space"], null, ["Previous clip", "prev", "←"], ["Next clip", "next", "→"], ["Watch full cut (sound)", "watch"], ["Mute / Unmute", "mute", "M"], null, ["Go to start", "home", "Home"], ["Go to end credits", "end", "End"]]],
     ["Window", [["Project bin", "bin", "", binOpen], ["Inspector", "insp", "", inspOn], ["Timeline (keep open)", "tlpin", "", tlPin], null, ["Reduce motion", "rm", "", rm]]],
-    ["Help", [["Keyboard shortcuts", "keys", "?"], ["About Cindy", "link:/about"], null, ["Who made this", "made"]]],
+    ["Help", [["Keyboard shortcuts", "keys", "?"], ["About Cindy", "link:/about"], null, ["Admin", "link:/admin"], ["Who made this", "made"]]],
   ];
 
   // an open menu closes on a click, a tap, or a focus move anywhere outside the menu bar
@@ -180,8 +180,9 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
       data-playing={mon.playing || undefined}
       onClickCapture={onNavClick}
     >
+      <header className="bars">
       <div className="mbar">
-        <span className="mark" aria-hidden="true" />
+        <Image className="mark" src="/cbc.svg" alt="" width={16} height={16} />
         <Link href="/" className="appname" title="Home">{brand}</Link>
         <div className="menus">
           {menus.map(([name, items], i) => (
@@ -213,6 +214,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
         <button type="button" className="contact" onClick={() => bay("contact")}>Contact</button>
       </div>
 
+      </header>
       <div className="work">
         <aside className="bin" aria-label="Project bin">
           <div className="ptab">
@@ -225,7 +227,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
           <div className="bin-list">
             {binOpen && binIcons ? (
               <div className="bin-grid">
-                {categories.flatMap((c) => c.projects.map((pr) => { const k = clipFromProject(pr); return (
+                {categories.flatMap((c) => c.projects.map((pr) => { const k = clipFromProject(pr, { poster: 240 }); return (
                   <Link key={pr.id} href={`/projects/${c.slug}/${pr.slug}`} aria-current={pathname === `/projects/${c.slug}/${pr.slug}` ? "page" : undefined} style={{ "--c": c.color } as React.CSSProperties} title={k.title}>
                     <span className="pic">{k.poster && <Image src={k.poster} alt="" fill sizes="120px" />}</span>
                     <span className="n">{pr.subtitle ?? pr.title}</span><span className="d">{pr.durationSec ? tc(pr.durationSec, pr.fps ?? 24) : "—"} · {c.one}</span>
@@ -289,12 +291,12 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
       <dialog ref={about} className="about-dev" aria-labelledby="made-title" onClick={(e) => { if (e.target === e.currentTarget) about.current?.close(); }}>
         <div className="bar"><button type="button" onClick={() => about.current?.close()} aria-label="Close" /></div>
         <div className="body">
-          <div className="logo"><Image src="/rey.png" alt="" width={88} height={88} /></div>
+          <div className="logo"><Image src="/cbc.svg" alt="" width={88} height={88} /></div>
           <h2 id="made-title">Cuts By Cindy</h2>
           <div className="sub">Video editor portfolio · 2026</div>
           <dl><dt>Designed by</dt><dd>Rey Sanchez</dd><dt>Developed by</dt><dd>Rey Sanchez</dd></dl>
           <a className="site" href="https://reysanchez.dev" target="_blank" rel="noopener">reysanchez.dev ↗</a>
-          <div className="fine">Made in Atlanta.</div>
+          <div className="fine legal">© {year} {brand}. All rights reserved.</div>
         </div>
       </dialog>
       <Brackets />

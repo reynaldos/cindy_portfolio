@@ -4,6 +4,7 @@ import { CategoriesDialog } from "@/components/admin/categories-dialog";
 import { OrderDialog } from "@/components/admin/order-dialog";
 import { createProject, setStatus } from "@/lib/actions/projects";
 import { db } from "@/lib/db";
+import { clipFromProject } from "@/lib/media";
 
 export const instant = false;
 
@@ -26,7 +27,7 @@ export default async function AdminProjects() {
         <section key={c.id} className="mb-6 max-w-2xl">
           <div className="flex items-center justify-between mb-2">
             <h2 className={kick}>{c.name} · {c.projects.length}</h2>
-            <OrderDialog categoryId={c.id} categoryName={c.name} slug={c.slug} items={c.projects.map((p) => ({ id: p.id, title: p.title, live: p.status === "published", color: c.color }))} />
+            <OrderDialog categoryId={c.id} categoryName={c.name} slug={c.slug} items={c.projects.map((p) => ({ id: p.id, title: p.title, live: p.status === "published", color: c.color, poster: clipFromProject(p, { poster: 240 }).poster }))} />
           </div>
           {c.projects.length === 0 && <p className="font-mono text-xs text-dim">None yet.</p>}
           <ul className="grid gap-px bg-line border border-line">

@@ -19,7 +19,7 @@ export function Tracks({ categories }: Props) {
       {categories.map((cat, i) => (
         <Link key={cat.slug} href={`/projects/${cat.slug}`} className="track-row" data-tgt style={{ "--c": cat.color } as React.CSSProperties} onPointerEnter={() => bay("select", i)} onFocus={() => bay("select", i)}>
           <span className="nm"><b>{cat.name}</b><span className="small dimt">V{categories.length + 1 - i} · {String(cat.projects.length).padStart(2, "0")} clips · {total(cat)}</span></span>
-          <span className="ln">{cat.projects.map((p) => { const k = clipFromProject(p); return <span key={p.id} style={k.poster ? { backgroundImage: `url(${k.poster})` } : undefined}><i>{p.subtitle ?? p.title}</i></span>; })}</span>
+          <span className="ln">{cat.projects.map((p) => { const k = clipFromProject(p, { poster: 480 }); return <span key={p.id} style={k.poster ? { backgroundImage: `url(${k.poster})` } : undefined}><i>{p.subtitle ?? p.title}</i></span>; })}</span>
         </Link>
       ))}
     </div>
