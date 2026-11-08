@@ -227,7 +227,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
           <div className="bin-list">
             {binOpen && binIcons ? (
               <div className="bin-grid">
-                {categories.flatMap((c) => c.projects.map((pr) => { const k = clipFromProject(pr, 240); return (
+                {categories.flatMap((c) => c.projects.map((pr) => { const k = clipFromProject(pr, { poster: 240 }); return (
                   <Link key={pr.id} href={`/projects/${c.slug}/${pr.slug}`} aria-current={pathname === `/projects/${c.slug}/${pr.slug}` ? "page" : undefined} style={{ "--c": c.color } as React.CSSProperties} title={k.title}>
                     <span className="pic">{k.poster && <Image src={k.poster} alt="" fill sizes="120px" />}</span>
                     <span className="n">{pr.subtitle ?? pr.title}</span><span className="d">{pr.durationSec ? tc(pr.durationSec, pr.fps ?? 24) : "—"} · {c.one}</span>

@@ -19,7 +19,7 @@ export default async function RecentWork() {
             <h1 className="title" tabIndex={-1} data-h1>{recent?.title ?? "Recent Work"}</h1>
             {recent && <p className="lead">{recent.copy}</p>}
           </div>
-          <Monitor clips={spots.map(clipFromProject)} mode="clips" />
+          <Monitor clips={spots.map((p) => clipFromProject(p))} mode="clips" />
           <Spots spots={spots} markers={markers} stampValue={recent?.stampValue ?? null} stampText={recent?.stampText ?? null} />
         </div>
         <SpotInspector spots={spots} />

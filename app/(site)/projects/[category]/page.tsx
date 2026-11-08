@@ -35,7 +35,7 @@ export default async function Category({ params }: PageProps<"/projects/[categor
             <div className="kick"><span className="dot" style={{ "--c": cat.color } as React.CSSProperties} /><Link href="/projects" className="lnk">Projects</Link> / {cat.name}</div>
             <div className="cat-row"><h1 className="title" tabIndex={-1} data-h1>{cat.name} ( {String(cat.projects.length).padStart(2, "0")} )</h1><CatChips categories={categories} active={cat.slug} /></div>
           </div>
-          <Monitor clips={cat.projects.map(clipFromProject)} mode="clips" sticky />
+          <Monitor clips={cat.projects.map((p) => clipFromProject(p))} mode="clips" sticky />
           <ClipRows category={cat} projects={cat.projects} />
         </div>
         <ClipInspectorLive category={cat} projects={cat.projects} />

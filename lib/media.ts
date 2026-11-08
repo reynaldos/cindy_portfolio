@@ -29,15 +29,15 @@ export type Clip = {
   captions: string | null;
 };
 
-// posterHeight: 720 for the monitor, 240 for tiles and strips
-export function clipFromProject(p: Project, posterHeight = 720): Clip {
+// poster: 720 for the monitor, 240 for tiles; an options object, so Array.map can never pass an index in
+export function clipFromProject(p: Project, { poster = 720 } = {}): Clip {
   const uid = p.streamUid && p.videoStatus !== "error" ? p.streamUid : null;
   return {
     id: p.id,
     title: p.subtitle ? `${p.title} · ${p.subtitle}` : p.title,
     file: `${p.slug.toUpperCase().replace(/-/g, "_")}.mp4`,
     src: uid ? manifestUrl(uid) : null,
-    poster: p.posterKey ? r2Url(p.posterKey) : uid ? thumbUrl(uid, p.posterTimeSec, posterHeight) : null,
+    poster: p.posterKey ? r2Url(p.posterKey) : uid ? thumbUrl(uid, p.posterTimeSec, poster) : null,
     durationSec: p.durationSec,
     fps: p.fps,
     width: p.width,
