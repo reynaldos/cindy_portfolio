@@ -1,5 +1,6 @@
 import { getCategories, getProfile } from "@/lib/data";
 import { SITE } from "@/lib/media";
+import { workList } from "@/lib/seo";
 
 // A plain-text summary for answer engines, in the llms.txt convention
 export async function GET() {
@@ -10,7 +11,7 @@ export async function GET() {
     "",
     `> ${p.name} is a video editor in ${p.location}. ${p.tagline}`,
     "",
-    `Work: commercials, music videos, short films, and trailers. Tools: ${p.tools.join(", ")}.`,
+    `Work: ${workList(cats)}. Tools: ${p.tools.join(", ")}.`,
     `Contact: ${p.contactEmail}${p.replyTime ? ` (replies ${p.replyTime})` : ""}. Site: ${SITE}`,
     "",
     "## Pages",

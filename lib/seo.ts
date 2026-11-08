@@ -4,7 +4,13 @@ import { clipFromProject, SITE } from "@/lib/media";
 // Structured data for search engines and answer engines. Every page gets its own blocks.
 const iso = (sec: number) => `PT${Math.floor(sec / 60)}M${Math.round(sec % 60)}S`;
 
-export function personLd(p: Profile) {
+type Cats = Pick<Category, "name" | "one">[];
+
+// "commercials, music videos, short films, and trailers", from the live category names
+export const workList = (cats: Cats) => (cats.length ? new Intl.ListFormat("en", { type: "conjunction" }).format(cats.map((c) => c.name.toLowerCase())) : "video");
+export const workKeywords = (cats: Cats) => cats.map((c) => `${c.one.toLowerCase()} editor`);
+
+export function personLd(p: Profile, cats: Cats) {
   return {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -15,19 +21,19 @@ export function personLd(p: Profile) {
     url: SITE,
     email: p.contactEmail,
     address: { "@type": "PostalAddress", addressLocality: p.location.split(",")[0].trim(), addressRegion: "CA", addressCountry: "US" },
-    knowsAbout: ["Video editing", "Commercial editing", "Music video editing", "Short film editing", "Trailer editing", ...p.tools],
+    knowsAbout: ["Video editing", ...cats.map((c) => `${c.one} editing`), ...p.tools],
     ...(p.studied ? { alumniOf: p.studied } : {}),
     sameAs: [p.instagramUrl, p.youtubeUrl, p.linkedinUrl].filter(Boolean),
   };
 }
 
-export function serviceLd(p: Profile) {
+export function serviceLd(p: Profile, cats: Cats) {
   return {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "@id": `${SITE}/#service`,
     name: p.brand,
-    description: `Freelance video editing in ${p.location}: commercials, music videos, short films, and trailers.`,
+    description: `Freelance video editing in ${p.location}: ${workList(cats)}.`,
     url: SITE,
     email: p.contactEmail,
     areaServed: ["Los Angeles", "United States", "Remote"],
