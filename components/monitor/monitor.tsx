@@ -46,7 +46,8 @@ export function Monitor({ clips, index = 0, mode, sticky, compact, still, childr
     if (v.canPlayType("application/vnd.apple.mpegurl")) { v.src = src; return; }
     const HlsCtor = (await import("hls.js")).default;
     if (!HlsCtor.isSupported()) { v.src = src; return; }
-    const h = new HlsCtor();
+    // assume a healthy connection, so the first seconds are not a soft low rendition
+    const h = new HlsCtor({ abrEwmaDefaultEstimate: 6_000_000, maxBufferLength: 30 });
     h.on(HlsCtor.Events.ERROR, (_, d) => { if (d.fatal) setStatus("error"); });
     h.loadSource(src);
     h.attachMedia(v);
