@@ -100,7 +100,7 @@ Update the boxes after each task. Each task names the user story it serves, so c
 ## Phase 8 — Client requests
 - [x] 8.1 Contact dialog: project type dropdown uses the Radix/Lucide `Select`, portalled inside the dialog (US-08)
 - [x] 8.2 Contact dialog: a closed dialog in "failure" reopens on the form; "success" stays on the success screen; the draft stays until a send succeeds (US-08)
-- [ ] 8.3 Skills per project: `Project.skills String[]`, chip bank from every skill in use, shown in the project credits (US-17)
+- [x] 8.3 Skills per project: `Project.skills String[]` (planned SQL in `prisma/postgres/migrations/planned/`), chip field with a bank of every skill in use, shown in the inspector; seed carries six draft projects from LinkedIn (US-17)
 - [ ] 8.4 Custom hero video: `Profile.heroStreamUid` with poster, tus upload like a project; the project pick stays as the other option (US-19)
 - [ ] 8.5 Dynamic categories: add and delete (while empty) in the dialog, slug follows the name, `oldSlugs` redirect old links, hard-coded slugs removed from `const.ts` (US-18)
 - LinkedIn import dropped: Cindy copies the data by hand.

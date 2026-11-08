@@ -29,6 +29,8 @@ const Project = z.object({
   productionCo: opt,
   agency: opt,
   deliverables: opt,
+  // one skill per line, from the chip field
+  skills: z.string().transform((v) => [...new Set(v.split("\n").map((s) => s.trim()).filter(Boolean))]),
   description: z.string().trim().min(1),
   // one credit per line as "Role: Name"
   credits: z.string().transform((v) => v.split("\n").map((l) => l.split(/:\s*/, 2)).filter((p) => p[0]?.trim() && p[1]?.trim()).map(([role, name]) => ({ role: role.trim(), name: name.trim() }))),

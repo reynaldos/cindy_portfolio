@@ -66,6 +66,7 @@ model Project {
   productionCo  String?
   agency        String?
   deliverables  String?
+  skills        String[]       @default([])
   description   String         @db.Text
   credits       Json?
   streamUid     String?
