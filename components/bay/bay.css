@@ -215,9 +215,11 @@
 .sheet-b .err { color: var(--color-cut-text); font-size: 12px; font-family: var(--font-mono); }
 .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
 .field label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-dim); }
-.field input, .field select, .field textarea { min-height: 48px; background: var(--color-track); border: 1px solid var(--color-line); border-radius: 2px; padding: 10px 12px; font: 14px var(--font-mono); color: var(--color-paper); width: 100%; }
+.field input, .field select, .field textarea, .field [data-slot="select-trigger"] { min-height: 48px; background: var(--color-track); border: 1px solid var(--color-line); border-radius: 2px; padding: 10px 12px; font: 14px var(--font-mono); color: var(--color-paper); width: 100%; }
 .field textarea { min-height: 96px; resize: vertical; }
-.field input:focus, .field select:focus, .field textarea:focus { outline: none; border: 2px solid var(--color-cut); padding: 9px 11px; }
+.field [data-slot="select-trigger"] { height: auto; }
+.field [data-slot="select-trigger"] svg { color: var(--color-dim); }
+.field input:focus, .field select:focus, .field textarea:focus, .field [data-slot="select-trigger"]:focus-visible { outline: none; border: 2px solid var(--color-cut); padding: 9px 11px; }
 .field [aria-invalid="true"] { border-color: var(--color-cut); }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .fmt { font-size: 12px; color: var(--color-dim); border: 1px solid var(--color-line); padding: 8px 12px; margin-bottom: 16px; }
