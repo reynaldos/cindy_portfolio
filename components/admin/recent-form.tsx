@@ -55,7 +55,7 @@ export function RecentForm({ values, markers: initialMarkers, projects }: Props)
         <div className="grid gap-1 max-w-sm">
           <span className={kick}>Add a spot</span>
           <Root value="" onValueChange={(id) => { const p = free.find((x) => x.id === id); if (p) setSpots((all) => [...all, p]); }} disabled={spots.length >= 5 || free.length === 0}>
-            <SelectTrigger className={selectTrigger}><SelectValue placeholder={spots.length >= 5 ? "Five spots set" : "Pick a project…"} /></SelectTrigger>
+            <SelectTrigger className={selectTrigger} aria-label="Add a spot"><SelectValue placeholder={spots.length >= 5 ? "Five spots set" : "Pick a project…"} /></SelectTrigger>
             <SelectContent position="popper" className={selectContent}>
               {groups.map((g) => (
                 <SelectGroup key={g}>

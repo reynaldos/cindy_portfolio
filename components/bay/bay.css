@@ -11,6 +11,8 @@
   font: 13px/1.5 var(--font-mono);
   overflow: hidden;
 }
+/* the app bar and workspace bar are one banner landmark; the wrapper adds no box */
+.app > .bars { display: contents; }
 .app .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .app .gut { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 
@@ -317,6 +319,7 @@ html.rm .app *, html.rm .app *::before, html.rm .app *::after { animation: none 
 .scrub::-moz-range-thumb { width: 3px; height: 16px; background: var(--color-cut); border: 0; border-radius: 0; }
 .scrub:focus-visible { outline: none; }
 .scrub:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--color-paper); }
+.scrub:focus-visible::-moz-range-thumb { outline: 2px solid var(--color-paper); }
 .transport { height: 40px; display: flex; align-items: center; gap: 2px; font-size: 12px; color: var(--color-dim); background: var(--color-panel); padding: 0 4px; }
 .transport button { white-space: nowrap; background: none; border: 0; min-height: 40px; min-width: 40px; padding: 0 8px; color: var(--color-paper); cursor: pointer; font: inherit; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; }
 .transport button:hover { background: var(--color-track); }
@@ -356,7 +359,9 @@ html.rm .app *, html.rm .app *::before, html.rm .app *::after { animation: none 
   .mon-wrap .ptab { display: none; }
   .mon-box { width: 100%; }
   .transport button { min-height: 44px; min-width: 44px; }
-  .transport kbd, .transport .tot, .transport .lbl { display: none; }
+  .transport kbd, .transport .tot { display: none; }
+  /* the label stays for screen readers; only the glyph shows */
+  .transport .lbl { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .transport .tc { padding-right: 8px; }
   .scrub { height: 44px; }
 }

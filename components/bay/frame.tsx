@@ -180,6 +180,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
       data-playing={mon.playing || undefined}
       onClickCapture={onNavClick}
     >
+      <header className="bars">
       <div className="mbar">
         <Image className="mark" src="/cbc.svg" alt="" width={16} height={16} />
         <Link href="/" className="appname" title="Home">{brand}</Link>
@@ -213,6 +214,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
         <button type="button" className="contact" onClick={() => bay("contact")}>Contact</button>
       </div>
 
+      </header>
       <div className="work">
         <aside className="bin" aria-label="Project bin">
           <div className="ptab">

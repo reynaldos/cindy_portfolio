@@ -88,7 +88,7 @@ Update the boxes after each task. Each task names the user story it serves, so c
 
 ## Phase 7 — Launch
 - [x] 7.1 Root metadata with title template and `metadataBase` (`NEXT_PUBLIC_SITE_URL`), titles per page, project posters as share images, a generated brand share card (built-in font: the renderer takes no woff2), `sitemap.ts`, `robots.ts` (US-01)
-- [ ] 7.2 Accessibility pass against ARCHITECTURE.md §6 (US-10, US-11)
+- [x] 7.2 Accessibility pass: axe clean on every public page (desktop and phone), the admin pages, the open contact dialog, and the phone drawer; banner landmark, phone transport labels, root 404 in the frame, login h1, picker name, Firefox scrub ring (US-10, US-11)
 - [ ] 7.3 `/impeccable audit` on the real build; target 18/20 (all)
 - [ ] 7.4 Performance check against the budget in ARCHITECTURE.md §5 (US-11)
 - [ ] 7.5 Vercel env vars (incl. `ADMIN_PASSWORD_HASH`, `SESSION_SECRET`), domain, Stream webhook, EmailJS template
