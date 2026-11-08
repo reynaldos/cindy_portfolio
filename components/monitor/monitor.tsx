@@ -186,7 +186,8 @@ function drawMeters(audio: { an: AnalyserNode[] } | null, force?: number) {
   const W = c.clientWidth, H = c.clientHeight;
   if (c.width !== W || c.height !== H) { c.width = W; c.height = H; grad = null; }
   const x = c.getContext("2d")!, css = getComputedStyle(c);
-  const top = 10, h = H - 26, bw = 16, x0 = 10, gap = 6, sx = x0 + 2 * bw + gap;
+  // bars, gap, and the dB scale (about 76px) sit centred in the meters column
+  const top = 10, h = H - 26, bw = 16, gap = 6, x0 = Math.max(4, Math.round((W - 76) / 2)), sx = x0 + 2 * bw + gap;
   const toY = (db: number) => top + h * Math.min(1, Math.max(0, -db / 60));
   x.clearRect(0, 0, W, H);
   x.font = "11px JetBrains Mono, monospace"; x.fillStyle = css.getPropertyValue("--color-dim"); x.textAlign = "left";

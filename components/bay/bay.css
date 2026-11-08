@@ -102,7 +102,7 @@
 
 /* timeline band: compact at rest, full height on hover or focus, pinned from the Window menu */
 .tlband { flex: none; position: relative; z-index: 5; height: var(--tlc, 148px); }
-.tlwrap { display: grid; grid-template-columns: minmax(0, 1fr) 112px; gap: 2px; background: var(--color-bay); border-top: 2px solid var(--color-bay); position: absolute; left: 0; right: 0; bottom: 0; max-height: 70vh; overflow: auto; padding-right: env(safe-area-inset-right, 0px); }
+.tlwrap { display: grid; grid-template-columns: minmax(0, 1fr) 104px; gap: 2px; background: var(--color-bay); border-top: 2px solid var(--color-bay); position: absolute; left: 0; right: 0; bottom: 0; max-height: 70vh; overflow: auto; padding-right: env(safe-area-inset-right, 0px); }
 .app[data-tl-pin] .tlband { height: auto; }
 .app[data-tl-pin] .tlwrap { position: relative; }
 .app:not([data-tl-pin]) .tlwrap:not(:hover):not(:focus-within) { height: var(--tlc, 148px); overflow: hidden; }
@@ -111,11 +111,11 @@
 .app:not([data-tl-pin]) .tlwrap:not(:hover):not(:focus-within) .ctx-x { display: none; }
 .tl { background: var(--color-panel); min-width: 0; }
 .tlhead { display: flex; gap: 2px; background: var(--color-bay); height: 28px; align-items: stretch; }
-.tlhead .lab { width: 112px; flex: none; display: flex; align-items: center; padding: 0 8px; font-size: 11px; letter-spacing: 0.08em; color: var(--color-dim); background: var(--color-panel); text-transform: uppercase; }
+.tlhead .lab { width: 140px; flex: none; display: flex; align-items: center; padding: 0 8px; font-size: 11px; letter-spacing: 0.08em; color: var(--color-dim); background: var(--color-panel); text-transform: uppercase; }
 .tlhead .seq { display: flex; align-items: center; padding: 0 12px; font-size: 12px; font-weight: 500; color: var(--color-paper); background: var(--color-panel); box-shadow: inset 0 2px 0 var(--color-cut); white-space: nowrap; }
 .tlhead .rng { display: flex; align-items: center; padding: 0 12px; font-size: 11px; color: var(--color-dim); background: var(--color-panel); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .tlhead .cap { margin-left: auto; padding: 0 12px; font-size: 11px; color: var(--color-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: var(--color-panel); display: flex; align-items: center; min-width: 0; }
-.tlg { position: relative; display: grid; grid-template-columns: 112px minmax(0, 1fr); row-gap: 2px; background: var(--color-bay); padding-bottom: 2px; }
+.tlg { position: relative; display: grid; grid-template-columns: 140px minmax(0, 1fr); row-gap: 2px; background: var(--color-bay); padding-bottom: 2px; }
 .th { background: var(--color-panel); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-dim); padding: 0 8px; display: flex; align-items: center; gap: 8px; height: 44px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .th .tn { font-size: 11px; color: var(--color-paper); background: var(--color-track); padding: 1px 5px; border-radius: 2px; letter-spacing: 0.04em; flex: none; }
 .th .tn.a { background: var(--color-audio-bg); color: var(--color-audio); }
@@ -173,11 +173,11 @@
 
 /* the file name sits in the lane's top-right corner and never hides the wave */
 .a1 .tag { position: absolute; right: 6px; top: 2px; font-size: 9px; line-height: 1; color: var(--color-dim); background: color-mix(in srgb, var(--color-bay) 70%, transparent); padding: 1px 4px; letter-spacing: 0.08em; white-space: nowrap; max-width: 40%; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
-.playhead { position: absolute; top: 0; bottom: 0; left: 112px; width: calc(100% - 112px); pointer-events: none; z-index: 6; container-type: inline-size; }
+.playhead { position: absolute; top: 0; bottom: 0; left: 140px; width: calc(100% - 140px); pointer-events: none; z-index: 6; container-type: inline-size; }
 .playhead i { position: absolute; top: 0; bottom: 0; left: -1px; width: 2px; background: var(--color-cut); transform: translateX(calc(100cqw * var(--p, 0))); transition: transform var(--d-4f) var(--ease-arrive); }
 .playhead i::before { content: ""; position: absolute; top: 0; left: -5px; width: 12px; height: 10px; background: var(--color-cut); clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%); }
 .meters { background: var(--color-panel); display: flex; flex-direction: column; min-height: 0; }
-.meters .ptab span.on { padding: 0 6px; }
+.meters .ptab span.on { padding: 0 6px; flex: 1; }
 .meters canvas { flex: 1; width: 100%; min-height: 0; display: block; }
 
 /* status strip */
