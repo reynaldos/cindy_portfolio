@@ -49,7 +49,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
   const [p, setP] = useState(0);
   const [cutting, setCutting] = useState(false);
   const [note, setNote] = useState("");
-  const [date, time] = useClock();
+  const [date, time, year] = useClock();
   const mon = useMonitor();
 
   const brand = profile?.brand ?? "Cuts By Cindy";
@@ -296,7 +296,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
           <div className="sub">Video editor portfolio · 2026</div>
           <dl><dt>Designed by</dt><dd>Rey Sanchez</dd><dt>Developed by</dt><dd>Rey Sanchez</dd></dl>
           <a className="site" href="https://reysanchez.dev" target="_blank" rel="noopener">reysanchez.dev ↗</a>
-          <div className="fine legal">© {new Date().getFullYear()} {brand}. All rights reserved.</div>
+          <div className="fine legal">© {year} {brand}. All rights reserved.</div>
         </div>
       </dialog>
       <Brackets />
