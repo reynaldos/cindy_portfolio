@@ -126,7 +126,9 @@
 .tick.maj { height: 12px; background: var(--color-dim); }
 .tick .rl { position: absolute; left: 4px; bottom: 5px; font-size: 11px; color: var(--color-dim); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .clip { position: absolute; top: 3px; bottom: 3px; border-radius: 3px; background: var(--color-track-hi); border: 0; border-top: 4px solid var(--c, transparent); color: var(--color-paper); font-size: 12px; font-family: inherit; padding: 0 8px 4px; text-align: left; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; cursor: pointer; display: flex; align-items: flex-end; text-decoration: none; }
-.clip.film { background: #000 left center / auto 100% repeat-x; }
+.clip.film { background: #000; }
+.clip.film .strip { position: absolute; inset: 0; display: flex; overflow: hidden; }
+.clip.film .strip i { flex: none; height: 100%; aspect-ratio: 16 / 9; background: #000 center / cover no-repeat; }
 .clip.film > span { background: var(--color-bay); padding: 2px 6px; border-radius: 2px; font-size: 11px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; min-width: 0; max-width: 100%; }
 .clip > * { position: relative; }
 .clip.navc { background: var(--color-panel); border: 1px solid var(--color-line); align-items: center; padding-bottom: 0; }
@@ -184,7 +186,7 @@
 /* phone bottom bar; the timeline rides in a drawer above it */
 .tlp { display: none; flex: none; height: 56px; background: var(--color-panel); border-top: 2px solid var(--color-bay); align-items: stretch; padding: 0 0 0 max(4px, env(safe-area-inset-left, 0px)); touch-action: none; }
 .tlp button.tb { flex: none; width: 48px; background: none; border: 0; color: var(--color-paper); display: grid; place-items: center; cursor: pointer; }
-.tlp button.tb svg { width: 16px; height: 16px; }
+.tlp button.tb svg { width: 16px; height: 16px; fill: currentColor; }
 .tlp .tc { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; padding: 0 8px; font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tlp .tc .nm { font-size: 12px; color: var(--color-dim); letter-spacing: 0.04em; overflow: hidden; text-overflow: ellipsis; }
 .tlp .hdl { flex: none; width: 56px; background: var(--color-track); border: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--color-dim); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; font-family: inherit; padding: 0 0 env(safe-area-inset-bottom); }
@@ -320,7 +322,7 @@ html.rm .app *, html.rm .app *::before, html.rm .app *::after { animation: none 
 .transport button:hover { background: var(--color-track); }
 .transport button:disabled { color: var(--color-faint); cursor: default; }
 .transport button[aria-pressed="true"] { color: var(--color-cut-text); }
-.transport svg { width: 12px; height: 12px; flex: none; }
+.transport svg { width: 12px; height: 12px; flex: none; fill: currentColor; }
 .transport kbd { color: var(--color-dim); font: inherit; font-size: 11px; border: 1px solid var(--color-line); padding: 0 4px; border-radius: 2px; line-height: 16px; }
 .transport .sep { width: 1px; height: 20px; background: var(--color-line); margin: 0 4px; }
 .transport .tc { margin-left: auto; padding-right: 6px; font-variant-numeric: tabular-nums; color: var(--color-paper); white-space: nowrap; }
@@ -330,9 +332,14 @@ html.rm .app *, html.rm .app *::before, html.rm .app *::after { animation: none 
 .hero { position: absolute; left: 5%; right: 5%; bottom: 11%; pointer-events: none; }
 .hero h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 7.4cqw, 124px); line-height: 0.88; letter-spacing: -0.02em; margin: 0; text-transform: uppercase; text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6); }
 .hero p { margin: 12px 0 0; font-family: var(--font-sans); font-size: clamp(13px, 1.2cqw, 17px); line-height: 1.5; border-left: 1px solid var(--color-paper); padding-left: 10px; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8); }
-.hero .btn { pointer-events: auto; }
+.hero .btn { pointer-events: auto; margin-top: 16px; }
+.hero h1, .hero p { transition: font-size var(--d-6f) var(--ease-arrive), opacity var(--d-6f) var(--ease-arrive); }
+.app[data-playing] .hero h1 { font-size: clamp(24px, 3.2cqw, 48px); }
+.app[data-playing] .hero p { opacity: 0; height: 0; margin: 0; overflow: hidden; }
 .btn { min-height: 48px; padding: 0 16px; border-radius: 3px; font-size: 13px; font-weight: 700; cursor: pointer; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); text-decoration: none; }
-.btn svg { width: 12px; height: 12px; }
+.btn svg { width: 12px; height: 12px; fill: currentColor; }
+.btn.sq { width: 48px; padding: 0; justify-content: center; }
+.btn.sq svg { width: 16px; height: 16px; }
 .btn.pri { background: var(--color-cut); color: var(--color-ink); }
 .btn.pri:hover { background: var(--color-cut-text); }
 .btn.pri:active { transform: translateY(1px); }

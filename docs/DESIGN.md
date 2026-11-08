@@ -362,7 +362,7 @@ There are no pills and no circles, except the record dot and the category dots. 
 - **Do** put a plain label with every editor word ("Export (send message)").
 - **Do** put every label that sits on an image on a solid bay label chip.
 - **Do** load video only on click, and show a poster before that.
-- **Do** keep J/K/L as in Premiere (back, pause, play) and use arrows for clips.
+- **Do** keep J/K/L close to Premiere (back, pause, play/pause toggle) and use arrows for clips.
 - **Do** keep touch targets at 44px on phone and at least 24px on desktop.
 - **Do** use the CBC mark in the app bar.
 - **Do** write "Adobe Media Encoder" in the tools list.

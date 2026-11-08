@@ -16,10 +16,10 @@ export function enqueue(projectId: string, title: string, file: File) {
   emit();
 }
 
-// a job that did not start as an upload here (an import, a reload mid-encode): it joins at the scan
-export function track(projectId: string, title: string) {
+// a job that did not start as an upload here (an import, a reload mid-encode): it joins at its current stage
+export function track(projectId: string, title: string, stage: Stage = "scanning") {
   if (jobs.some((j) => j.projectId === projectId)) return;
-  jobs = [...jobs, { projectId, title, file: null, stage: "scanning", pct: 0 }];
+  jobs = [...jobs, { projectId, title, file: null, stage, pct: 0 }];
   emit();
 }
 

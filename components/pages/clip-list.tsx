@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { bay } from "@/components/bay/bus";
-import { CATEGORY_COLOR, tc } from "@/components/bay/const";
+import { tc } from "@/components/bay/const";
 import { useMonitor } from "@/components/monitor/state";
 import { ClipInspector } from "@/components/pages/clip-inspector";
 import { clipFromProject } from "@/lib/media";
@@ -56,7 +56,7 @@ export function ClipRows({ category, projects }: Props) {
       {projects.map((pr, i) => {
         const c = clipFromProject(pr);
         return (
-          <article key={pr.id} className={`row ${i === index ? "sel" : ""}`} data-tgt style={{ "--c": CATEGORY_COLOR[category.slug] } as React.CSSProperties} data-i={i} onClick={() => pick(i)}>
+          <article key={pr.id} className={`row ${i === index ? "sel" : ""}`} data-tgt style={{ "--c": category.color } as React.CSSProperties} data-i={i} onClick={() => pick(i)}>
             <span className="thumb">{c.poster && <Image src={c.poster} alt="" fill sizes="160px" />}<span className="no">{String(i + 1).padStart(2, "0")}</span></span>
             <span className="tx">
               <button type="button" className="t" onClick={(e) => { e.stopPropagation(); pick(i); }}>{c.title}</button>
@@ -79,7 +79,7 @@ export function ClipInspectorLive({ category, projects }: Props) {
     <aside className="insp" aria-label="Inspector">
       <div className="ptab"><span className="on">Inspector</span><span className="r">Clip</span></div>
       <div className="insp-b">
-        {p ? <ClipInspector p={p} one={category.one} color={CATEGORY_COLOR[category.slug]} i={index} n={projects.length} nextTitle={projects[index + 1]?.title} detailHref={p.stills.length || p.credits ? `/projects/${category.slug}/${p.slug}` : undefined} /> : <p className="dimt">No cuts in this track yet.</p>}
+        {p ? <ClipInspector p={p} one={category.one} color={category.color} i={index} n={projects.length} nextTitle={projects[index + 1]?.title} detailHref={p.stills.length || p.credits ? `/projects/${category.slug}/${p.slug}` : undefined} /> : <p className="dimt">No cuts in this track yet.</p>}
       </div>
     </aside>
   );
