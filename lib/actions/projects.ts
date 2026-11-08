@@ -146,9 +146,16 @@ export async function videoState(id: string) {
   return v.readyToStream ? "ready" : "error";
 }
 
-// Ready videos still without a waveform; the admin scans them one by one in the background
-export async function needPeaks() {
+// Everything the admin shell should be watching: encodes to poll, and ready videos still without a waveform to scan
+export async function pendingVideos() {
   await requireAdmin();
-  const rows = await db.project.findMany({ where: { videoStatus: "ready", peaks: { equals: Prisma.DbNull }, streamUid: { not: null }, durationSec: { not: null } }, select: { id: true, title: true, streamUid: true, durationSec: true }, orderBy: { durationSec: "asc" } });
-  return rows.map((r) => ({ id: r.id, title: r.title, uid: r.streamUid!, durationSec: r.durationSec! }));
+  const rows = await db.project.findMany({
+    where: { streamUid: { not: null }, OR: [{ videoStatus: "processing" }, { videoStatus: "ready", peaks: { equals: Prisma.DbNull }, durationSec: { not: null } }] },
+    select: { id: true, title: true, streamUid: true, durationSec: true, videoStatus: true },
+    orderBy: { durationSec: "asc" },
+  });
+  return {
+    encoding: rows.filter((r) => r.videoStatus === "processing").map((r) => ({ id: r.id, title: r.title })),
+    scanning: rows.filter((r) => r.videoStatus === "ready").map((r) => ({ id: r.id, title: r.title, uid: r.streamUid!, durationSec: r.durationSec! })),
+  };
 }

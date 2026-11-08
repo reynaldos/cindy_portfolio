@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { Upload as TusUpload } from "tus-js-client";
 import { dismiss, getJobs, patch, track, useJobs, type Job } from "@/components/admin/queue";
-import { needPeaks, savePeaks, videoState, videoUpload } from "@/lib/actions/projects";
+import { pendingVideos, savePeaks, videoState, videoUpload } from "@/lib/actions/projects";
 import { scanPeaks } from "@/lib/peaks";
 
 const STAGE = { queued: "Queued", uploading: "Uploading", encoding: "Encoding", scanning: "Scanning audio", done: "Done", error: "Failed" };
@@ -54,6 +54,14 @@ export function RenderQueue() {
     return () => clearInterval(t);
   }, [jobs, router]);
 
+  // encodes started elsewhere (an import, another tab, a reload) join the queue so the poll above covers them
+  useEffect(() => {
+    const pull = async () => { for (const e of (await pendingVideos()).encoding) track(e.id, e.title, "encoding"); };
+    pull();
+    const t = setInterval(pull, 30000);
+    return () => clearInterval(t);
+  }, []);
+
   // the audio scan: any ready video with no waveform, queued or not. Needs a click first (the browser's rule for sound).
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
@@ -61,7 +69,7 @@ export function RenderQueue() {
       if (scanning.current || !ctx.current) return;
       scanning.current = true;
       try {
-        for (const job of await needPeaks()) {
+        for (const job of (await pendingVideos()).scanning) {
           track(job.id, job.title);
           patch(job.id, { stage: "scanning", pct: 0 });
           const peaks = await scanPeaks(ctx.current, job.uid, job.durationSec, (t) => patch(job.id, { pct: t }));
