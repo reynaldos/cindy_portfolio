@@ -281,7 +281,7 @@ Next.js 16 notes:
 |---|---|
 | LCP, mid phone on 4G | under 2.0 s |
 | CLS | under 0.05 |
-| First-load JS | under 130 KB gzip (hls.js loads only on Play) |
+| First-load JS | under 200 KB gzip (React 19 and the Next runtime are about 110 KB of it; hls.js loads only on Play) |
 | Video bytes before Play | 0 |
 | Meter work while paused | 0 draws per second |
 
