@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CATEGORY_COLOR } from "@/components/bay/const";
 import { Monitor } from "@/components/monitor/monitor";
 import { ClipInspector } from "@/components/pages/clip-inspector";
 import { Credits } from "@/components/pages/credits";
@@ -26,7 +25,7 @@ export default async function Detail({ params }: { params: Promise<{ category: s
   const [p, cat, profile] = await Promise.all([getProject(slug), getCategoryProjects(category), getProfile()]);
   if (!p || !cat || p.category.slug !== category) notFound();
   const i = cat.projects.findIndex((x) => x.id === p.id), next = cat.projects[i + 1];
-  const color = CATEGORY_COLOR[cat.slug];
+  const color = cat.color;
   return (
     <>
       <div className="page wide-insp">

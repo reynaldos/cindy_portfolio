@@ -6,7 +6,7 @@ import Image from "next/image";
 import { ViewTransition, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Pause, Play, SkipBack, SkipForward, Volume2 } from "lucide-react";
 import { bay } from "@/components/bay/bus";
-import { CATEGORY_COLOR, PAGES, SEQ, pageOf, tc } from "@/components/bay/const";
+import { PAGES, SEQ, pageOf, tc } from "@/components/bay/const";
 import { Timeline, type Marker, type Track } from "@/components/bay/timeline";
 import { Brackets } from "@/components/bay/brackets";
 import { ContactDialog } from "@/components/contact/contact-dialog";
@@ -157,9 +157,9 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
   const tracks: Track[] = (() => {
     if (pathname === "/") return [{ name: "Reel", clips: [{ label: "Showreel", index: 0, color: "var(--color-line)" }] }];
     const strip = (pr: { streamUid: string | null; durationSec: number | null }) => (pr.streamUid && pr.durationSec ? stripUrls(pr.streamUid, pr.durationSec) : undefined);
-    if (pathname === "/projects") return categories.map((c) => ({ name: c.name, clips: c.projects.map((pr) => ({ label: pr.subtitle ?? pr.title, href: `/projects/${c.slug}`, color: CATEGORY_COLOR[c.slug], strip: strip(pr) })) }));
-    if (cat) return [{ name: cat.name, clips: cat.projects.map((pr, i) => ({ label: pr.subtitle ?? pr.title, index: i, current: i === mon.index, color: CATEGORY_COLOR[cat.slug], strip: strip(pr) })) }];
-    if (pathname === "/recent-work" && recent) return [{ name: recent.title, clips: recent.spots.map((pr, i) => ({ label: pr.subtitle ?? pr.title, index: i, current: i === mon.index, color: CATEGORY_COLOR[pr.category.slug], strip: strip(pr) })) }];
+    if (pathname === "/projects") return categories.map((c) => ({ name: c.name, clips: c.projects.map((pr) => ({ label: pr.subtitle ?? pr.title, href: `/projects/${c.slug}`, color: c.color, strip: strip(pr) })) }));
+    if (cat) return [{ name: cat.name, clips: cat.projects.map((pr, i) => ({ label: pr.subtitle ?? pr.title, index: i, current: i === mon.index, color: cat.color, strip: strip(pr) })) }];
+    if (pathname === "/recent-work" && recent) return [{ name: recent.title, clips: recent.spots.map((pr, i) => ({ label: pr.subtitle ?? pr.title, index: i, current: i === mon.index, color: pr.category.color, strip: strip(pr) })) }];
     if (pathname === "/about") return [{ name: "Tools", clips: (profile?.tools ?? []).map((t) => ({ label: t })) }];
     return [{ name: "Offline", clips: [{ label: "MEDIA OFFLINE" }] }];
   })();
@@ -226,7 +226,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
             {binOpen && binIcons ? (
               <div className="bin-grid">
                 {categories.flatMap((c) => c.projects.map((pr) => { const k = clipFromProject(pr); return (
-                  <Link key={pr.id} href={`/projects/${c.slug}/${pr.slug}`} aria-current={pathname === `/projects/${c.slug}/${pr.slug}` ? "page" : undefined} style={{ "--c": CATEGORY_COLOR[c.slug] } as React.CSSProperties} title={k.title}>
+                  <Link key={pr.id} href={`/projects/${c.slug}/${pr.slug}`} aria-current={pathname === `/projects/${c.slug}/${pr.slug}` ? "page" : undefined} style={{ "--c": c.color } as React.CSSProperties} title={k.title}>
                     <span className="pic">{k.poster && <Image src={k.poster} alt="" fill sizes="120px" />}</span>
                     <span className="n">{pr.subtitle ?? pr.title}</span><span className="d">{pr.durationSec ? tc(pr.durationSec, pr.fps ?? 24) : "—"} · {c.one}</span>
                   </Link>
@@ -237,7 +237,7 @@ export function BayFrame({ profile, categories, recent, children }: Props) {
                 <Link className="bi" href="/" aria-current={pathname === "/" ? "page" : undefined} title="Reel"><i className="ic clip" />Reel</Link>
                 <Link className="bi" href="/projects" aria-current={pathname === "/projects" ? "page" : undefined} title="Projects"><i className="ic bin" />Projects<span className="bc">( {String(categories.reduce((n, c) => n + c.projects.length, 0)).padStart(2, "0")} )</span></Link>
                 {categories.map((c) => (
-                  <Link key={c.slug} className="bi sub" href={`/projects/${c.slug}`} aria-current={catSlug === c.slug ? "page" : undefined} title={c.name}><i className="dot" style={{ "--c": CATEGORY_COLOR[c.slug] } as React.CSSProperties} />{c.name}<span className="bc">( {String(c.projects.length).padStart(2, "0")} )</span></Link>
+                  <Link key={c.slug} className="bi sub" href={`/projects/${c.slug}`} aria-current={catSlug === c.slug ? "page" : undefined} title={c.name}><i className="dot" style={{ "--c": c.color } as React.CSSProperties} />{c.name}<span className="bc">( {String(c.projects.length).padStart(2, "0")} )</span></Link>
                 ))}
                 <Link className="bi" href="/recent-work" aria-current={pathname === "/recent-work" ? "page" : undefined} title="Recent Work"><i className="ic bin" />Recent Work<span className="bc">( {String(recent?.spots.length ?? 0).padStart(2, "0")} )</span></Link>
                 <Link className="bi" href="/about" aria-current={pathname === "/about" ? "page" : undefined} title="About"><i className="ic still" />About<span className="bc">.tif</span></Link>

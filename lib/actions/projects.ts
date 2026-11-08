@@ -160,13 +160,14 @@ export async function pendingVideos() {
   };
 }
 
-// Category names and order, from the dialog's top-to-bottom list. Slugs stay: the routes and colours key on them.
-export async function saveCategories(rows: { id: string; name: string }[]): Promise<{ ok: true } | { error: string }> {
+// Category names, colours, and order, from the dialog's top-to-bottom list. Slugs stay: the routes and colours key on them.
+export async function saveCategories(rows: { id: string; name: string; color: string }[]): Promise<{ ok: true } | { error: string }> {
   await requireAdmin();
   const own = await db.category.findMany({ select: { id: true, slug: true } });
   if (own.length !== rows.length || !own.every((c) => rows.some((r) => r.id === c.id))) return { error: "The list changed. Reload and try again." };
   if (rows.some((r) => !r.name.trim())) return { error: "Every category needs a name." };
-  await db.$transaction(rows.map((r, i) => db.category.update({ where: { id: r.id }, data: { name: r.name.trim(), sortOrder: i + 1 } })));
+  if (rows.some((r) => !/^#[0-9a-f]{6}$/i.test(r.color))) return { error: "Colours must be hex, like #f28c38." };
+  await db.$transaction(rows.map((r, i) => db.category.update({ where: { id: r.id }, data: { name: r.name.trim(), color: r.color.toLowerCase(), sortOrder: i + 1 } })));
   for (const t of [TAGS.categories, TAGS.projects, TAGS.recent, ...own.map((c) => TAGS.category(c.slug))]) updateTag(t);
   return { ok: true };
 }

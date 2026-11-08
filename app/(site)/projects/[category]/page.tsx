@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CATEGORY_COLOR } from "@/components/bay/const";
+import { CATEGORY_SLUGS } from "@/components/bay/const";
 import { Monitor } from "@/components/monitor/monitor";
 import { CatChips } from "@/components/pages/chips";
 import { ClipInspectorLive, ClipRows } from "@/components/pages/clip-list";
@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
 
 // the four categories are fixed, so the build needs no database for them
 export function generateStaticParams() {
-  return Object.keys(CATEGORY_COLOR).map((category) => ({ category }));
+  return CATEGORY_SLUGS.map((category) => ({ category }));
 }
 
 // the razor cut reveals a finished page, so navigation waits for the data instead of flashing a shell
@@ -32,7 +32,7 @@ export default async function Category({ params }: PageProps<"/projects/[categor
       <div className="page">
         <div className="main">
           <div className="head gut cat-head">
-            <div className="kick"><span className="dot" style={{ "--c": CATEGORY_COLOR[cat.slug] } as React.CSSProperties} /><Link href="/projects" className="lnk">Projects</Link> / {cat.name}</div>
+            <div className="kick"><span className="dot" style={{ "--c": cat.color } as React.CSSProperties} /><Link href="/projects" className="lnk">Projects</Link> / {cat.name}</div>
             <div className="cat-row"><h1 className="title" tabIndex={-1} data-h1>{cat.name} ( {String(cat.projects.length).padStart(2, "0")} )</h1><CatChips categories={categories} active={cat.slug} /></div>
           </div>
           <Monitor clips={cat.projects.map(clipFromProject)} mode="clips" sticky />

@@ -8,12 +8,14 @@ export const PAGES = [
   ["/about", "About"],
 ] as const;
 
-export const CATEGORY_COLOR: Record<string, string> = {
-  "short-films": "var(--color-clip-short)",
-  commercials: "var(--color-clip-com)",
-  "music-videos": "var(--color-clip-mv)",
-  trailers: "var(--color-clip-trl)",
+// the four category routes; their names and colours live in the database, these are the defaults
+export const CATEGORY_DEFAULTS: Record<string, { name: string; color: string }> = {
+  "short-films": { name: "Short Films", color: "#7bc67e" },
+  commercials: { name: "Commercials", color: "#f28c38" },
+  "music-videos": { name: "Music Videos", color: "#b48cf2" },
+  trailers: { name: "Trailers", color: "#5aa9f2" },
 };
+export const CATEGORY_SLUGS = Object.keys(CATEGORY_DEFAULTS);
 
 const pad = (n: number) => String(n).padStart(2, "0");
 

@@ -2,7 +2,7 @@
 
 import { bay } from "@/components/bay/bus";
 import { fitNote } from "@/components/bay/note";
-import { CATEGORY_COLOR, tc } from "@/components/bay/const";
+import { tc } from "@/components/bay/const";
 import { useMonitor } from "@/components/monitor/state";
 import { ClipInspector } from "@/components/pages/clip-inspector";
 import { clipFromProject } from "@/lib/media";
@@ -29,7 +29,7 @@ export function Spots({ spots, markers, stampValue, stampText }: { spots: Spot[]
           <div className="proc-track">
             {spots.length === 0 && <span className="small dimt" style={{ padding: 8 }}>Spots coming soon.</span>}
             {spots.map((s, i) => { const c = clipFromProject(s); return (
-              <button key={s.id} type="button" data-tgt className={i === index ? "sel" : ""} style={{ ...(c.poster ? { backgroundImage: `url(${c.poster})` } : {}), "--c": CATEGORY_COLOR[s.category.slug] } as React.CSSProperties} onClick={() => bay("select", i)}>
+              <button key={s.id} type="button" data-tgt className={i === index ? "sel" : ""} style={{ ...(c.poster ? { backgroundImage: `url(${c.poster})` } : {}), "--c": s.category.color } as React.CSSProperties} onClick={() => bay("select", i)}>
                 <i>Spot {i + 1}/{spots.length}{s.subtitle ? ` · ${s.subtitle}` : ""}{s.durationSec && <><br /><span className="dimt">{tc(s.durationSec, s.fps ?? 24)}</span></>}</i>
               </button>
             ); })}
@@ -49,7 +49,7 @@ export function SpotInspector({ spots }: { spots: Spot[] }) {
     <aside className="insp" aria-label="Inspector">
       <div className="ptab"><span className="on">Inspector</span><span className="r">Clip</span></div>
       <div className="insp-b">
-        {p ? <ClipInspector p={p} one={p.category.one} color={CATEGORY_COLOR[p.category.slug]} i={index} n={spots.length} nextTitle={spots[index + 1]?.title} /> : <p className="dimt">The five spots appear here when they are published.</p>}
+        {p ? <ClipInspector p={p} one={p.category.one} color={p.category.color} i={index} n={spots.length} nextTitle={spots[index + 1]?.title} /> : <p className="dimt">The five spots appear here when they are published.</p>}
       </div>
     </aside>
   );

@@ -15,7 +15,7 @@ export default async function RecentWork() {
       <div className="page">
         <div className="main">
           <div className="head gut">
-            <div className="kick"><span className="dot" style={{ "--c": "var(--color-clip-com)" } as React.CSSProperties} />Recent Work{spots[0]?.productionCo && ` · ${spots[0].productionCo} × ${spots[0].client}`}</div>
+            <div className="kick"><span className="dot" style={{ "--c": spots[0]?.category.color ?? "var(--color-line)" } as React.CSSProperties} />Recent Work{spots[0]?.productionCo && ` · ${spots[0].productionCo} × ${spots[0].client}`}</div>
             <h1 className="title" tabIndex={-1} data-h1>{recent?.title ?? "Recent Work"}</h1>
             {recent && <p className="lead">{recent.copy}</p>}
           </div>
