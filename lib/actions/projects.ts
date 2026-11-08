@@ -9,13 +9,13 @@ import { db } from "@/lib/db";
 import { Prisma } from "@/lib/generated/prisma/client";
 import { deleteObject } from "@/lib/r2";
 import { createUpload, deleteVideo, getVideo } from "@/lib/stream";
+import { singular, slugify } from "@/lib/utils";
 
 export type SaveResult = { ok: true } | { error: string } | undefined;
 
 // what a video change clears
 const NO_VIDEO = { durationSec: null, width: null, height: null, peaks: Prisma.DbNull };
 const opt = z.string().trim().transform((v) => v || null);
-const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 const Project = z.object({
   title: z.string().trim().min(1),
@@ -162,14 +162,31 @@ export async function pendingVideos() {
   };
 }
 
-// Category names, colours, and order, from the dialog's top-to-bottom list. Slugs stay: the routes and colours key on them.
+// The whole category list from the dialog, top to bottom: renames, colours, order, new rows (ids starting "new"), and
+// rows left out are deleted when they hold no project. The slug follows the name; the old one is kept for redirects.
 export async function saveCategories(rows: { id: string; name: string; color: string }[]): Promise<{ ok: true } | { error: string }> {
   await requireAdmin();
-  const own = await db.category.findMany({ select: { id: true, slug: true } });
-  if (own.length !== rows.length || !own.every((c) => rows.some((r) => r.id === c.id))) return { error: "The list changed. Reload and try again." };
-  if (rows.some((r) => !r.name.trim())) return { error: "Every category needs a name." };
-  if (rows.some((r) => !/^#[0-9a-f]{6}$/i.test(r.color))) return { error: "Colours must be hex, like #f28c38." };
-  await db.$transaction(rows.map((r, i) => db.category.update({ where: { id: r.id }, data: { name: r.name.trim(), color: r.color.toLowerCase(), sortOrder: i + 1 } })));
-  for (const t of [TAGS.categories, TAGS.projects, TAGS.recent, ...own.map((c) => TAGS.category(c.slug))]) updateTag(t);
+  const own = await db.category.findMany({ select: { id: true, slug: true, oldSlugs: true, _count: { select: { projects: true } } } });
+  if (rows.some((r) => !r.id.startsWith("new") && !own.some((c) => c.id === r.id))) return { error: "The list changed. Reload and try again." };
+  const clean = rows.map((r) => ({ ...r, name: r.name.trim(), slug: slugify(r.name) }));
+  if (clean.some((r) => !r.name)) return { error: "Every category needs a name." };
+  if (clean.some((r) => !r.slug)) return { error: "A name needs at least one letter or number." };
+  if (new Set(clean.map((r) => r.slug)).size !== clean.length) return { error: "Two categories would share the same URL." };
+  if (clean.some((r) => !/^#[0-9a-f]{6}$/i.test(r.color))) return { error: "Colours must be hex, like #f28c38." };
+  const gone = own.filter((c) => !clean.some((r) => r.id === c.id));
+  if (gone.some((c) => c._count.projects)) return { error: "Move or delete the clips in a category before deleting it." };
+  const taken = new Set(clean.map((r) => r.slug));
+  await db.$transaction([
+    ...gone.map((c) => db.category.delete({ where: { id: c.id } })),
+    ...clean.map((r, i) => {
+      const data = { name: r.name, one: singular(r.name), slug: r.slug, color: r.color.toLowerCase(), sortOrder: i + 1 };
+      const was = own.find((c) => c.id === r.id);
+      if (!was) return db.category.create({ data });
+      // a slug that is live again is no longer old anywhere; a slug just left behind is kept for its redirect
+      const oldSlugs = [...new Set([...was.oldSlugs, ...(was.slug !== r.slug ? [was.slug] : [])])].filter((s) => !taken.has(s));
+      return db.category.update({ where: { id: r.id }, data: { ...data, oldSlugs } });
+    }),
+  ]);
+  for (const t of [TAGS.categories, TAGS.projects, TAGS.recent, ...own.map((c) => TAGS.category(c.slug)), ...clean.map((r) => TAGS.category(r.slug))]) updateTag(t);
   return { ok: true };
 }

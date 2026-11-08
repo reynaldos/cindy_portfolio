@@ -61,6 +61,15 @@ export async function getCategoryProjects(slug: string) {
   });
 }
 
+// the current slug of a renamed category, for a redirect from an old link
+export async function getCategorySlug(old: string) {
+  "use cache";
+  cacheLife("max");
+  cacheTag(TAGS.categories);
+  const c = await db.category.findFirst({ where: { oldSlugs: { has: old } }, select: { slug: true } });
+  return c?.slug ?? null;
+}
+
 export async function getProject(slug: string) {
   "use cache";
   cacheLife("max");

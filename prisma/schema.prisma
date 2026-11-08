@@ -48,6 +48,7 @@ model Category {
   one       String
   blurb     String?
   color     String    @default("#f28c38")
+  oldSlugs  String[]  @default([])
   sortOrder Int
   projects  Project[]
 }

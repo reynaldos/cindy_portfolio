@@ -19,7 +19,7 @@ export default async function AdminProjects() {
     <>
       <div className="flex items-center justify-between mb-6 max-w-2xl">
         <h1 className="font-display text-4xl font-semibold">Projects</h1>
-        <CategoriesDialog cats={cats.map((c) => ({ id: c.id, name: c.name, slug: c.slug, color: c.color, count: c.projects.length }))} />
+        <CategoriesDialog cats={cats.map((c) => ({ id: c.id, name: c.name, color: c.color, count: c.projects.length }))} />
       </div>
       <form action={createProject} className="flex gap-2 flex-wrap items-end bg-panel border border-line p-4 mb-6 max-w-2xl">
         <label className={`${kick} grid gap-1 flex-1 min-w-48`}>New project title<input name="title" required className={field} /></label>
