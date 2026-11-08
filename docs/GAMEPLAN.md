@@ -87,7 +87,7 @@ Update the boxes after each task. Each task names the user story it serves, so c
 - [x] 6.6 Inbox: New / Read / Archived tabs with counts, each message with a Reply mailto, Mark read, Archive, Move to New; "email not sent" flag when EmailJS failed (US-16)
 
 ## Phase 7 — Launch
-- [x] 7.1 Root metadata with title template and `metadataBase` (`NEXT_PUBLIC_SITE_URL`), titles per page, project posters as share images, a generated brand share card (built-in font: the renderer takes no woff2), `sitemap.ts`, `robots.ts` (US-01)
+- [x] 7.1 Root metadata with title template and `metadataBase` (`NEXT_PUBLIC_SITE_URL`), titles per page, project posters as share images, a 1200×630 screenshot of the lander as the share card (`app/(site)/opengraph-image.png`), `sitemap.ts`, `robots.ts` (US-01)
 - [x] 7.2 Accessibility pass: axe clean on every public page (desktop and phone), the admin pages, the open contact dialog, and the phone drawer; banner landmark, phone transport labels, root 404 in the frame, login h1, picker name, Firefox scrub ring (US-10, US-11)
 - [x] 7.3 `/impeccable audit` on the production build: 16/20 before fixes; the nine findings fixed (phone band heights, CLS from the stage height, 240px tile posters, 44px credits links, colour tokens, 11px floor, row title target, clip tokens removed, JS budget set to 200 KB) (all)
 - [ ] 7.4 Performance check against the budget in ARCHITECTURE.md §5 (US-11)

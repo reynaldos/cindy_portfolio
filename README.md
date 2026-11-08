@@ -1,5 +1,7 @@
 # Cuts By Cindy
 
+![The Cuts By Cindy lander: an edit-bay frame with the reel in the program monitor](public/lander.png)
+
 The portfolio of Cindy Peralta, a video editor in Los Angeles. The site is built as her edit bay: an app bar, workspace tabs, a project bin, a program monitor, an inspector, a timeline with audio meters, and a razor-cut page change. A small admin panel lets Cindy edit her own content.
 
 ## Stack
