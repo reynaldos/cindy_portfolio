@@ -99,12 +99,12 @@ export function Timeline({ seq, cap, tracks, markers, page, a1, peaks, p, onSeek
             <div key={`l${t.name}`} className={`lane${x}`}>
               {markers.map((m) => <i key={m.label} className="mguide" style={{ left: `${m.at * 100}%` }} />)}
               {t.clips.map((c, j) => {
-                // six Stream frames laid side by side make the film strip
-                const film = c.strip?.length ? { backgroundImage: c.strip.map((u) => `url(${u})`).join(","), backgroundPosition: c.strip.map((_, k) => `${(k / (c.strip!.length - 1)) * 100}% 0`).join(","), backgroundSize: `${100 / c.strip.length}% 100%`, backgroundRepeat: "no-repeat" } : {};
-                const style = { ...spread(t.clips.length, j), ...film, "--c": c.color } as unknown as React.CSSProperties;
+                // six Stream frames, each at the lane's height and 16:9, cycle until the clip is full; the overflow is clipped
+                const strip = c.strip?.length ? <span className="strip" aria-hidden="true">{Array.from({ length: 48 }, (_, k) => <i key={k} style={{ backgroundImage: `url(${c.strip![k % c.strip!.length]})` }} />)}</span> : null;
+                const style = { ...spread(t.clips.length, j), "--c": c.color } as React.CSSProperties;
                 const cls = `clip film ${c.current ? "sel" : ""}`;
-                if (c.href) return <Link key={j} href={c.href} className={cls} style={style} title={c.label} data-tgt><span>{c.label}</span></Link>;
-                if (c.index !== undefined) return <button key={j} type="button" className={cls} style={style} title={c.label} data-tgt onClick={() => bay("select", c.index)}><span>{c.label}</span></button>;
+                if (c.href) return <Link key={j} href={c.href} className={cls} style={style} title={c.label} data-tgt>{strip}<span>{c.label}</span></Link>;
+                if (c.index !== undefined) return <button key={j} type="button" className={cls} style={style} title={c.label} onClick={() => bay("select", c.index)} data-tgt>{strip}<span>{c.label}</span></button>;
                 return <span key={j} className="clip static navc" style={style}>{c.label}</span>;
               })}
             </div>,

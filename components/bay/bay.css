@@ -126,7 +126,9 @@
 .tick.maj { height: 12px; background: var(--color-dim); }
 .tick .rl { position: absolute; left: 4px; bottom: 5px; font-size: 11px; color: var(--color-dim); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .clip { position: absolute; top: 3px; bottom: 3px; border-radius: 3px; background: var(--color-track-hi); border: 0; border-top: 4px solid var(--c, transparent); color: var(--color-paper); font-size: 12px; font-family: inherit; padding: 0 8px 4px; text-align: left; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; cursor: pointer; display: flex; align-items: flex-end; text-decoration: none; }
-.clip.film { background: #000 left center / auto 100% repeat-x; }
+.clip.film { background: #000; }
+.clip.film .strip { position: absolute; inset: 0; display: flex; overflow: hidden; }
+.clip.film .strip i { flex: none; height: 100%; aspect-ratio: 16 / 9; background: #000 center / cover no-repeat; }
 .clip.film > span { background: var(--color-bay); padding: 2px 6px; border-radius: 2px; font-size: 11px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; min-width: 0; max-width: 100%; }
 .clip > * { position: relative; }
 .clip.navc { background: var(--color-panel); border: 1px solid var(--color-line); align-items: center; padding-bottom: 0; }
