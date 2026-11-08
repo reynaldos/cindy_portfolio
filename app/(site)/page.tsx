@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Play } from "lucide-react";
 import { Monitor } from "@/components/monitor/monitor";
 import { PlayReel } from "@/components/monitor/play-reel";
 import { Credits } from "@/components/pages/credits";
@@ -22,7 +21,7 @@ export default async function Home() {
             <div className="hero">
               <h1 tabIndex={-1} data-h1>{profile?.brand ?? "Cuts By Cindy"}</h1>
               <p>{profile?.tagline ?? "Video Editor."}</p>
-              {reel?.streamUid && <PlayReel><Play aria-hidden="true" />Play reel</PlayReel>}
+              {reel?.streamUid && <PlayReel />}
             </div>
             {latest?.client && <Flap text={latest.client} />}
           </Monitor>
