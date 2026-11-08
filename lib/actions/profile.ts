@@ -16,7 +16,8 @@ const Profile = z.object({
   name: z.string().trim().min(1),
   brand: z.string().trim().min(1),
   tagline: z.string().trim().min(1),
-  bio: z.string().trim().min(1),
+  // textareas submit \r\n; the pages split paragraphs on \n\n
+  bio: z.string().transform((v) => v.replace(/\r\n?/g, "\n").trim()).pipe(z.string().min(1)),
   quote: z.string().trim().transform((v) => v || null),
   location: z.string().trim().min(1),
   studied: z.string().trim().transform((v) => v || null),
