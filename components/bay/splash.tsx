@@ -6,7 +6,8 @@ import { useClock } from "@/components/bay/clock";
 
 type Props = { brand: string; name: string; city?: string | null };
 
-const STEPS = ["Loading fonts…", "Linking media…", "Ready"];
+// the first three share the hold in thirds; the last shows as the card leaves
+const STEPS = ["Loading fonts…", "Linking media…", "Initializing player…", "Ready"];
 const MIN = 2250;
 const MAX = 2750;
 const KEY = "cbc-splash";
@@ -28,13 +29,14 @@ export function Splash({ brand, name, city }: Props) {
     if (document.documentElement.classList.contains("no-splash")) return;
     const t0 = performance.now();
     requestAnimationFrame(() => setPhase("run"));
-    const fonts = document.fonts.ready.then(() => setStep(1));
+    setTimeout(() => setStep(1), MIN / 3);
+    setTimeout(() => setStep(2), (MIN * 2) / 3);
     if (HOLD) return;
     const loaded = new Promise<void>((r) => (document.readyState === "complete" ? r() : addEventListener("load", () => r(), { once: true })));
     // leave when ready: never sooner than MIN, never later than MAX
-    Promise.race([Promise.all([fonts, loaded]), new Promise((r) => setTimeout(r, MAX))]).then(() => {
+    Promise.race([Promise.all([document.fonts.ready, loaded]), new Promise((r) => setTimeout(r, MAX))]).then(() => {
       setTimeout(() => {
-        setStep(2);
+        setStep(3);
         setPhase("out");
         try { sessionStorage.setItem(KEY, "1"); } catch {}
         setTimeout(() => setPhase("gone"), 600);
