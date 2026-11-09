@@ -507,3 +507,40 @@ dl.meta dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
   .iconbtn { width: 44px; height: 44px; }
   .keyhint { display: none; }
 }
+
+
+/* boot splash: an Adobe-style card over the bay, once per tab; the inline script hides it before paint */
+.splash { position: fixed; inset: 0; z-index: 100; background: var(--color-page); display: grid; place-items: center; padding: max(16px, env(safe-area-inset-left, 0px)); transition: opacity .5s var(--ease-cut); }
+.splash[data-phase="out"] { opacity: 0; pointer-events: none; }
+.splash[data-phase="in"] .card { opacity: 0; scale: .97; }
+.splash[data-phase="out"] .card { scale: 1.02; }
+html.no-splash .splash { display: none; }
+/* overflow stays visible on the card so it grows past 2.2:1 when the text needs it */
+.splash .card { container-type: inline-size; width: min(720px, 100%); aspect-ratio: 2.2; background: #141418; border: 1px solid var(--color-line); display: grid; grid-template-columns: 40% 1fr; position: relative; transition: opacity .5s var(--ease-arrive), scale .6s var(--ease-arrive); }
+.splash .art { position: relative; overflow: hidden; background: #7a140e; }
+.splash .art i { position: absolute; width: 90%; aspect-ratio: 1; border-radius: 50%; filter: blur(14cqw); }
+.splash .art i:nth-child(1) { background: var(--color-cut); left: -30%; top: -20%; animation: splash-drift-a 9s ease-in-out infinite alternate; }
+.splash .art i:nth-child(2) { background: #ff8a5c; right: -40%; bottom: -30%; opacity: .7; animation: splash-drift-b 11s ease-in-out infinite alternate; }
+.splash .art i:nth-child(3) { background: #3a0a08; left: 10%; bottom: -50%; animation: splash-drift-a 13s ease-in-out infinite alternate-reverse; }
+@keyframes splash-drift-a { to { translate: 40% 50%; } }
+@keyframes splash-drift-b { to { translate: -45% -40%; } }
+.splash .txt { padding: 5cqw 5cqw 6cqw; display: flex; flex-direction: column; min-width: 0; font: 400 clamp(11px, 3cqw, 14px)/1.5 var(--font-mono); color: var(--color-dim); overflow-wrap: anywhere; }
+.splash .mark { width: clamp(32px, 9cqw, 64px); height: auto; margin-bottom: 3cqw; }
+.splash .name { font: 700 clamp(28px, 8.4cqw, 64px)/.9 var(--font-display); letter-spacing: -.02em; color: var(--color-paper); max-width: 7ch; text-wrap: balance; }
+.splash .ver { color: var(--color-faint); margin-top: 1.5cqw; }
+.splash .st { margin-top: auto; padding-top: 3cqw; }
+.splash .cred { color: var(--color-faint); font-size: .85em; }
+.splash .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--color-track); }
+/* the bar crosses on time, eased so it slows near the end, then closes the last stretch when the page is ready */
+.splash .bar i { display: block; height: 100%; width: 3%; background: var(--color-paper); transition: width var(--min) cubic-bezier(.1, .6, .3, 1); }
+.splash[data-phase="run"] .bar i { width: 86%; }
+.splash[data-phase="out"] .bar i { width: 100%; transition-duration: .35s; }
+@media (max-width: 480px) {
+  .splash .card { grid-template-columns: 1fr; grid-template-rows: 34cqw 1fr; aspect-ratio: auto; }
+  .splash .txt { padding: 20px 20px 24px; font-size: 12px; }
+  .splash .mark { width: 40px; margin-bottom: 14px; }
+  .splash .name { font-size: 36px; }
+  .splash .st { padding-top: 20px; }
+}
+@media (prefers-reduced-motion: reduce) { .splash *, .splash *::before, .splash *::after { animation: none !important; transition: none !important; } }
+html.rm .splash *, html.rm .splash *::before, html.rm .splash *::after { animation: none !important; transition: none !important; }

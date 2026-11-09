@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
@@ -28,6 +28,9 @@ const jetbrains = JetBrains_Mono({
   variable: "--font-jetbrains",
   display: "swap",
 });
+
+// the browser paints the page color before the stylesheet arrives, so there is no white frame
+export const viewport: Viewport = { themeColor: "#060607", colorScheme: "dark" };
 
 // the work list and keywords follow the category names in the database
 export async function generateMetadata(): Promise<Metadata> {
