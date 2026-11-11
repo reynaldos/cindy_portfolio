@@ -11,8 +11,8 @@ import type { Category, Project } from "@/lib/generated/prisma/client";
 
 type Props = { category: Category; projects: (Project & { stills: { id: string }[] })[] };
 
-// Category page: the rows under the sticky monitor. Scrolling selects the row at the monitor's edge;
-// a click selects and plays. The selected index lives in the monitor state, so the inspector follows.
+// Category page: the rows under the sticky monitor. Scrolling only scrolls; a click selects and plays.
+// The selected index lives in the monitor state, so the inspector follows.
 export function ClipRows({ category, projects }: Props) {
   const { index } = useMonitor();
   const list = useRef<HTMLDivElement>(null);
@@ -26,31 +26,13 @@ export function ClipRows({ category, projects }: Props) {
     stage.scrollTo({ top: row.offsetTop - (mon?.offsetHeight ?? 0) - 8, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   };
 
-  // scroll-select: the row nearest the monitor's bottom edge becomes current, with no autoplay
+  // arrows and the timeline change the clip; bring its row into view, but not on the first render
+  const shown = useRef(index);
   useEffect(() => {
-    const stage = list.current?.closest<HTMLElement>(".stage");
-    if (!stage) return;
-    let t = 0;
-    const onScroll = () => {
-      clearTimeout(t);
-      t = window.setTimeout(() => {
-        if (Date.now() - lock.current < 700) return;
-        const monEl = document.querySelector<HTMLElement>(".mon-wrap.sticky");
-        // on small screens the monitor scrolls away, so there is no edge to select against
-        if (monEl && getComputedStyle(monEl).position !== "sticky") return;
-        const mon = monEl?.getBoundingClientRect();
-        const ref = mon ? mon.bottom + 40 : stage.getBoundingClientRect().top + stage.clientHeight * 0.35;
-        let best = -1, bd = 1e9;
-        list.current?.querySelectorAll<HTMLElement>("[data-i]").forEach((r) => { const b = r.getBoundingClientRect(), d = Math.abs(b.top + b.height / 2 - ref); if (d < bd) { bd = d; best = +r.dataset.i!; } });
-        if (best >= 0) bay("select", best);
-      }, 140);
-    };
-    stage.addEventListener("scroll", onScroll, { passive: true });
-    return () => { stage.removeEventListener("scroll", onScroll); clearTimeout(t); };
-  }, []);
-
-  // arrows and the timeline change the clip; bring its row into view
-  useEffect(() => { if (Date.now() - lock.current > 700) scrollTo(index); }, [index]);
+    if (shown.current === index) return;
+    shown.current = index;
+    if (Date.now() - lock.current > 700) scrollTo(index);
+  }, [index]);
 
   const pick = (i: number) => { bay("select", i); scrollTo(i); bay("play"); };
   return (
