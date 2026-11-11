@@ -6,19 +6,22 @@ import { useRouter } from "next/navigation";
 import { useActionState, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { enqueue, useJob } from "@/components/admin/queue";
+import { Pins } from "@/components/admin/pins";
 import { Area, FileButton, Section, Select, Status, Text, Upload, field, label, putFile, type Values } from "@/components/admin/fields";
 import { deleteProject, removeVideo, saveProject, type SaveResult } from "@/lib/actions/projects";
 import { tc } from "@/components/bay/const";
 import { r2Url, thumbUrl } from "@/lib/media";
+import type { Marker } from "@/lib/markers";
 
 type Still = { key: string; alt: string };
 type Video = { uid: string | null; status: "none" | "processing" | "ready" | "error"; peaks: boolean; durationSec: number | null };
-type Props = { id: string; values: Values; cats: { id: string; name: string; slug: string }[]; skills: string[]; bank: string[]; stills: Still[]; video: Video; publicUrl: string | null; uploads: boolean };
+type Props = { id: string; values: Values; cats: { id: string; name: string; slug: string }[]; skills: string[]; bank: string[]; stills: Still[]; markers: Marker[]; video: Video; publicUrl: string | null; uploads: boolean };
 
 const IMG = "image/jpeg,image/png,image/webp";
 
-export function ProjectForm({ id, values, cats, skills, bank, stills: initialStills, video, publicUrl, uploads }: Props) {
+export function ProjectForm({ id, values, cats, skills, bank, stills: initialStills, markers: initialMarkers, video, publicUrl, uploads }: Props) {
   const [state, action, pending] = useActionState<SaveResult, FormData>(saveProject.bind(null, id), undefined);
+  const [markers, setMarkers] = useState(initialMarkers);
   const [catId, setCatId] = useState(values.categoryId);
   const catSlug = cats.find((c) => c.id === catId)?.slug ?? "";
   return (
@@ -60,6 +63,9 @@ export function ProjectForm({ id, values, cats, skills, bank, stills: initialSti
         </Section>
         <Section title="Stills">
           <Stills initial={initialStills} enabled={uploads} />
+        </Section>
+        <Section title="Feedback pins">
+          <Pins markers={markers} onChange={setMarkers} total={video.durationSec ?? 0} hint="Yellow pins on the scrub bar under the player, on the category page. Position is where in the clip the pin sits." />
         </Section>
         <Section title="Captions">
           <Upload name="captionsKey" kind="captions" label="Captions (optional)" hint="One .vtt file." accept=".vtt,text/vtt" initial={values.captionsKey} enabled={uploads} preview={(key) => <span className="font-mono text-xs">{key}</span>} />

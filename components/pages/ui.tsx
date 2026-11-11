@@ -27,13 +27,17 @@ export function LaClock() {
   return <span>LOS ANGELES {time}</span>;
 }
 
+const MQ_CHARS = 340;
+
 // the client list scrolls; hover, focus inside the credits, or a click pauses it
 export function Marquee({ items }: { items: string[] }) {
   const [paused, setPaused] = useState(false);
-  const text = items.map((c) => c.toUpperCase()).join(" · ") + " · ";
+  const one = items.map((c) => c.toUpperCase()).join(" · ") + " · ";
+  // each half must be wider than the widest screen (about 8px a character), or the end of the loop shows a gap
+  const reps = Math.max(1, Math.ceil(MQ_CHARS / one.length)), text = one.repeat(reps);
   return (
     <div className="mq" title="Click to pause or resume" onClick={() => setPaused((v) => !v)}>
-      <div className={`marquee ${paused ? "paused" : ""}`} aria-hidden="true"><div>{text}{text}</div></div>
+      <div className={`marquee ${paused ? "paused" : ""}`} aria-hidden="true"><div style={{ "--mq-d": `${40 * reps}s` } as React.CSSProperties}>{text}{text}</div></div>
       <ul className="sr">{items.map((c) => <li key={c}>{c}</li>)}</ul>
     </div>
   );

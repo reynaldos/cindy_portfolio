@@ -177,10 +177,13 @@
   0%, 41% { opacity: 0.6; }
   70%, 100% { opacity: 1; }
 }
-/* the blade is a live layer above the old snapshot */
+/* the blade is a live layer above the old snapshot; the splash keeps its own layer so a transition never draws the stage over it */
 ::view-transition-group(blade),
 ::view-transition-old(blade),
-::view-transition-new(blade) {
+::view-transition-new(blade),
+::view-transition-group(splash),
+::view-transition-old(splash),
+::view-transition-new(splash) {
   animation: none;
 }
 /* reduced motion: a 200ms crossfade instead */

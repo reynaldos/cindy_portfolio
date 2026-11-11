@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProjectForm } from "@/components/admin/project-form";
 import { db } from "@/lib/db";
+import { markersOf } from "@/lib/markers";
 import { r2Ready } from "@/lib/r2";
 
 export const instant = false;
@@ -30,6 +31,7 @@ export default async function AdminProject({ params }: { params: Promise<{ id: s
         skills={p.skills}
         bank={bank}
         stills={p.stills.map((s) => ({ key: s.key, alt: s.alt }))}
+        markers={markersOf(p.markers)}
         video={{ uid: p.streamUid, status: p.videoStatus, peaks: Array.isArray(p.peaks), durationSec: p.durationSec }}
         publicUrl={cat && p.status === "published" ? `/projects/${cat.slug}/${p.slug}` : null}
         uploads={r2Ready()}

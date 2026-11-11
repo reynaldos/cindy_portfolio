@@ -13,6 +13,7 @@ model Profile {
   name          String
   brand         String
   tagline       String
+  greeting      String?
   bio           String   @db.Text
   quote         String?
   location      String
@@ -78,6 +79,7 @@ model Project {
   height        Int?
   peaks         Json?
   captionsKey   String?
+  markers       Json?
   posterKey     String?
   posterTimeSec Float          @default(1)
   status        PubStatus      @default(draft)

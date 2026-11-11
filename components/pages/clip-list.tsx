@@ -35,7 +35,10 @@ export function ClipRows({ category, projects }: Props) {
       clearTimeout(t);
       t = window.setTimeout(() => {
         if (Date.now() - lock.current < 700) return;
-        const mon = document.querySelector(".mon-wrap.sticky")?.getBoundingClientRect();
+        const monEl = document.querySelector<HTMLElement>(".mon-wrap.sticky");
+        // on small screens the monitor scrolls away, so there is no edge to select against
+        if (monEl && getComputedStyle(monEl).position !== "sticky") return;
+        const mon = monEl?.getBoundingClientRect();
         const ref = mon ? mon.bottom + 40 : stage.getBoundingClientRect().top + stage.clientHeight * 0.35;
         let best = -1, bd = 1e9;
         list.current?.querySelectorAll<HTMLElement>("[data-i]").forEach((r) => { const b = r.getBoundingClientRect(), d = Math.abs(b.top + b.height / 2 - ref); if (d < bd) { bd = d; best = +r.dataset.i!; } });

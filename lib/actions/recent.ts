@@ -5,6 +5,7 @@ import { z } from "zod";
 import { requireAdmin } from "@/lib/auth";
 import { TAGS } from "@/lib/data";
 import { db } from "@/lib/db";
+import { MarkersField } from "@/lib/markers-field";
 
 export type SaveResult = { ok: true } | { error: string } | undefined;
 
@@ -13,8 +14,7 @@ const Recent = z.object({
   copy: z.string().trim().min(1),
   stampValue: z.string().trim().transform((v) => v || null),
   stampText: z.string().trim().transform((v) => v || null),
-  // feedback pins: label, note, and where on the sequence (0..1)
-  markers: z.string().transform((v) => JSON.parse(v || "[]")).pipe(z.array(z.object({ label: z.string().trim().min(1), note: z.string().trim().min(1), at: z.number().min(0).max(1) }))),
+  markers: MarkersField,
   spots: z.string().transform((v) => JSON.parse(v || "[]")).pipe(z.array(z.string().min(1)).max(5)),
 });
 
