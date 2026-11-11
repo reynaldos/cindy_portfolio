@@ -86,7 +86,8 @@ export function Monitor({ clips, index = 0, mode, sticky, compact, still, childr
     if (o.sound) { v.muted = false; setMuted(false); }
     if (o.restart) v.currentTime = 0;
     if (!v.muted) ensureAudio();
-    v.play().catch(() => setStatus("error"));
+    // a newer load cutting this play short is not a media failure
+    v.play().catch((e: DOMException) => { if (e.name !== "AbortError") setStatus("error"); });
   }, [attach, clips, idx]);
 
   // transport and keys arrive on the bay bus
