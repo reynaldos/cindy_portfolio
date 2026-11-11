@@ -6,6 +6,8 @@ import { clipFromProject, type Clip } from "@/lib/media";
 
 export const metadata = { title: "Projects", description: "Commercials, music videos, short films, and trailers cut by Cindy Peralta.", alternates: { canonical: "/projects" } };
 
+const WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
+
 export default async function Projects() {
   const [categories, profile] = await Promise.all([getCategories(), getProfile()]);
   const total = categories.reduce((n, c) => n + c.projects.length, 0);
@@ -15,7 +17,7 @@ export default async function Projects() {
     <>
       <div className="page">
         <div className="main">
-          <div className="head gut"><div className="kick">Projects · {total} cuts</div><h1 className="title" tabIndex={-1} data-h1>Four tracks. Pick one.</h1></div>
+          <div className="head gut"><div className="kick">Projects · {total} cuts</div><h1 className="title" tabIndex={-1} data-h1>{WORDS[categories.length] ?? categories.length} tracks. Pick one.</h1></div>
           <Monitor clips={clips} mode="reel" compact />
           <Tracks categories={categories} />
         </div>

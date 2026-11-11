@@ -54,6 +54,16 @@ export function Monitor({ clips, index = 0, mode, sticky, compact, still, childr
     hls.current = h;
   }, []);
 
+  // iPhone Safari has no element fullscreen, only the video's own player
+  const fullscreen = async () => {
+    const v = video.current;
+    if (!v) return;
+    const box = v.closest(".monitor");
+    if (box?.requestFullscreen) return box.requestFullscreen().catch(() => {});
+    if (clip?.src) await attach(v, clip.src);
+    try { (v as HTMLVideoElement & { webkitEnterFullscreen?: () => void }).webkitEnterFullscreen?.(); } catch {}
+  };
+
   // builds the meter graph once, then just resumes the context
   const ensureAudio = () => {
     const v = video.current;
@@ -183,7 +193,7 @@ export function Monitor({ clips, index = 0, mode, sticky, compact, still, childr
           <button type="button" aria-pressed={muted} title="Mute / unmute" onClick={() => { const v = video.current!; v.muted = !v.muted; setMuted(v.muted); if (!v.muted) ensureAudio(); }}>
             {muted ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}<span className="lbl">{muted ? "Unmute" : "Mute"}</span><kbd>M</kbd>
           </button>
-          <button type="button" title="Fullscreen" onClick={() => video.current?.closest(".monitor")?.requestFullscreen?.().catch(() => {})}><Maximize aria-hidden="true" /><span className="lbl">Full</span></button>
+          <button type="button" title="Fullscreen" onClick={fullscreen} disabled={!canPlay}><Maximize aria-hidden="true" /><span className="lbl">Full</span></button>
           <span className="tc">{cur}<span className="tot"> / {tot}</span></span>
         </div>
       </div>
