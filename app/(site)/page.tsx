@@ -28,7 +28,7 @@ export default async function Home() {
           <div className="ptab"><span className="on">Inspector</span><span className="r">Sequence</span></div>
           <div className="insp-b">
             <div className="kick">Sequence · CBC_REEL</div>
-            <h2 className="h2">Hi, I&apos;m {profile?.name.split(" ")[0] ?? "Cindy"}.</h2>
+            <h2 className="h2">{profile?.greeting ?? `Hi, I'm ${profile?.name.split(" ")[0] ?? "Cindy"}.`}</h2>
             <dl className="meta">
               <dt>Role</dt><dd>Video Editor</dd>
               <dt>Based</dt><dd>{profile?.location}</dd>
