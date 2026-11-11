@@ -19,7 +19,7 @@ export default async function About() {
         <div className="main">
           <Monitor still={{ src: profile.portraitKey ? r2Url(profile.portraitKey) : null, alt: profile.portraitKey ? `Portrait of ${profile.name}` : "Portrait coming soon", file: `${first.toUpperCase()}_PORTRAIT.tif`, fmt: "still" }} clips={[]} mode="reel" />
           <div className="rows gut prose">
-            <h1 className="title" tabIndex={-1} data-h1>{profile.greeting ?? `Hi I'm ${profile.name}.`}</h1>
+            <h1 className="title" tabIndex={-1} data-h1>{profile.greeting ?? `Hi, I'm ${first}.`}</h1>
             {profile.bio.split(/\r?\n(?:[ \t]*\r?\n)+/).map((para, i) => <p key={i}>{para}</p>)}
             {profile.quote && <p className="quote">&ldquo;{profile.quote}&rdquo;</p>}
           </div>
