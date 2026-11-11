@@ -461,13 +461,6 @@ dl.meta dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
 .stills .still { position: relative; aspect-ratio: 16 / 9; background: var(--color-black); display: block; }
 .stills img { object-fit: cover; }
 
-/* NOW CUTTING board on the hero */
-.board { position: absolute; top: 6%; right: 5%; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; pointer-events: none; }
-.board .k { font-size: 11px; letter-spacing: 0.1em; color: var(--color-paper); background: color-mix(in srgb, var(--color-ink) 70%, transparent); padding: 2px 6px; }
-.cells { display: flex; gap: 2px; }
-.cells span { display: inline-grid; place-items: center; width: 16px; height: 24px; background: var(--color-panel); font-size: 12px; font-weight: 700; color: var(--color-paper); border-bottom: 1px solid var(--color-bay); }
-.cells span.sp { background: transparent; width: 8px; }
-
 /* end credits */
 .credits { background: var(--color-black); padding-top: 96px; padding-bottom: 64px; text-align: center; margin-top: 2px; overflow: hidden; }
 .credits .lines { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; max-width: 640px; margin: 0 auto 48px; font-size: 13px; }
@@ -498,7 +491,6 @@ dl.meta dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
   .credits .lines { grid-template-columns: 1fr; gap: 2px; }
   .credits .lines dt { text-align: center; margin-top: 12px; }
   .credits .lines dd { text-align: center; }
-  .board { display: none; }
   .proc { margin: 12px 0; }
   .proc-track { flex-direction: column; }
   .pin { min-height: 44px; top: -44px; }
