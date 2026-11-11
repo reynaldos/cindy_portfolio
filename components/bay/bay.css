@@ -505,7 +505,7 @@ dl.meta dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
 
 
 /* boot splash: an Adobe-style card over the bay, once per tab; the inline script hides it before paint */
-.splash { position: fixed; inset: 0; z-index: 100; background: var(--color-page); display: grid; place-items: center; padding: max(16px, env(safe-area-inset-left, 0px)); transition: opacity .5s var(--ease-cut); }
+.splash { position: fixed; inset: 0; z-index: 100; view-transition-name: splash; background: var(--color-page); display: grid; place-items: center; padding: max(16px, env(safe-area-inset-left, 0px)); transition: opacity .5s var(--ease-cut); }
 .splash[data-phase="out"] { opacity: 0; pointer-events: none; }
 .splash[data-phase="in"] .card { opacity: 0; scale: .97; }
 .splash[data-phase="out"] .card { scale: 1.02; }
