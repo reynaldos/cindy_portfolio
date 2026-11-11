@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Monitor } from "@/components/monitor/monitor";
 import { PlayReel } from "@/components/monitor/play-reel";
 import { Credits } from "@/components/pages/credits";
-import { Flap } from "@/components/pages/flap";
 import { ContactButton } from "@/components/pages/ui";
 import { getCategories, getProfile, getRecentWork, getReel } from "@/lib/data";
 import { clipFromProject } from "@/lib/media";
@@ -23,7 +22,6 @@ export default async function Home() {
               <p>{profile?.tagline ?? "Video Editor."}</p>
               {reel?.streamUid && <PlayReel />}
             </div>
-            {latest?.client && <Flap text={latest.client} />}
           </Monitor>
         </div>
         <aside className="insp" aria-label="Inspector">
