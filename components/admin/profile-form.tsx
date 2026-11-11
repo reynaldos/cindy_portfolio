@@ -17,7 +17,7 @@ export function ProfileForm({ values, projects, uploads }: Props) {
         <Text name="name" label="Name" v={values} />
         <Text name="brand" label="Brand" v={values} />
         <Text name="tagline" label="Tagline" v={values} />
-        <Text name="greeting" label="Greeting on Home and About (optional, blank keeps each page’s default)" v={values} />
+        <Text name="greeting" label="Greeting (optional, blank shows “Hi, I’m <first name>.”)" v={values} />
         <Area name="bio" label="Bio (blank line between paragraphs)" v={values} rows={8} />
         <Text name="quote" label="Quote (optional)" v={values} />
         <div className="grid sm:grid-cols-2 gap-3">
