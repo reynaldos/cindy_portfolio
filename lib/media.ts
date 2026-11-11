@@ -1,4 +1,5 @@
 import type { Project } from "@/lib/generated/prisma/client";
+import { markersOf, type Marker } from "@/lib/markers";
 
 // URL helpers for Stream and R2. Safe on the client; they read only NEXT_PUBLIC values.
 const STREAM = `https://customer-${process.env.NEXT_PUBLIC_STREAM_CUSTOMER_CODE}.cloudflarestream.com`;
@@ -27,6 +28,7 @@ export type Clip = {
   height: number | null;
   peaks: number[] | null;
   captions: string | null;
+  markers: Marker[];
 };
 
 // poster: 720 for the monitor, 240 for tiles; an options object, so Array.map can never pass an index in
@@ -43,6 +45,7 @@ export function clipFromProject(p: Project, { poster = 720 } = {}): Clip {
     width: p.width,
     height: p.height,
     peaks: Array.isArray(p.peaks) ? (p.peaks as number[]) : null,
+    markers: markersOf(p.markers),
     captions: p.captionsKey ? r2Url(p.captionsKey) : null,
   };
 }

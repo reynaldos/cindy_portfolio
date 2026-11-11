@@ -1,7 +1,7 @@
 "use client";
 
 import { bay } from "@/components/bay/bus";
-import { fitNote } from "@/components/bay/note";
+import { fitNote, togglePin } from "@/components/bay/note";
 import { tc } from "@/components/bay/const";
 import { useMonitor } from "@/components/monitor/state";
 import { ClipInspector } from "@/components/pages/clip-inspector";
@@ -21,7 +21,7 @@ export function Spots({ spots, markers, stampValue, stampText }: { spots: Spot[]
         <div className="proc-lane">
           {markers.map((m) => (
             <button key={m.label} type="button" className="pin" style={{ left: `${m.at * 100}%` }} aria-expanded="false" aria-label={`Feedback round: ${m.label}. ${m.note}`}
-              onClick={(e) => { const b = e.currentTarget, open = b.getAttribute("aria-expanded") === "true"; b.parentElement?.querySelectorAll(".pin").forEach((x) => x.setAttribute("aria-expanded", "false")); b.setAttribute("aria-expanded", String(!open)); fitNote(b); }}
+              onClick={(e) => togglePin(e.currentTarget)}
               onPointerEnter={(e) => fitNote(e.currentTarget)} onFocus={(e) => fitNote(e.currentTarget)}>
               <i /><span>{m.label}</span><span className="note"><b>{m.label}</b><br />{m.note}</span>
             </button>

@@ -6,6 +6,7 @@ import { z } from "zod";
 import { requireAdmin } from "@/lib/auth";
 import { TAGS } from "@/lib/data";
 import { db } from "@/lib/db";
+import { MarkersField } from "@/lib/markers-field";
 import { Prisma } from "@/lib/generated/prisma/client";
 import { deleteObject } from "@/lib/r2";
 import { createUpload, deleteVideo, getVideo } from "@/lib/stream";
@@ -34,6 +35,7 @@ const Project = z.object({
   description: z.string().trim().min(1),
   // one credit per line as "Role: Name"
   credits: z.string().transform((v) => v.split("\n").map((l) => l.split(/:\s*/, 2)).filter((p) => p[0]?.trim() && p[1]?.trim()).map(([role, name]) => ({ role: role.trim(), name: name.trim() }))),
+  markers: MarkersField,
   posterKey: opt,
   posterTimeSec: z.coerce.number().min(0),
   captionsKey: opt,

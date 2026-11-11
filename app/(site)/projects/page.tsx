@@ -12,7 +12,7 @@ export default async function Projects() {
   const [categories, profile] = await Promise.all([getCategories(), getProfile()]);
   const total = categories.reduce((n, c) => n + c.projects.length, 0);
   // the monitor previews each track's first clip; an empty track shows its name as a placeholder
-  const clips: Clip[] = categories.map((c) => c.projects[0] ? clipFromProject(c.projects[0]) : { id: c.slug, title: c.name, file: `${c.slug.toUpperCase().replace(/-/g, "_")}.mp4`, src: null, poster: null, durationSec: null, fps: null, width: null, height: null, peaks: null, captions: null });
+  const clips: Clip[] = categories.map((c) => c.projects[0] ? clipFromProject(c.projects[0]) : { id: c.slug, title: c.name, file: `${c.slug.toUpperCase().replace(/-/g, "_")}.mp4`, src: null, poster: null, durationSec: null, fps: null, width: null, height: null, peaks: null, captions: null, markers: [] });
   return (
     <>
       <div className="page">

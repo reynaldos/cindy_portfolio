@@ -319,7 +319,10 @@ html.rm .app *, html.rm .app *::before, html.rm .app *::after { animation: none 
 .renderbar i { display: block; height: 100%; width: 0; background: var(--color-paper); }
 .renderbar.go i { animation: render 2.4s linear infinite; }
 @keyframes render { from { width: 0; } to { width: 100%; } }
-.scrubwrap { background: var(--color-panel); padding: 6px 8px 0; margin-top: 2px; display: flex; align-items: center; }
+.scrubwrap { position: relative; background: var(--color-panel); padding: 6px 8px 0; margin-top: 2px; display: flex; align-items: center; }
+/* clip pins: label over flag over the track; the note opens upward over the picture */
+.scrubwrap:has(.pin) { padding-top: 28px; }
+.scrubwrap .pin { top: 2px; left: calc(8px + var(--at) * (100% - 16px)); min-height: 0; z-index: 2; }
 .scrub { -webkit-appearance: none; appearance: none; width: 100%; height: 24px; background: transparent; margin: 0; cursor: pointer; }
 .scrub::-webkit-slider-runnable-track { height: 4px; background: var(--color-track-hi); }
 .scrub::-webkit-slider-thumb { -webkit-appearance: none; width: 3px; height: 16px; background: var(--color-cut); margin-top: -6px; }

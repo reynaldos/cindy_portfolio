@@ -6,6 +6,7 @@ import { Maximize, Pause, Play, SkipBack, SkipForward, Volume2, VolumeX } from "
 import type Hls from "hls.js";
 import { onBay } from "@/components/bay/bus";
 import { tc } from "@/components/bay/const";
+import { fitNote, togglePin } from "@/components/bay/note";
 import { emitMonitor, IDLE } from "@/components/monitor/state";
 import type { Clip } from "@/lib/media";
 
@@ -15,11 +16,12 @@ type Props = {
   mode: "reel" | "clips";
   sticky?: boolean;
   compact?: boolean;
+  pins?: boolean;
   still?: { src: string | null; alt: string; file: string; fmt?: string };
   children?: React.ReactNode;
 };
 
-export function Monitor({ clips, index = 0, mode, sticky, compact, still, children }: Props) {
+export function Monitor({ clips, index = 0, mode, sticky, compact, pins, still, children }: Props) {
   const video = useRef<HTMLVideoElement>(null);
   const hls = useRef<Hls | null>(null);
   const audio = useRef<{ ctx: AudioContext; an: AnalyserNode[] } | null>(null);
@@ -183,7 +185,16 @@ export function Monitor({ clips, index = 0, mode, sticky, compact, still, childr
           <div className="burn"><span>{clip?.file ?? ""}</span><span><span className="mt">SRC </span>{cur}</span></div>
         </div>
         <div className={`renderbar ${status === "loading" ? "go" : ""}`}><i /></div>
-        <div className="scrubwrap"><input type="range" className="scrub" min={0} max={1000} value={dur ? Math.round((t / dur) * 1000) : 0} aria-label="Clip position" disabled={!canPlay} onChange={(e) => { const v = video.current!; if (v.duration) v.currentTime = (+e.target.value / 1000) * v.duration; }} /></div>
+        <div className="scrubwrap">
+          <input type="range" className="scrub" min={0} max={1000} value={dur ? Math.round((t / dur) * 1000) : 0} aria-label="Clip position" disabled={!canPlay} onChange={(e) => { const v = video.current!; if (v.duration) v.currentTime = (+e.target.value / 1000) * v.duration; }} />
+          {pins && clip?.markers.map((m) => (
+            <button key={m.label} type="button" className="pin" style={{ "--at": m.at } as React.CSSProperties} aria-expanded="false" aria-label={`Feedback round: ${m.label}. ${m.note}`}
+              onClick={(e) => { togglePin(e.currentTarget); const v = video.current; if (v?.duration) v.currentTime = m.at * v.duration; }}
+              onPointerEnter={(e) => fitNote(e.currentTarget)} onFocus={(e) => fitNote(e.currentTarget)}>
+              <span>{m.label}</span><i /><span className="note"><b>{m.label}</b><br />{m.note}</span>
+            </button>
+          ))}
+        </div>
         <div className="transport">
           {mode === "clips" && <button type="button" onClick={() => setIdx((i) => Math.max(0, i - 1))} disabled={idx === 0} aria-label="Previous clip"><SkipBack aria-hidden="true" /><span className="lbl">Prev</span><kbd>←</kbd></button>}
           <button type="button" onClick={() => (playing ? video.current?.pause() : play())} disabled={!canPlay}>

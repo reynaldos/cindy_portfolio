@@ -1,11 +1,12 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Area, Section, Status, Text, field, kick, selectContent, selectItem, selectTrigger, type Values } from "@/components/admin/fields";
+import { Area, Section, Status, Text, kick, selectContent, selectItem, selectTrigger, type Values } from "@/components/admin/fields";
+import { Pins } from "@/components/admin/pins";
 import { Track, type TrackItem } from "@/components/admin/track";
 import { Select as Root, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { SEQ, tc } from "@/components/bay/const";
-import type { Marker } from "@/components/pages/spots";
+import { SEQ } from "@/components/bay/const";
+import type { Marker } from "@/lib/markers";
 import { saveRecentWork, type SaveResult } from "@/lib/actions/recent";
 
 type Pick = TrackItem & { group: string; recentOrder: number | null };
@@ -17,7 +18,6 @@ export function RecentForm({ values, markers: initialMarkers, projects }: Props)
   const [spots, setSpots] = useState<TrackItem[]>(projects.filter((p) => p.recentOrder !== null).sort((a, b) => a.recentOrder! - b.recentOrder!));
   const free = projects.filter((p) => !spots.some((s) => s.id === p.id));
   const groups = [...new Set(free.map((p) => p.group))];
-  const edit = (i: number, patch: Partial<Marker>) => setMarkers((all) => all.map((m, k) => (k === i ? { ...m, ...patch } : m)));
   return (
     <form action={action} className="grid gap-6 max-w-2xl">
       <Section title="Story">
@@ -29,24 +29,7 @@ export function RecentForm({ values, markers: initialMarkers, projects }: Props)
         </div>
       </Section>
       <Section title="Feedback rounds">
-        <p className="font-sans text-xs text-dim -mt-1">Yellow pins on the timeline. Position is where on the 60-second sequence the pin sits.</p>
-        <input type="hidden" name="markers" value={JSON.stringify(markers)} />
-        <ol className="grid gap-3">
-          {markers.map((m, i) => (
-            <li key={i} className="grid gap-2 border border-line p-3">
-              <div className="grid sm:grid-cols-[1fr_2fr] gap-2">
-                <input value={m.label} onChange={(e) => edit(i, { label: e.target.value })} placeholder="Label (e.g. R1)" aria-label="Pin label" className={`${field} h-10`} />
-                <input value={m.note} onChange={(e) => edit(i, { note: e.target.value })} placeholder="Note (what the client asked for)" aria-label="Pin note" className={`${field} h-10`} />
-              </div>
-              <div className="flex items-center gap-3">
-                <input type="range" min={0} max={1} step={0.01} value={m.at} onChange={(e) => edit(i, { at: Number(e.target.value) })} aria-label="Pin position" className="flex-1 accent-cut" />
-                <span className="font-mono text-xs text-dim w-24 text-right">{tc(m.at * SEQ)}</span>
-                <button type="button" onClick={() => setMarkers((all) => all.filter((_, k) => k !== i))} className="font-mono text-xs text-dim hover:text-paper underline">Remove</button>
-              </div>
-            </li>
-          ))}
-        </ol>
-        <button type="button" onClick={() => setMarkers((all) => [...all, { label: `R${all.length + 1}`, note: "", at: Math.min(0.95, (all.length + 1) / 6) }])} className="btn border-line bg-track hover:border-paper justify-self-start">Add pin</button>
+        <Pins markers={markers} onChange={setMarkers} total={SEQ} hint="Yellow pins on the timeline. Position is where on the 60-second sequence the pin sits." />
       </Section>
       <Section title="Spots">
         <p className="font-sans text-xs text-dim -mt-1">Up to five. Drag to order; left is first. Only published spots show on the site.</p>
