@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { LoginForm } from "@/components/admin/login-form";
 
-export const metadata = { title: "Admin login · Cuts By Cindy", robots: { index: false } };
+export const metadata = { title: "Admin login", robots: { index: false } };
 
 export default function Login() {
   return (
