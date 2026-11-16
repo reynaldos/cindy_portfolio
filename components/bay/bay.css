@@ -245,7 +245,8 @@
   .tick .rl.odd { display: none; }
   .status .mid { display: none; }
 }
-@container app (max-width: 767px) {
+/* the timeline rides in the drawer on a phone, and on a short touch screen such as a tablet on its side */
+@media (max-width: 767px), (pointer: coarse) and (max-height: 840px) {
   .status { display: none; }
   .tlp { display: flex; }
   /* the drawer positions against the app, not the zero-height band */
@@ -254,6 +255,15 @@
   .app[data-tl-open] .tlwrap { transform: none; visibility: visible; }
   .app:not([data-tl-pin]) .tlwrap:not(:hover):not(:focus-within) { height: auto; overflow: auto; }
   .app:not([data-tl-pin]) .tlwrap:not(:hover):not(:focus-within) .ctx-x { display: block; }
+  /* same weight as the desktop compact rule, so the thumb sizes win on touch */
+  .app:not([data-tl-pin]) .tlwrap:not(:hover):not(:focus-within) :is(.lane, .th), .lane, .th { height: 48px; }
+  .app:not([data-tl-pin]) .tlwrap:not(:hover):not(:focus-within) :is(.lane.ruler, .th.tcbig, .lane.a1, .th.a1h), .lane.ruler, .th.tcbig, .lane.a1, .th.a1h { height: 44px; }
+  .marker { width: 44px; height: 44px; margin-left: -22px; }
+  .marker::before { left: 18px; }
+  /* app bar 26 + tabs 36 + drawer bar 56 */
+  .app { --sh: calc(100dvh - 118px); }
+}
+@container app (max-width: 767px) {
   .tlhead .lab, .tlhead .rng, .tlhead .cap { display: none; }
   .tlhead .seq { flex: 1; min-width: 0; overflow: hidden; }
   .note { white-space: normal; width: max-content; max-width: min(240px, 70cqw); }
@@ -276,14 +286,9 @@
   .ws { overflow-x: auto; scrollbar-width: none; }
   .ws a { padding: 0 10px; font-size: 12px; }
   .wsbar .contact { margin-left: auto; padding: 0 12px; }
-  /* same weight as the desktop compact rule, so the thumb sizes win on phones */
-  .app:not([data-tl-pin]) .tlwrap:not(:hover):not(:focus-within) :is(.lane, .th), .lane, .th { height: 48px; }
   .clip { top: 2px; bottom: 2px; }
-  .app:not([data-tl-pin]) .tlwrap:not(:hover):not(:focus-within) :is(.lane.ruler, .th.tcbig, .lane.a1, .th.a1h), .lane.ruler, .th.tcbig, .lane.a1, .th.a1h { height: 44px; }
   .credits a { min-height: 44px; display: inline-flex; align-items: center; }
   .app { --sh: calc(100dvh - 146px); }
-  .marker { width: 44px; height: 44px; margin-left: -22px; }
-  .marker::before { left: 18px; }
 }
 
 /* reduced motion: the OS setting or the Window menu switch */
@@ -339,8 +344,11 @@ html.rm .app *, html.rm .app *::before, html.rm .app *::after { animation: none 
 .transport svg { width: 12px; height: 12px; flex: none; fill: currentColor; }
 .transport kbd { color: var(--color-dim); font: inherit; font-size: 11px; border: 1px solid var(--color-line); padding: 0 4px; border-radius: 2px; line-height: 16px; }
 .transport .sep { width: 1px; height: 20px; background: var(--color-line); margin: 0 4px; }
-.transport .tc { margin-left: auto; padding-right: 6px; font-variant-numeric: tabular-nums; color: var(--color-paper); white-space: nowrap; }
+/* on a narrow monitor the timecode gives way before the buttons */
+.transport .tc { margin-left: auto; flex: 0 99 auto; min-width: 0; overflow: hidden; padding-right: 6px; font-variant-numeric: tabular-nums; color: var(--color-paper); white-space: nowrap; }
 .transport .tc .tot { color: var(--color-dim); }
+/* key hints mean nothing on a touch screen */
+@media (pointer: coarse) { .transport kbd { display: none; } }
 
 /* the home hero sits on the monitor */
 .hero { position: absolute; left: 5%; right: 5%; bottom: max(7%, 32px); pointer-events: none; } /* the floor keeps it clear of the burn-in bar on a phone */

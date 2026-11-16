@@ -4,7 +4,7 @@ import { RenderQueue } from "@/components/admin/render-queue";
 import { logout } from "@/lib/actions/auth";
 import { requireAdmin } from "@/lib/auth";
 
-export const metadata = { title: "Admin · Cuts By Cindy", robots: { index: false } };
+export const metadata = { title: "Admin", robots: { index: false } };
 // Every admin page reads live data, so the panel renders on the server per request
 export const instant = false;
 
