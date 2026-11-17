@@ -12,14 +12,28 @@ type State = { kind: "idle" } | { kind: "error"; field?: string; error: string }
 const TYPES = ["Short Film", "Commercial", "Music Video", "Trailer", "Other"];
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
-// Turnstile loads once, the first time the dialog opens, and only when a site key is set
-function loadTurnstile() {
-  if (!SITE_KEY || document.querySelector("script[data-turnstile]")) return;
-  const s = document.createElement("script");
-  s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
-  s.async = true;
-  s.dataset.turnstile = "1";
-  document.head.appendChild(s);
+type Turnstile = { render(el: HTMLElement, o: Record<string, string>): string; remove(id: string): void };
+
+// The widget lives with the form: drawn when the form mounts, removed when it leaves, so none is left orphaned.
+// The script loads once, with the first widget.
+function TurnstileBox() {
+  const box = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const api = () => (window as Window & { turnstile?: Turnstile }).turnstile;
+    let s = document.querySelector<HTMLScriptElement>("script[data-turnstile]");
+    if (!s) {
+      s = document.createElement("script");
+      s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+      s.async = true;
+      s.dataset.turnstile = "1";
+      document.head.appendChild(s);
+    }
+    let id: string | undefined;
+    const mount = () => { id = api()!.render(box.current!, { sitekey: SITE_KEY!, theme: "dark", size: "flexible" }); };
+    if (api()) mount(); else s.addEventListener("load", mount);
+    return () => { s.removeEventListener("load", mount); if (id) api()?.remove(id); };
+  }, []);
+  return <div ref={box} className="cf-turnstile" />;
 }
 const EMPTY = { name: "", email: "", projectType: "Commercial", message: "" };
 
@@ -35,7 +49,7 @@ export function ContactDialog({ email, replyTime, links }: Props) {
   // the select menu portals into the dialog, otherwise it sits under the modal backdrop
   const [portal, setPortal] = useState<HTMLElement | null>(null);
 
-  useEffect(() => { setPortal(dlg.current); return onBay((a) => { if (a === "contact") { setOpenedAt(Date.now()); loadTurnstile(); dlg.current?.showModal(); } }); }, []);
+  useEffect(() => { setPortal(dlg.current); return onBay((a) => { if (a === "contact") { setOpenedAt(Date.now()); dlg.current?.showModal(); } }); }, []);
 
   // after each state change, focus the status message so it is announced
   useEffect(() => { if (state.kind !== "idle") status.current?.focus(); }, [state]);
@@ -68,7 +82,8 @@ export function ContactDialog({ email, replyTime, links }: Props) {
             <div className="field"><label htmlFor="c-type">Project type</label><Select value={draft.projectType} onValueChange={(v) => setDraft((d) => ({ ...d, projectType: v }))}><SelectTrigger id="c-type"><SelectValue /></SelectTrigger><SelectContent position="popper" container={portal} className="rounded-xs bg-panel text-paper ring-line font-mono text-sm">{TYPES.map((t) => <SelectItem key={t} value={t} className="rounded-xs focus:bg-track focus:text-paper">{t}</SelectItem>)}</SelectContent></Select></div>
             <div className="field"><label htmlFor="c-msg">Message</label><textarea id="c-msg" name="message" value={draft.message} onChange={set("message")} aria-invalid={err?.field === "message" || undefined} /></div>
             <div className="hp" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
-            {SITE_KEY && <div className="cf-turnstile" data-sitekey={SITE_KEY} data-theme="dark" data-size="flexible" />}
+            {/* not before the first open, so the script stays off pages where nobody writes */}
+            {SITE_KEY && openedAt > 0 && <TurnstileBox />}
             <div className="fmt">Format: Inquiry · Destination: Cindy&apos;s inbox</div>
             <button type="submit" className="btn pri">Export (send message)</button>
           </form>

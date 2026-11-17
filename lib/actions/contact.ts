@@ -11,7 +11,7 @@ const Inquiry = z.object({
   email: z.string().trim().email("Add your email so Cindy can reply."),
   projectType: z.enum(["Short Film", "Commercial", "Music Video", "Trailer", "Other"]),
   message: z.string().trim().min(1, "Add a message.").max(5000),
-  website: z.string().max(0).optional(), // honeypot: humans never see it
+  website: z.string().optional(), // honeypot: humans never see it; a filled one is dropped below, not refused here
   openedAt: z.coerce.number(),
   turnstile: z.string().optional(),
 });
@@ -37,14 +37,15 @@ export async function sendInquiry(raw: Record<string, string>): Promise<ContactR
 
   const row = await db.contactSubmission.create({ data: { name: d.name, email: d.email, projectType: d.projectType, message: d.message, ipHash } });
 
-  const sent = await sendEmail(d).catch(() => false);
+  // the reason goes to the server log; the visitor only learns that the email did not go out
+  const sent = await sendEmail(d).catch((e) => { console.error("EmailJS send failed:", e); return false; });
   if (sent) await db.contactSubmission.update({ where: { id: row.id }, data: { emailSent: true } });
   return sent ? { ok: true } : { ok: false, error: "The message is saved, but the email did not go out." };
 }
 
 async function sendEmail(d: z.infer<typeof Inquiry>) {
   const { EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, EMAILJS_PUBLIC_KEY, EMAILJS_PRIVATE_KEY } = process.env;
-  if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY || !EMAILJS_PRIVATE_KEY) return false;
+  if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY || !EMAILJS_PRIVATE_KEY) throw new Error("an EMAILJS_* env value is missing");
   const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -56,5 +57,6 @@ async function sendEmail(d: z.infer<typeof Inquiry>) {
       template_params: { name: d.name, email: d.email, project_type: d.projectType, message: d.message },
     }),
   });
-  return res.ok;
+  if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
+  return true;
 }
